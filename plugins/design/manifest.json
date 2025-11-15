@@ -1,0 +1,19 @@
+{
+  "id": "design",
+  "name": "Дизайн",
+  "route": "design",
+  "icon": "pencil",
+  "order": 10,
+  "html": "plugins/design/index.html",
+  "css": ["plugins/design/css/style.css"],
+  "js": [
+    "plugins/design/js/core.js",
+    "plugins/design/js/toolbar.js",
+    "plugins/design/js/inspector.layout.js",
+    "plugins/design/js/inspector.size.js",
+    "plugins/design/js/inspector.bg.js",
+    "plugins/design/js/inspector.border.js",
+    "plugins/design/js/inspectorWindow.js",
+    "plugins/design/js/index.js"
+  ]
+}

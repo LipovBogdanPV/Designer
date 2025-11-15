@@ -1,0 +1,613 @@
+:root {
+  --workspace: #0a0f1a;
+  --safe-bottom: 72px;
+  --border: #23304a;
+  --surface: #0f1830;
+  --panel: #0e1526;
+  --muted: #94a3b8;
+  --text: #e5e7eb;
+  --accent: #60a5fa;
+  --chip: #111827;
+  --header-h: 56px; /* висота вашої фіксованої шапки */
+  --insp-w: 380px; /* ширина інспектора */
+}
+/* за замовчуванням — НІЯКОГО grid */
+.st-app {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 1fr var(--insp-w, 400px);
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* коли інспектор справа */
+.st-app.insp-right {
+  display: grid;
+  grid-template-columns: 1fr var(--insp-w, 400px);
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* коли інспектор зліва */
+.st-app.insp-left {
+  display: grid;
+  grid-template-columns: var(--insp-w, 400px) 1fr;
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* повністю закрито — просто блочний потік, жодних колонок */
+.st-app.insp-closed {
+  display: block;
+}
+
+/* слоти за замовчуванням приховані, щоб "порожня колонка" не займала місце */
+#left {
+  display: none;
+  min-width: 0; /* важливо для гріда */
+  min-height: 0;
+  min-height: auto;
+}
+
+/* показуємо РІВНО той слот, який активний */
+.st-app.insp-left #left {
+  display: block;
+}
+.st-app.insp-right #right {
+  display: block;
+}
+
+/* коли закрито — обидва приховані */
+.st-app.insp-closed #left,
+.st-app.insp-closed #right {
+  display: none;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15, 24, 48, 0.55);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn:hover {
+  border-color: #33518a;
+}
+.btn.primary {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  border-color: #1d4ed8;
+}
+.btn.ghost {
+  background: transparent;
+}
+.btn.icon {
+  padding: 0.4rem;
+  width: 34px;
+  height: 34px;
+  justify-content: center;
+}
+.breadcrumbs {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 1rem 0.5rem;
+}
+.canvas-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  background: var(--workspace);
+}
+.canvas {
+  min-height: 100%;
+  padding: 24px;
+  padding-bottom: calc(24px + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.right {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+}
+/* ТІЛО ІНСПЕКТОРА — ОСЬ ТУТ ЄДИНИЙ СКРОЛ */
+.insp-body {
+  flex: 1 1 auto; /* займає увесь доступний простір */
+  min-height: 0; /* дозволяє overflow працювати */
+  overflow: auto; /* ← СКРОЛ ТУТ */
+  padding: 12px;
+  padding-bottom: calc(12px + var(--safe-bottom, 72px));
+  height: 100vh; /* щоб зайняти всю висоту правої колонки */
+}
+.right .panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* займай увесь слот */
+  min-height: 0; /* дозволяє .insp-body мати власний скрол */
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+}
+/* ===== Блоки на канві ===== */
+.st-block {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  min-height: 80px;
+  border-radius: 16px;
+  border: 1px dashed rgba(96, 165, 250, 0.25);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  overflow: hidden;
+}
+.st-block[data-dir="row"] {
+  flex-direction: row;
+}
+.st-block[data-dir="column"] {
+  flex-direction: column;
+}
+.st-block:hover {
+  border-color: #60a5fa;
+}
+.st-block.selected {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) inset;
+}
+.st-block .bg-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.st-block .overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+.st-block .overlay.top {
+  top: 0;
+}
+.st-block .overlay.bottom {
+  bottom: 0;
+}
+.st-block > .st-block {
+  position: relative;
+  z-index: 2;
+}
+.st-block.drop-before::before,
+.st-block.drop-after::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: #60a5fa;
+  border-radius: 999px;
+  box-shadow: 0 0 6px rgba(96, 165, 250, 0.8);
+  z-index: 10;
+}
+
+.st-block.drop-before::before {
+  top: -2px;
+}
+.st-block.drop-after::after {
+  bottom: -2px;
+}
+/* вставка "всередину" – підсвічуємо весь блок */
+.st-block.drop-inside {
+  outline: 2px dashed #60a5fa;
+  outline-offset: 4px;
+}
+.block-toolbar .drag-handle {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.9);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  font-size: 12px;
+  color: #9ca3af;
+}
+.block-toolbar .drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ===== Блоки на канві ===== */
+.block-toolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  z-index: 7;
+}
+.design .chip {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--chip);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.resizer {
+  position: absolute;
+  background: rgba(96, 165, 250, 0.5);
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 6;
+}
+.st-block:hover .resizer {
+  opacity: 0.2;
+}
+.st-block.selected .resizer {
+  opacity: 0.6;
+}
+.resizer.right {
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+  border-radius: 3px;
+}
+.resizer.bottom {
+  left: 0;
+  bottom: -3px;
+  height: 6px;
+  width: 100%;
+  cursor: ns-resize;
+  border-radius: 3px;
+}
+.resizer.corner {
+  right: -6px;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  border-radius: 4px;
+}
+.group {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.group > header {
+  padding: 0.6rem 0.8rem;
+  background: #0b162f;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.group .rows {
+  padding: 0.8rem;
+}
+.row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.row .controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.row input[type="text"],
+.row input[type="number"],
+.row input[type="range"],
+.row select {
+  width: 100%;
+  background: #0b162f;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.2rem 0.2rem;
+}
+.row input[type="color"] {
+  width: 44px;
+  height: 28px;
+  border: none;
+  background: transparent;
+}
+.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.four {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+.templates {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tag {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  background: #0b162f;
+  cursor: pointer;
+}
+.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.6rem 0;
+}
+.kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: #0b162f;
+  color: #cbd5e1;
+}
+/* ===== Floating (draggable) inspector ===== */
+.floating-panel {
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  width: 440px;
+  height: 72vh; /* стартова висота */
+  min-height: 25px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999999; /* поверх усього */
+}
+
+.floating-panel .drag-handle {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  cursor: move;
+  user-select: none;
+  background: #0b162f;
+  border-bottom: 1px solid var(--border);
+}
+.floating-panel .drag-handle .title {
+  font-size: 12px;
+  color: var(--muted);
+}
+.floating-panel .drag-handle .spacer {
+  flex: 1 1 auto;
+}
+.floating-panel .drag-handle .btn {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.floating-panel .panel {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 12px;
+  padding-bottom: calc(12px + var(--safe-bottom));
+}
+
+/* Мінімізований стан — тонка смужка (перетягувана) */
+.floating-panel.minimized {
+  width: 360px;
+  height: 25px;
+  border-radius: 10px;
+}
+.floating-panel.minimized .panel {
+  display: none;
+}
+.floating-panel.minimized .drag-handle {
+  height: 25px;
+  border-bottom: none;
+}
+.grp {
+  margin: 10px 0 14px;
+}
+
+/* ===== Docked section inspector ===== */
+.dock-panel {
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+
+.dock-panel.left {
+  left: 0;
+  right: auto;
+  border-left: none;
+  border-right: 1px solid var(--border);
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
+}
+
+/* заголовок як у скріні */
+.dock-panel .dock-head {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(11, 22, 47, 0.8);
+  backdrop-filter: blur(6px);
+  position: sticky; /* завжди зверху, коли контент скролиться */
+  top: 0;
+  z-index: 1;
+}
+
+/* пігулка назви */
+.dock-head .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #0b162f;
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* маленькі кнопки в хедері */
+.dock-head .hbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.dock-head .hbtn:hover {
+  border-color: #33518a;
+}
+
+/* тіло з відступом і власним скролом */
+.dock-panel .panel {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 12px;
+  padding-bottom: calc(12px + var(--safe-bottom, 72px));
+}
+
+/* дрібна адаптація */
+@media (max-width: 1400px) {
+  :root {
+    --insp-w: 360px;
+  }
+}
+/* заголовок усередині інспектора (і в колонці, і у флотінгу) */
+.dock-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #0b162f;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.dock-head .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #0b162f;
+  font-size: 12px;
+  color: var(--text);
+}
+.dock-head .spacer {
+  flex: 1 1 auto;
+}
+.dock-head .hbtn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.dock-head .hbtn:hover {
+  border-color: #33518a;
+}
+
+/* флотінг панель */
+#st-dock-inspector {
+  z-index: 999999;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+}
+#st-dock-inspector.left {
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
+}
+
+/* ручка для ресайзу (праворуч або ліворуч, залежно від сторони) */
+#st-dock-inspector .resize-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  opacity: 0.4;
+  cursor: ew-resize;
+  right: 0; /* за замовчуванням панель праворуч, тягнемо правою гранню */
+}
+#st-dock-inspector.left .resize-grip {
+  right: auto;
+  left: 0;
+}
+.st-block {
+  border: 1px dashed rgba(96, 165, 250, 0.35);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 8px 0;
+  color: #94a3b8;
+}
+.st-block.selected {
+  outline: 2px solid #60a5fa;
+}

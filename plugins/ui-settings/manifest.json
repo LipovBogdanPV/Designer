@@ -1,0 +1,10 @@
+{
+  "id": "ui-settings",
+  "name": "Налаштування",
+  "route": "ui-settings",
+  "icon": "sliders-horizontal",
+  "order": 5,
+  "html": "plugins/ui-settings/index.html",
+  "css":  ["plugins/ui-settings/style.css"],
+  "js":   ["plugins/ui-settings/index.js"]
+}

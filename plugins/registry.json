@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    { "id": "design",    "manifest": "plugins/design/manifest.json" },
+    { "id": "templates", "manifest": "plugins/templates/manifest.json" },
+    { "id": "ui-settings", "manifest": "plugins/ui-settings/manifest.json" },
+    { "id": "tt", "manifest": "plugins/tt/manifest.json" }
+  ]
+}

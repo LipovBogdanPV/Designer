@@ -1,0 +1,366 @@
+/* ====== ТЕМИ/ЗМІННІ САЙТУ ====== */
+:root {
+  /* Розміри */
+  --header-h: 56px;
+  --sidebar-w: 240px; /* ширина, коли меню розгорнуте */
+  --sidebar-w-compact: 72px; /* ширина, коли меню згорнуте */
+  --radius: 12px;
+  --gap: 12px;
+
+  /* Кольори */
+  --bg: #0f172a; /* темний фон */
+  --panel: #101827; /* панелі */
+  --text: #e5e7eb; /* основний текст */
+  --muted: #9ca3af; /* вторинний текст */
+  --primary: #6d5efc; /* акцент */
+  --hover: #1f2937; /* ховери */
+  --border: #1f2a44;
+
+  /* Типографіка */
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fw-semibold: 600;
+
+  /* з плагіна */
+  --sidebar-text: #e5e7eb;
+  --sidebar-bg: #101827;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: rgba(109, 94, 252, 0.16);
+  --sidebar-border: #1f2a44;
+  --sidebar-border-w: 1px;
+  --sidebar-radius: 10px;
+  --sidebar-shadow: none;
+  --sidebar-w: 240px;
+  --sidebar-w-compact: 72px;
+
+  --logo-pad-x: 12px;
+  --logo-pad-y: 14px;
+  --logo-icon: 40px;
+  --logo-wide-h: 28px;
+  --logo-gap: 12px;
+  --logo-underline-w: 1px;
+  --logo-underline: #000;
+
+  --panel-bg: #101827;
+  --panel-border: #1f2a44;
+  --panel-shadow: none;
+  --panel-radius: 12px;
+
+  --btn-bg: #1b2336;
+  --btn-hover: #1f2937;
+  --btn-text: #e5e7eb;
+  --btn-radius: 8px;
+  --btn-border: #1f2a44;
+
+  --tbl-row-hover: #162036;
+  --tbl-border: #1f2a44;
+  --tbl-radius: 12px;
+  --tbl-pad: 10px 12px;
+}
+
+/* Коли сайдбар згорнутий — міняємо ширину через клас на body */
+body.sidebar-collapsed {
+  --sidebar-w: var(--sidebar-w-compact);
+}
+
+/* ====== БАЗА ====== */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+}
+
+/* ====== ФІКСОВАНІ ШАПКА ТА САЙДБАР ====== */
+
+header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--header-h);
+  background: linear-gradient(
+    180deg,
+    #0f172a 0%,
+    #0f172a 70%,
+    rgba(15, 23, 42, 0.7) 100%
+  );
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  padding: 0 12px;
+  z-index: 50;
+}
+
+a {
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+}
+a:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.55);
+}
+
+.sidebar {
+  position: fixed;
+  top: var(--header-h);
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow: hidden; /* приховуємо, поки не потрібно скролити */
+  z-index: 40;
+  transition: width 0.28s ease, transform 0.28s ease;
+}
+
+/* Якщо контент не вміщається — з’являється скрол тільки всередині */
+.sidebar .sidebar-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Основний контент займає весь простір праворуч і під шапкою */
+main {
+  margin-left: var(--sidebar-w);
+  padding-top: calc(var(--header-h) + 16px);
+  min-height: 100vh;
+}
+
+.container {
+  padding: 12px 18px 48px;
+}
+
+/* ====== ЕЛЕМЕНТИ ШАПКИ ====== */
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+.logo img {
+  height: 28px;
+  display: block;
+}
+.logo .title {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.3px;
+}
+
+.top-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.chip {
+  background: #1b2336;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.input {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0f172a;
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+
+/* ====== КНОПКА ЗГОРТАННЯ САЙДБАРУ ====== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  background: #1b2336;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--hover);
+}
+
+/* ====== НАВІГАЦІЯ ====== */
+.nav {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+.nav a {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 8px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 10px;
+}
+.nav a .label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav a:hover {
+  background: var(--hover);
+}
+.nav a.active {
+  background: rgba(109, 94, 252, 0.14);
+  outline: 1px solid rgba(109, 94, 252, 0.35);
+}
+
+/* Коли сайдбар згорнутий — показуємо лише іконки, ховаємо лейбли */
+body.sidebar-collapsed .nav a .label {
+  display: none;
+}
+body.sidebar-collapsed .nav a {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+/* Логотипи: повний/компактний */
+.logo-full {
+  display: inline-flex;
+}
+.logo-compact {
+  display: none;
+}
+body.sidebar-collapsed .logo-full {
+  display: none;
+}
+body.sidebar-collapsed .logo-compact {
+  display: inline-flex;
+}
+
+/* Адаптив дрібні штрихи */
+@media (max-width: 900px) {
+  :root {
+    --sidebar-w: var(--sidebar-w-compact);
+  }
+  body:not(.sidebar-collapsed) {
+    /* на вузьких екранах нехай одразу компакт */
+    --sidebar-w: var(--sidebar-w-compact);
+  }
+}
+/* Всередині плагінів теги <header> не є топбаром */
+.plugin-host header {
+  position: static;
+  inset: auto;
+  height: auto;
+  border: 0;
+  background: none;
+  z-index: auto;
+}
+/* сайдбар */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  border-right: var(--sidebar-border-w) solid var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
+}
+body.sidebar-collapsed {
+  --sidebar-w: var(--sidebar-w-compact);
+}
+.nav a {
+  color: var(--sidebar-text);
+  border-radius: var(--sidebar-radius);
+}
+.nav a:hover {
+  background: var(--sidebar-hover);
+}
+.nav a.active {
+  background: var(--sidebar-active);
+  outline: 1px solid rgba(109, 94, 252, 0.35);
+}
+
+/* лого */
+.logo {
+  padding: 3px;
+  gap: var(--logo-gap);
+}
+.logo img {
+  height: var(--logo-icon);
+  width: var(--logo-icon);
+}
+.logo-full img {
+  height: var(--logo-wide-h);
+  width: auto;
+}
+.logo::after {
+  content: "";
+  display: block;
+  height: var(--logo-underline-w);
+  background: var(--logo-underline);
+}
+
+/* панелі/картки за замовчуванням */
+.card,
+.tpl-card,
+.fld {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+}
+
+/* кнопки загальні */
+.btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--btn-text);
+  border-radius: var(--btn-radius);
+}
+.btn:hover {
+  background: var(--btn-hover);
+}
+
+/* таблиці (якщо будуть) */
+.table {
+  border: 1px solid var(--tbl-border);
+  border-radius: var(--tbl-radius);
+}
+.table tr:hover {
+  background: var(--tbl-row-hover);
+}
+.table td,
+.table th {
+  padding: var(--tbl-pad);
+}
+
+.muted {
+  color: var(--muted);
+}
+.pp {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  padding: 0;
+  margin: 0;
+}

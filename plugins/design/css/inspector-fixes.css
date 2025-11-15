@@ -1,0 +1,85 @@
+/* inspector-fixes.css — ширші числові поля та читабельні цифри */
+
+/* Правий інспектор: робимо number-інпути ширшими */
+.inspector input[type="number"],
+.right-panel input[type="number"],
+.properties input[type="number"],
+.controls input[type="number"] {
+  min-width: 72px;   /* було занадто вузько — показувались лише спінери */
+  width: 88px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  text-align: right;               /* зручно читати величини пікселів */
+  font-variant-numeric: tabular-nums;
+}
+
+/* У щільних грідах з “квадратиками” (відступи/маржини) теж збільшуємо */
+.inspector .grid input[type="number"],
+.right-panel .grid input[type="number"] {
+  min-width: 56px;
+  width: 64px;
+}
+
+/* Щоб цифри не “злипались” зі спінерами */
+.inspector input[type="number"]::-webkit-outer-spin-button,
+.inspector input[type="number"]::-webkit-inner-spin-button,
+.right-panel input[type="number"]::-webkit-outer-spin-button,
+.right-panel input[type="number"]::-webkit-inner-spin-button {
+  margin-left: 4px;
+}
+
+
+/* ===== ShiftTime: inspector-fixes.css — APPEND to the end ===== */
+
+/* CSS variables for inspector width and limits */
+:root{
+  --insp-w: 360px;
+}
+
+/* Override grid columns to use the variable and keep content from being overlapped */
+.app{ grid-template-columns: 1fr var(--insp-w) !important; }
+:root[data-sb-side="left"] .app{ grid-template-columns: var(--insp-w) 1fr !important; }
+
+/* Sidebar handle */
+.right-panel, .inspector, [data-role="inspector"], aside{
+  position: relative;
+}
+.insp-handle{
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 5; opacity: .6;
+}
+.insp-handle::before{
+  content:""; width: 2px; height: 36px; border-radius: 2px;
+  background: var(--border, #2b3750);
+}
+
+/* Collapsible sections (no DOM restructuring) */
+.sb-collapsible > :first-child{
+  cursor: pointer;
+  position: relative;
+}
+.sb-collapsible > :first-child .chev,
+.sb-collapsible > :first-child::after{
+  content: "";
+  position: absolute;
+  right: 10px; top: 50%; transform: translateY(-50%) rotate(0deg);
+  width: 8px; height: 8px; border-right: 2px solid var(--muted, #94a3b8); border-bottom: 2px solid var(--muted, #94a3b8);
+  transform-origin: 50% 50%;
+  transition: transform .12s ease;
+}
+.sb-collapsible.collapsed > :first-child::after{
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+/* hide all siblings below the header when collapsed */
+.sb-collapsible.collapsed > :not(:first-child){
+  display: none !important;
+}
+
+/* Prevent horizontal scroll while dragging */
+body{ overflow-x: hidden; }

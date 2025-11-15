@@ -1,0 +1,10 @@
+{
+  "id": "templates",
+  "name": "Шаблони",
+  "route": "templates",
+  "icon": "layout-template",
+  "order": 20,
+  "html": "plugins/templates/index.html",
+  "css":  ["plugins/templates/style.css"],
+  "js":   ["plugins/templates/index.js"]
+}

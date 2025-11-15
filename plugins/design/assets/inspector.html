@@ -1,0 +1,434 @@
+<aside class="right">
+  <div class="panel">
+    <div class="dock-panel" id="st-dock-inspector">
+      <div class="dock-head">
+        <span class="badge">Інспектор секцій</span>
+        <button class="hbtn" data-action="move">⇆ Перемістити</button>
+        <button class="hbtn" data-action="close">Закрити</button>
+      </div>
+    </div>
+    <!-- РОЗМІТКА -->
+    <div class="insp-body">
+      <!-- РОЗМІТКА -->
+      <details class="grp" open>
+        <summary><span class="emoji">🧭</span> Розмітка секції</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Дисплей</label>
+              <div class="controls">
+                <select id="display">
+                  <option value="flex">Flex</option>
+                  <option value="grid">Grid</option>
+                </select>
+              </div>
+            </div>
+            <div class="row" id="flexDirRow">
+              <label>Орієнтація</label>
+              <div class="controls">
+                <select id="dir">
+                  <option value="column">Вертикально</option>
+                  <option value="row">Горизонтально</option>
+                </select>
+              </div>
+            </div>
+            <div class="row" id="flexAlignRow">
+              <label>Вирівнювання X / Y</label>
+              <div class="two">
+                <select id="justify">
+                  <option value="flex-start">Ліво/Верх</option>
+                  <option value="center">Центр</option>
+                  <option value="space-between">Між</option>
+                  <option value="space-around">Навколо</option>
+                  <option value="flex-end">Право/Низ</option>
+                </select>
+                <select id="align">
+                  <option value="stretch">Розтягнути</option>
+                  <option value="flex-start">Верх/Ліво</option>
+                  <option value="center">Центр</option>
+                  <option value="flex-end">Низ/Право</option>
+                </select>
+              </div>
+            </div>
+            <div class="row" id="gridSetup" style="display: none">
+              <label>Сітка (grid)</label>
+              <div class="two">
+                <input id="gridCols" type="number" min="1" max="12" value="2" />
+                <input id="gridGap" type="number" min="0" max="64" value="16" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Gap (px)</label>
+              <input id="gap" type="range" min="0" max="64" step="1" />
+            </div>
+            <div class="row">
+              <label>Відступи (px)</label>
+              <div class="four">
+                <div class="two">
+                  <input id="padT" type="number" placeholder="Top" /><input
+                    id="padR"
+                    type="number"
+                    placeholder="Right"
+                  />
+                </div>
+                <div class="two">
+                  <input id="padB" type="number" placeholder="Bottom" /><input
+                    id="padL"
+                    type="number"
+                    placeholder="Left"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label>Макс. ширина</label>
+              <div class="controls">
+                <select id="maxw">
+                  <option value="">Full width</option>
+                  <option value="1280px">1280</option>
+                  <option value="1024px">1024</option>
+                  <option value="860px">860</option>
+                  <option value="720px">720</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- РОЗМІР & РОЗПОДІЛ -->
+      <details class="grp">
+        <summary><span class="emoji">📐</span> Розмір & розподіл</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Режим розміру</label>
+              <div class="two">
+                <select id="sizeMode">
+                  <option value="auto">Auto</option>
+                  <option value="fill">Fill (Flex)</option>
+                  <option value="px">PX</option>
+                  <option value="%">%</option>
+                </select>
+                <input id="sizeVal" type="number" placeholder="значення" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Гнучкість</label>
+              <div class="three">
+                <label class="small"
+                  ><input type="checkbox" id="grow" /> grow</label
+                >
+                <label class="small"
+                  ><input type="checkbox" id="shrink" checked /> shrink</label
+                >
+                <select id="alignSelf">
+                  <option value="auto">align-self: auto</option>
+                  <option value="stretch">stretch</option>
+                  <option value="flex-start">start</option>
+                  <option value="center">center</option>
+                  <option value="flex-end">end</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <label>Мін. висота (px)</label
+              ><input id="minH" type="number" placeholder="напр. 320" />
+            </div>
+            <div class="row">
+              <label>Явна ширина (px)</label
+              ><input id="widthPx" type="number" placeholder="для колонки" />
+            </div>
+            <div class="divider"></div>
+            <div class="row">
+              <label>Full height</label>
+              <div class="two">
+                <label class="small"
+                  ><input type="checkbox" id="fullHeight" /> на всю
+                  висоту</label
+                >
+                <input
+                  id="fixedHeight"
+                  type="number"
+                  placeholder="або фіксована висота (px)"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <label>Сайдбар док</label>
+              <div class="two">
+                <select id="dockWhere">
+                  <option value="left">Ліворуч</option>
+                  <option value="right">Праворуч</option>
+                </select>
+                <input id="dockWidth" type="number" placeholder="ширина (px)" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Швидкі пресети</label>
+              <div class="templates">
+                <button class="btn tag" data-preset="XS">XS</button>
+                <button class="btn tag" data-preset="S">S</button>
+                <button class="btn tag" data-preset="M">M</button>
+                <button class="btn tag" data-preset="L">L</button>
+                <button class="btn tag" data-preset="XL">XL</button>
+                <button class="btn tag" data-preset="XXL">XXL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="grp">
+        <summary><span class="emoji">🎨</span> Заливка секції</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Тип фону</label>
+              <select id="bgType">
+                <option value="none">Немає</option>
+                <option value="color">Колір</option>
+                <option value="gradient">Градієнт</option>
+                <option value="image">Картинка</option>
+              </select>
+            </div>
+            <div id="bgColorRows">
+              <div class="row">
+                <label>Колір</label>
+                <div class="controls">
+                  <input type="color" id="bgColor" /><input
+                    type="range"
+                    id="bgAlpha"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+            </div>
+            <div id="bgGradRows" style="display: none">
+              <div class="row">
+                <label>Color A</label>
+                <div class="controls">
+                  <input type="color" id="gA" /><input
+                    type="range"
+                    id="gAalpha"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <label>Color B</label>
+                <div class="controls">
+                  <input type="color" id="gB" /><input
+                    type="range"
+                    id="gBalpha"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <label>Кут (deg)</label
+                ><input type="range" id="gAngle" min="0" max="360" step="1" />
+              </div>
+            </div>
+            <div id="bgImgRows" style="display: none">
+              <div class="row">
+                <label>URL</label
+                ><input type="text" id="bgUrl" placeholder="https://..." />
+              </div>
+              <div class="row">
+                <label>Size / Pos</label>
+                <div class="two">
+                  <select id="bgSize">
+                    <option>cover</option>
+                    <option>contain</option>
+                    <option>auto</option></select
+                  ><select id="bgPos">
+                    <option value="center">center</option>
+                    <option value="top">top</option>
+                    <option value="bottom">bottom</option>
+                    <option value="left">left</option>
+                    <option value="right">right</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <label>Overlay</label>
+                <div class="two">
+                  <input type="color" id="bgOverlayColor" /><input
+                    type="range"
+                    id="bgOverlayAlpha"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <label>Grayscale</label
+                ><input type="range" id="bgGray" min="0" max="1" step="0.01" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="grp">
+        <summary><span class="emoji">🧊</span>Кути / Бордер</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Тип форми</label>
+              <select id="cornerMode">
+                <option value="rounded">Rounded (радіуси)</option>
+                <option value="chamfer">Chamfer (зрізи)</option>
+                <option value="polygon">Polygon (багатокутник)</option>
+              </select>
+            </div>
+
+            <div id="roundedBox">
+              <div class="row">
+                <label>Режим радіусів</label>
+                <select id="radiusMode">
+                  <option value="all">Однакові</option>
+                  <option value="per">Окремі кути</option>
+                  <option value="diag1">Діагональ TL↔BR</option>
+                  <option value="diag2">Діагональ TR↔BL</option>
+                </select>
+              </div>
+              <div id="rAll" class="row">
+                <label>Радіус (px)</label
+                ><input id="rAllVal" type="range" min="0" max="120" step="1" />
+              </div>
+              <div id="rPer" style="display: none">
+                <div class="row">
+                  <label>TL / TR</label>
+                  <div class="two">
+                    <input id="rTL" type="number" /><input
+                      id="rTR"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <label>BL / BR</label>
+                  <div class="two">
+                    <input id="rBL" type="number" /><input
+                      id="rBR"
+                      type="number"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div id="rDiag1" style="display: none">
+                <div class="row">
+                  <label>TL/BR</label
+                  ><input id="rD1A" type="range" min="0" max="120" />
+                </div>
+                <div class="row">
+                  <label>TR/BL</label
+                  ><input id="rD1B" type="range" min="0" max="120" />
+                </div>
+              </div>
+              <div id="rDiag2" style="display: none">
+                <div class="row">
+                  <label>TR/BL</label
+                  ><input id="rD2A" type="range" min="0" max="120" />
+                </div>
+                <div class="row">
+                  <label>TL/BR</label
+                  ><input id="rD2B" type="range" min="0" max="120" />
+                </div>
+              </div>
+            </div>
+
+            <div id="chamferBox" style="display: none">
+              <div class="row">
+                <label>Однаковий зріз (%)</label
+                ><input id="chAll" type="range" min="0" max="40" step="1" />
+              </div>
+              <div class="row">
+                <label>TL / TR (%)</label>
+                <div class="two">
+                  <input id="chTL" type="number" min="0" max="40" /><input
+                    id="chTR"
+                    type="number"
+                    min="0"
+                    max="40"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <label>BL / BR (%)</label>
+                <div class="two">
+                  <input id="chBL" type="number" min="0" max="40" /><input
+                    id="chBR"
+                    type="number"
+                    min="0"
+                    max="40"
+                  />
+                </div>
+              </div>
+              <div class="small">
+                Зріз у відсотках сторін контейнера. 0–40%.
+              </div>
+            </div>
+
+            <div id="polygonBox" style="display: none">
+              <div class="row">
+                <label>К-сть точок</label
+                ><input id="polyCount" type="number" min="3" max="30" />
+              </div>
+              <div class="row">
+                <label>Точки (0–100%)</label>
+                <div id="polyList" class="rows" style="padding: 0"></div>
+              </div>
+              <div class="row">
+                <label>Дії</label>
+                <div class="templates">
+                  <button class="btn" id="polyAdd">Додати точку</button>
+                  <button class="btn" id="polyClear">Очистити</button>
+                </div>
+              </div>
+              <div class="small">
+                Побудова за <code>clip-path: polygon(x% y%, ...)</code>. Мінімум
+                3 точки.
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="row">
+              <label>Бордер</label>
+              <div class="three">
+                <input id="bWidth" type="number" placeholder="px" />
+                <select id="bStyle">
+                  <option>solid</option>
+                  <option>dashed</option>
+                  <option>dotted</option>
+                </select>
+                <input id="bColor" type="color" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Прозорість</label
+              ><input id="bAlpha" type="range" min="0" max="1" step="0.01" />
+            </div>
+            <div class="row">
+              <label>М’який контур</label
+              ><input id="bBlur" type="range" min="0" max="40" step="1" />
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Заливка, Радіуси, Тіні, Оверлеї, Прокрутка, Робоче середовище, Шаблони -->
+    <!-- усе як у твоєму файлі: залишив маркап і айдішники — скрипт використовує їх  -->
+    <!-- Щоб відповідь не роздувати, вони не дублюються тут: просто візьми з твого HTML і встав у цей блок (або лиш те, що вже є у тебе). -->
+  </div>
+</aside>

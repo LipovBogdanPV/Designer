@@ -1,0 +1,5 @@
+
+.plugin-templates .tpl-grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.plugin-templates .tpl-card{ background:#101827; border:1px solid var(--border); border-radius: var(--radius); display:flex; flex-direction:column; }
+.plugin-templates .tpl-card header{ padding:12px; border-bottom:1px solid var(--border); display:flex; gap:8px; align-items:center; }
+.plugin-templates .tpl-card footer{ padding:12px; margin-top:auto; }

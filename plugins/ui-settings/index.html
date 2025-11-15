@@ -1,0 +1,200 @@
+<div class="plugin-ui-settings container">
+  <h1>Налаштування конструктора</h1>
+
+  <details class="grp" open>
+    <summary>Сайдбар</summary>
+    <div class="grid">
+      <label class="fld"
+        ><span>Текст</span
+        ><input type="color" data-key="sidebar.text" value="#e5e7eb"
+      /></label>
+      <label class="fld"
+        ><span>Фон</span
+        ><input type="color" data-key="sidebar.bg" value="#101827"
+      /></label>
+
+      <label class="fld"
+        ><span>Hover BG (rgba)</span
+        ><input
+          type="text"
+          data-key="sidebar.hoverBg"
+          value="rgba(255,255,255,.06)"
+      /></label>
+      <label class="fld"
+        ><span>Active BG (rgba)</span
+        ><input
+          type="text"
+          data-key="sidebar.activeBg"
+          value="rgba(109,94,252,.16)"
+      /></label>
+
+      <label class="fld"
+        ><span>Бордер колір</span
+        ><input type="color" data-key="sidebar.borderColor" value="#1f2a44"
+      /></label>
+      <label class="fld"
+        ><span>Бордер товщина</span
+        ><input type="text" data-key="sidebar.borderW" value="1px"
+      /></label>
+
+      <label class="fld"
+        ><span>Радіус</span
+        ><input type="text" data-key="sidebar.radius" value="10px"
+      /></label>
+      <label class="fld"
+        ><span>Тінь (box-shadow)</span
+        ><input type="text" data-key="sidebar.shadow" value="none"
+      /></label>
+
+      <label class="fld"
+        ><span>Ширина (розгорнутий)</span
+        ><input type="text" data-key="sidebar.w" value="272px"
+      /></label>
+      <label class="fld"
+        ><span>Ширина (згорнутий)</span
+        ><input type="text" data-key="sidebar.wCompact" value="76px"
+      /></label>
+
+      <label class="fld"
+        ><span>Відступи лого X</span
+        ><input type="text" data-key="logo.padX" value="12px"
+      /></label>
+      <label class="fld"
+        ><span>Відступи лого Y</span
+        ><input type="text" data-key="logo.padY" value="14px"
+      /></label>
+
+      <label class="fld"
+        ><span>Іконка (квадрат) px</span
+        ><input type="number" min="12" data-key="logo.iconSize" value="40"
+      /></label>
+      <label class="fld"
+        ><span>Висота широкого лого</span
+        ><input type="text" data-key="logo.wideH" value="28px"
+      /></label>
+
+      <label class="fld"
+        ><span>Відстань між іконкою і словом</span
+        ><input type="text" data-key="logo.gap" value="12px"
+      /></label>
+      <label class="fld"
+        ><span>Лінія під лого (товщина)</span
+        ><input type="text" data-key="logo.underlineW" value="1px"
+      /></label>
+      <label class="fld"
+        ><span>Лінія під лого (колір)</span
+        ><input type="color" data-key="logo.underlineColor" value="#000000"
+      /></label>
+    </div>
+  </details>
+
+  <details class="grp">
+    <summary>Робоча область (права панель)</summary>
+    <div class="grid">
+      <label class="fld"
+        ><span>Фон сторінки</span
+        ><input type="color" data-key="panel.pageBg" value="#0f172a"
+      /></label>
+      <label class="fld"
+        ><span>Фон панелей</span
+        ><input type="color" data-key="panel.bg" value="#101827"
+      /></label>
+      <label class="fld"
+        ><span>Бордер панелей</span
+        ><input type="color" data-key="panel.border" value="#1f2a44"
+      /></label>
+      <label class="fld"
+        ><span>Тінь панелей</span
+        ><input type="text" data-key="panel.shadow" value="none"
+      /></label>
+      <label class="fld"
+        ><span>Радіус панелей</span
+        ><input type="text" data-key="panel.radius" value="12px"
+      /></label>
+      <label class="fld"
+        ><span>Колір тексту</span
+        ><input type="color" data-key="panel.text" value="#e5e7eb"
+      /></label>
+      <label class="fld"
+        ><span>Колір тексту (втор.)</span
+        ><input type="color" data-key="panel.muted" value="#9ca3af"
+      /></label>
+      <label class="fld"
+        ><span>Базовий розмір</span
+        ><input
+          type="number"
+          min="10"
+          max="24"
+          data-key="panel.fontBase"
+          value="14"
+        />
+        px</label
+      >
+    </div>
+  </details>
+
+  <details class="grp">
+    <summary>Кнопки</summary>
+    <div class="grid">
+      <label class="fld"
+        ><span>BG</span><input type="color" data-key="btn.bg" value="#1b2336"
+      /></label>
+      <label class="fld"
+        ><span>Hover BG</span
+        ><input type="color" data-key="btn.hover" value="#1f2937"
+      /></label>
+      <label class="fld"
+        ><span>Текст</span
+        ><input type="color" data-key="btn.text" value="#e5e7eb"
+      /></label>
+      <label class="fld"
+        ><span>Радіус</span
+        ><input type="text" data-key="btn.radius" value="8px"
+      /></label>
+      <label class="fld"
+        ><span>Бордер</span
+        ><input type="color" data-key="btn.border" value="#1f2a44"
+      /></label>
+    </div>
+  </details>
+
+  <details class="grp">
+    <summary>Таблиці</summary>
+    <div class="grid">
+      <label class="fld"
+        ><span>Фон рядка (hover)</span
+        ><input type="color" data-key="table.rowHover" value="#162036"
+      /></label>
+      <label class="fld"
+        ><span>Бордер</span
+        ><input type="color" data-key="table.border" value="#1f2a44"
+      /></label>
+      <label class="fld"
+        ><span>Радіус</span
+        ><input type="text" data-key="table.radius" value="12px"
+      /></label>
+      <label class="fld"
+        ><span>Падінг</span
+        ><input type="text" data-key="table.pad" value="10px 12px"
+      /></label>
+    </div>
+  </details>
+
+  <details class="grp" open>
+    <summary>Меню (порядок плагінів)</summary>
+    <p class="muted">
+      Перетягніть елементи мишкою, щоб змінити порядок у лівому меню.
+    </p>
+    <div class="nav-sort">
+      <ul id="navList" class="nav-list" aria-label="Порядок плагінів"></ul>
+    </div>
+  </details>
+
+  <div class="actions">
+    <button class="btn" data-act="save">Зберегти</button>
+    <button class="btn" data-act="reset">Скинути до стандартних</button>
+    <button class="btn" data-act="export">Експорт JSON</button>
+    <button class="btn" data-act="import">Імпорт JSON</button>
+    <input type="file" accept="application/json" id="importFile" hidden />
+  </div>
+</div>

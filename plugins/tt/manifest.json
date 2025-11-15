@@ -1,0 +1,10 @@
+{
+  "id": "tt",
+  "name": "Тест-Таск",
+  "route": "tt",
+  "icon": "pill-bottle",
+  "order": 4,
+  "html": "plugins/tt/index.html",
+  "css":  ["plugins/tt/style.css"],
+  "js":   ["plugins/tt/index.js"]
+}
