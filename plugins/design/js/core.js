@@ -159,18 +159,17 @@
   // ===== drag & drop state
   let dnd = {
     draggingId: null,
+    hoverId: null,
     ghost: null,
-    targetId: null,
-    mode: null, // 'before' | 'after' | 'inside'
   };
 
   function clearDropHints() {
     document
       .querySelectorAll(
-        ".st-block.drop-before, .st-block.drop-after, .st-block.drop-inside"
+        ".st-block.drop-inside, .st-block.drop-before, .st-block.drop-after"
       )
       .forEach((el) => {
-        el.classList.remove("drop-before", "drop-after", "drop-inside");
+        el.classList.remove("drop-inside", "drop-before", "drop-after");
       });
   }
 
@@ -221,6 +220,7 @@
     }
     return null;
   }
+  // перевірка, що target не є нащадком source
   function isAncestor(ancestorId, nodeId) {
     const anc = findById(rootBlocks, ancestorId);
     if (!anc) return false;
@@ -232,7 +232,7 @@
     }
     return false;
   }
-
+  /*  просте переміщення блоку moveBlock
   function moveBlock(dragId, targetId, mode) {
     if (!dragId || !targetId || dragId === targetId) return;
     const dragPos = findParentAndIndex(dragId);
@@ -243,6 +243,7 @@
     const targetArr = targetPos.arr;
 
     const [node] = dragArr.splice(dragPos.index, 1); // вирізаємо
+    if (!node) return;
 
     // не даємо перетягнути в свого ж нащадка
     if (mode === "inside" && isAncestor(dragId, targetId)) {
@@ -252,11 +253,21 @@
     }
 
     if (mode === "inside") {
-      targetPos.parent
-        ? targetPos.parent.children.push(node)
-        : rootBlocks.push(node);
+      // знаходимо ВЛАСНЕ таргет-блок
+      const targetBlock = targetPos.parent;
+      if (!targetBlock) {
+        // повертаємо назад
+        dragArr.splice(dragPos.index, 0, node);
+        return;
+      }
+      if (!Array.isArray(targetBlock.children)) {
+        targetBlock.children = [];
+      }
+
+      targetBlock.children.push(node);
     } else {
       let insertIndex = targetPos.index;
+
       // якщо рухаємо в межах того самого масиву – зсуваємо індекс
       if (dragArr === targetArr && dragPos.index < targetPos.index) {
         insertIndex -= 1;
@@ -264,19 +275,34 @@
       if (mode === "after") insertIndex += 1;
       targetArr.splice(insertIndex, 0, node);
     }
+  }*/
+  // просте переміщення блоку всередину іншого moveBlock
+  function moveBlockInto(sourceId, targetId) {
+    if (!sourceId || !targetId || sourceId === targetId) return;
+
+    const srcPos = findParentAndIndex(sourceId);
+    if (!srcPos) return;
+
+    const srcNode = srcPos.arr[srcPos.index];
+    let targetNode = findById(rootBlocks, targetId);
+    if (!targetNode) return;
+
+    // не дозволяємо кидати батька у власного нащадка
+    if (isAncestor(sourceId, targetId)) return;
+
+    // вирізаємо з попереднього місця
+    srcPos.arr.splice(srcPos.index, 1);
+
+    // додаємо в children таргету
+    targetNode.children = targetNode.children || [];
+    targetNode.children.push(srcNode);
   }
+
   function attachDragHandle(handleEl, blockId) {
     if (!handleEl) return;
 
-    handleEl.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      startDrag(blockId, e.clientX, e.clientY);
-    });
-
-    // для тачів – pointer події
     handleEl.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "mouse") return; // мишу вже обробили через mousedown
+      if (e.button !== 0) return; // тільки ЛКМ
       e.preventDefault();
       e.stopPropagation();
       startDrag(blockId, e.clientX, e.clientY);
@@ -288,11 +314,10 @@
     if (!blockEl) return;
 
     dnd.draggingId = blockId;
-    dnd.targetId = null;
-    dnd.mode = null;
+    dnd.hoverId = null;
     clearDropHints();
 
-    // простенький "ghost"
+    // простий "ghost"
     const ghost = blockEl.cloneNode(false);
     ghost.style.position = "fixed";
     ghost.style.pointerEvents = "none";
@@ -312,8 +337,6 @@
 
     updateGhost(clientX, clientY);
 
-    window.addEventListener("mousemove", onDragMove);
-    window.addEventListener("mouseup", onDragEnd);
     window.addEventListener("pointermove", onDragMove);
     window.addEventListener("pointerup", onDragEnd);
   }
@@ -326,6 +349,7 @@
 
   function onDragMove(e) {
     if (!dnd.draggingId) return;
+
     const x = e.clientX;
     const y = e.clientY;
     updateGhost(x, y);
@@ -333,51 +357,21 @@
     clearDropHints();
 
     const el = document.elementFromPoint(x, y);
-    if (!el) {
-      dnd.targetId = null;
-      dnd.mode = null;
-      return;
+    const host = el && el.closest ? el.closest(".st-block") : null;
+    const targetId = host && host.dataset ? host.dataset.id : null;
+
+    // не можна наводитись на самого себе
+    if (targetId && targetId !== dnd.draggingId) {
+      dnd.hoverId = targetId;
+      host.classList.add("drop-inside"); // просто підсвічуємо блок, куди впаде
+    } else {
+      dnd.hoverId = null;
     }
-
-    const blockEl = el.closest(".st-block");
-    if (!blockEl) {
-      dnd.targetId = null;
-      dnd.mode = null;
-      return;
-    }
-
-    const targetId = blockEl.dataset.id;
-    if (!targetId || targetId === dnd.draggingId) {
-      dnd.targetId = null;
-      dnd.mode = null;
-      return;
-    }
-
-    const rect = blockEl.getBoundingClientRect();
-    const relY = (y - rect.top) / rect.height;
-
-    let mode;
-    if (relY < 0.25) mode = "before";
-    else if (relY > 0.75) mode = "after";
-    else mode = "inside";
-
-    dnd.targetId = targetId;
-    dnd.mode = mode;
-
-    blockEl.classList.add(
-      mode === "before"
-        ? "drop-before"
-        : mode === "after"
-        ? "drop-after"
-        : "drop-inside"
-    );
   }
 
-  function onDragEnd(e) {
+  function onDragEnd() {
     if (!dnd.draggingId) return;
 
-    window.removeEventListener("mousemove", onDragMove);
-    window.removeEventListener("mouseup", onDragEnd);
     window.removeEventListener("pointermove", onDragMove);
     window.removeEventListener("pointerup", onDragEnd);
 
@@ -388,17 +382,18 @@
 
     clearDropHints();
 
-    if (dnd.targetId && dnd.mode) {
-      moveBlock(dnd.draggingId, dnd.targetId, dnd.mode);
+    const fromId = dnd.draggingId;
+    const toId = dnd.hoverId;
+
+    if (fromId && toId && fromId !== toId) {
+      moveBlockInto(fromId, toId);
       render();
-      emitSelection(); // оновити поточний вибраний блок для інспектора
-      emitChange(); // зберегти в localStorage + повідомити слухачів
-      //refreshInspector();
+      emitSelection();
+      emitChange();
     }
 
     dnd.draggingId = null;
-    dnd.targetId = null;
-    dnd.mode = null;
+    dnd.hoverId = null;
   }
 
   function deepFindParent(node, id) {
@@ -584,6 +579,23 @@
     const dragHandle = tb.querySelector(".drag-handle");
     attachDragHandle(dragHandle, b.id);
 
+    // створюємо resize-ручки
+    const resizeRight = document.createElement("div");
+    resizeRight.className = "resize-handle resize-right";
+
+    const resizeBottom = document.createElement("div");
+    resizeBottom.className = "resize-handle resize-bottom";
+
+    const resizeCorner = document.createElement("div");
+    resizeCorner.className = "resize-handle resize-corner";
+
+    el.appendChild(resizeRight);
+    el.appendChild(resizeBottom);
+    el.appendChild(resizeCorner);
+
+    // привʼязуємо ресайз
+    attachResizeHandlers(el, b.id);
+
     b.children.forEach((c) => el.appendChild(renderBlock(c)));
 
     if (b.id === selectedId) el.classList.add("selected");
@@ -630,6 +642,7 @@
     }
     return el;
   }
+  // головний рендер
 
   function render() {
     if (!canvas) return;
@@ -879,6 +892,56 @@
       return { rootBlocks, selectedId };
     },
   };
+  // ===== обробники зміни розміру
+  function attachResizeHandlers(blockEl, blockId) {
+    const right = blockEl.querySelector(".resize-right");
+    const bottom = blockEl.querySelector(".resize-bottom");
+    const corner = blockEl.querySelector(".resize-corner");
+
+    function startResize(e, mode) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const sel = findById(rootBlocks, blockId);
+      if (!sel) return;
+
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const rect = blockEl.getBoundingClientRect();
+
+      const startWidth = rect.width;
+      const startHeight = rect.height;
+
+      function onMove(ev) {
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+
+        updateSelected((b) => {
+          if (mode === "x" || mode === "xy") {
+            const newW = Math.max(40, startWidth + dx);
+            b.layout.widthPx = Math.round(newW);
+          }
+          if (mode === "y" || mode === "xy") {
+            const newH = Math.max(40, startHeight + dy);
+            b.layout.fixedHeight = Math.round(newH);
+            b.layout.fullHeight = false; // якщо вручну тягнемо — fullHeight скидається
+          }
+        });
+      }
+
+      function onUp() {
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      }
+
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+    }
+
+    right?.addEventListener("mousedown", (e) => startResize(e, "x"));
+    bottom?.addEventListener("mousedown", (e) => startResize(e, "y"));
+    corner?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+  }
 
   window.STDesignCore = api;
 })();

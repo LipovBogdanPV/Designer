@@ -1,0 +1,165 @@
+/* inspector.css — ширші числові поля та читабельні цифри */
+/* коли інспектор справа */
+.st-app.insp-right {
+  display: grid;
+  grid-template-columns: 1fr var(--insp-w, 400px);
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* коли інспектор зліва */
+.st-app.insp-left {
+  display: grid;
+  grid-template-columns: var(--insp-w, 400px) 1fr;
+  transition: grid-template-columns 0.2s ease;
+}
+
+/* повністю закрито — просто блочний потік, жодних колонок */
+.st-app.insp-closed {
+  display: block;
+}
+
+/* слоти за замовчуванням приховані, щоб "порожня колонка" не займала місце */
+#left {
+  display: none;
+  min-width: 0; /* важливо для гріда */
+  min-height: 0;
+  min-height: auto;
+}
+
+/* показуємо РІВНО той слот, який активний */
+.st-app.insp-left #left {
+  display: block;
+}
+.st-app.insp-right #right {
+  display: block;
+}
+
+/* коли закрито — обидва приховані */
+.st-app.insp-closed #left,
+.st-app.insp-closed #right {
+  display: none;
+}
+.right {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+}
+/* ТІЛО ІНСПЕКТОРА — ОСЬ ТУТ ЄДИНИЙ СКРОЛ */
+.insp-body {
+  flex: 1 1 auto; /* займає увесь доступний простір */
+  min-height: 0; /* дозволяє overflow працювати */
+  overflow: auto; /* ← СКРОЛ ТУТ */
+  padding: 12px;
+  padding-bottom: calc(12px + var(--safe-bottom, 72px));
+  height: 100vh; /* щоб зайняти всю висоту правої колонки */
+}
+.right .panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* займай увесь слот */
+  min-height: 0; /* дозволяє .insp-body мати власний скрол */
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+}
+/* ==== Групи інспектора (details.grp) ==== */
+
+/* сама “плашка” */
+details.grp {
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(
+    11,
+    22,
+    47,
+    0.9
+  ); /* твій темний відтінок, можна підкрутити */
+  overflow: hidden;
+}
+
+/* прибираємо стандартний трикутник */
+details.grp > summary::-webkit-details-marker {
+  display: none;
+}
+details.grp > summary::marker {
+  content: "";
+}
+
+/* хедер-плашка */
+details.grp > summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+}
+
+/* маленька іконка-емодзі зліва */
+details.grp > summary .emoji {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  font-size: 13px;
+}
+
+/* кастомна стрілка праворуч */
+details.grp > summary::after {
+  content: "›";
+  margin-left: auto;
+  font-size: 20px;
+  opacity: 0.7;
+  transform: rotate(0deg);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+/* коли секція відкрита — стрілка повертається */
+details.grp[open] > summary::after {
+  transform: rotate(90deg);
+  opacity: 1;
+}
+
+/* внутрішнє тіло секції */
+details.grp .group {
+  border-top: 1px solid var(--border);
+  background: var(--panel); /* як і було раніше */
+  padding: 8px 10px 10px;
+}
+
+/* трохи ущільнимо відступи між рядками всередині */
+details.grp .rows {
+  padding: 6px 4px 8px;
+}
+.right {
+  position: relative;
+  height: 100%;
+}
+
+.insp-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0; /* якщо інспектор справа, ручка на лівому краю */
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 10;
+}
+
+.insp-resizer:hover {
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.insp-resizer:active {
+  background: rgba(148, 163, 184, 0.25);
+}

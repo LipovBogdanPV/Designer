@@ -19,47 +19,6 @@
   transition: grid-template-columns 0.2s ease;
 }
 
-/* коли інспектор справа */
-.st-app.insp-right {
-  display: grid;
-  grid-template-columns: 1fr var(--insp-w, 400px);
-  transition: grid-template-columns 0.2s ease;
-}
-
-/* коли інспектор зліва */
-.st-app.insp-left {
-  display: grid;
-  grid-template-columns: var(--insp-w, 400px) 1fr;
-  transition: grid-template-columns 0.2s ease;
-}
-
-/* повністю закрито — просто блочний потік, жодних колонок */
-.st-app.insp-closed {
-  display: block;
-}
-
-/* слоти за замовчуванням приховані, щоб "порожня колонка" не займала місце */
-#left {
-  display: none;
-  min-width: 0; /* важливо для гріда */
-  min-height: 0;
-  min-height: auto;
-}
-
-/* показуємо РІВНО той слот, який активний */
-.st-app.insp-left #left {
-  display: block;
-}
-.st-app.insp-right #right {
-  display: block;
-}
-
-/* коли закрито — обидва приховані */
-.st-app.insp-closed #left,
-.st-app.insp-closed #right {
-  display: none;
-}
-
 .toolbar {
   display: flex;
   gap: 0.5rem;
@@ -120,31 +79,6 @@
   gap: 16px;
 }
 
-.right {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  border-radius: 15px;
-}
-/* ТІЛО ІНСПЕКТОРА — ОСЬ ТУТ ЄДИНИЙ СКРОЛ */
-.insp-body {
-  flex: 1 1 auto; /* займає увесь доступний простір */
-  min-height: 0; /* дозволяє overflow працювати */
-  overflow: auto; /* ← СКРОЛ ТУТ */
-  padding: 12px;
-  padding-bottom: calc(12px + var(--safe-bottom, 72px));
-  height: 100vh; /* щоб зайняти всю висоту правої колонки */
-}
-.right .panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* займай увесь слот */
-  min-height: 0; /* дозволяє .insp-body мати власний скрол */
-  border-left: 1px solid var(--border);
-  background: var(--panel);
-}
 /* ===== Блоки на канві ===== */
 .st-block {
   position: relative;
@@ -197,28 +131,29 @@
   position: relative;
   z-index: 2;
 }
+/* лінія перед блоком */
 .st-block.drop-before::before,
 .st-block.drop-after::after {
   content: "";
   position: absolute;
-  left: 8px;
-  right: 8px;
-  height: 3px;
+  left: 10px;
+  right: 10px;
+  height: 5px;
   background: #60a5fa;
   border-radius: 999px;
-  box-shadow: 0 0 6px rgba(96, 165, 250, 0.8);
+  box-shadow: 0 0 15px rgb(96, 165, 250);
   z-index: 10;
 }
 
 .st-block.drop-before::before {
-  top: -2px;
+  top: -5px;
 }
 .st-block.drop-after::after {
-  bottom: -2px;
+  bottom: -5px;
 }
 /* вставка "всередину" – підсвічуємо весь блок */
 .st-block.drop-inside {
-  outline: 2px dashed #60a5fa;
+  outline: 5px dashed #60a5fa;
   outline-offset: 4px;
 }
 .block-toolbar .drag-handle {
@@ -576,7 +511,7 @@
 
 /* флотінг панель */
 #st-dock-inspector {
-  z-index: 999999;
+  z-index: 1;
   box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -610,4 +545,161 @@
 }
 .st-block.selected {
   outline: 2px solid #60a5fa;
+}
+/* ==== FULLSCREEN PREVIEW ==== */
+
+/* корінь плагіну у фулскріні */
+.st-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #020617;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+/* розтягуємо .st-app на всю висоту контейнера */
+.st-fullscreen .st-app {
+  height: 100%;
+}
+
+/* ховаємо інспектор та лівий слот у фулскріні */
+.st-fullscreen #right,
+.st-fullscreen #left {
+  display: none !important;
+}
+
+/* прибираємо сітку колонок st-app, щоб центр був ширший */
+.st-fullscreen .st-app {
+  display: block;
+}
+
+/* тулбар залишаємо зверху, решта — внизу */
+.st-fullscreen .canvas-wrap {
+  height: calc(100vh - 80px); /* можна підкрутити */
+}
+
+/* трохи підчистимо тулбар у фулскріні */
+.st-fullscreen .toolbar {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+/* підсвічуємо кнопку, коли режим активний */
+.btn.icon.active {
+  outline: 1px solid rgba(96, 165, 250, 0.8);
+}
+
+.resize-handle {
+  position: absolute;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.st-block:hover .resize-handle {
+  opacity: 1;
+}
+
+/* правий край */
+.resize-right {
+  top: 0;
+  right: -4px;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+/* нижній край */
+.resize-bottom {
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+/* кут */
+.resize-corner {
+  right: -4px;
+  bottom: -4px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+}
+
+/* вставка "перед блоком" – підсвічуємо лінією зверху модалка*/
+/* кнопка з іконкою ? */
+.btn.icon {
+  padding: 0.4rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* бекдроп модалки */
+.st-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* коли відкрита */
+.st-modal-backdrop.open {
+  display: flex;
+}
+
+/* вікно */
+.st-modal {
+  background: var(--panel, #0f172a);
+  border-radius: 16px;
+  max-width: 520px;
+  width: 100%;
+  padding: 20px 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border, #1f2937);
+  color: var(--text, #e5e7eb);
+  font-size: 14px;
+}
+
+/* шапка модалки */
+.st-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.st-modal-head h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.st-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.st-modal-body .kbd {
+  margin-left: 4px;
+}
+
+.st-modal-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }

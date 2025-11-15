@@ -2,6 +2,10 @@ console.log("[design] index.js завантажений");
 
 (function () {
   // ===== helper: чекати появи елемента в DOM
+  const INSP_MIN_W = 350;
+  const INSP_MAX_W = 500;
+  const INSP_LS_KEY = "st:insp:width";
+
   function waitFor(sel, root = document, timeout = 7000) {
     const el = root.querySelector(sel);
     if (el) return Promise.resolve(el);
@@ -28,6 +32,64 @@ console.log("[design] index.js завантажений");
     });
   }
 
+  // ===== Ініціалізація ресайзу інспектора
+  function initInspectorResize(host) {
+    // host – це .st-app, який ти передаєш у STDesignCore.mount(host)
+    const resizer = host.querySelector(".insp-resizer");
+    if (!resizer) {
+      console.warn("[design] insp-resizer не знайдено");
+      return;
+    }
+
+    // відновлюємо значення з localStorage, якщо воно є
+    const saved = Number(localStorage.getItem(INSP_LS_KEY));
+    if (saved && saved >= INSP_MIN_W && saved <= INSP_MAX_W) {
+      document.documentElement.style.setProperty("--insp-w", saved + "px");
+    }
+
+    let startX = 0;
+    let startW = 0;
+
+    resizer.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      startX = e.clientX;
+      // беремо поточне значення змінної або дефолт
+      const rootStyles = getComputedStyle(document.documentElement);
+      const cur = parseInt(
+        rootStyles.getPropertyValue("--insp-w").trim() || "380",
+        10
+      );
+      startW = isNaN(cur) ? 380 : cur;
+
+      function onMove(ev) {
+        let w = startW + (ev.clientX - startX);
+        if (w < INSP_MIN_W) w = INSP_MIN_W;
+        if (w > INSP_MAX_W) w = INSP_MAX_W;
+
+        document.documentElement.style.setProperty("--insp-w", w + "px");
+      }
+
+      function onUp() {
+        const rootStyles = getComputedStyle(document.documentElement);
+        const finalW = parseInt(
+          rootStyles.getPropertyValue("--insp-w").trim() || "380",
+          10
+        );
+        if (!isNaN(finalW)) {
+          localStorage.setItem(INSP_LS_KEY, String(finalW));
+        }
+
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+      }
+
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+    });
+  }
+  // ===== Головний bootstrap плагіна design
   async function bootstrap() {
     console.log("[design] bootstrap start");
 
@@ -100,6 +162,8 @@ console.log("[design] index.js завантажений");
     if (window.STInspectorSize) STInspectorSize.init(coreApi, inspRoot);
     if (window.STInspectorBg) STInspectorBg.init(coreApi, inspRoot);
     if (window.STInspectorBorder) STInspectorBorder.init(coreApi, inspRoot);
+    // 5) ресайз інспектора
+    initInspectorResize(host);
 
     console.log("[design] прив’язки інспектора підключені");
   }
