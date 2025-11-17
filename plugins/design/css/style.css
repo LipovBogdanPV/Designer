@@ -70,19 +70,39 @@
   overflow: auto;
   background: var(--workspace);
 }
+.canvas-wrap[data-plugin="design_canvas"] {
+  position: relative;
+  /* канва не роздуває .st-app */
+  overflow: hidden;
+  /* на всякий випадок */
+  max-width: 100%;
+}
 .canvas {
-  min-height: 100%;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-height: 400px;
   padding: 24px;
   padding-bottom: calc(24px + var(--safe-bottom));
   display: flex;
   flex-direction: column;
   gap: 16px;
+  /* ВСЕ переповнення тільки всередину канви */
+  overflow: auto;
+
+  /* ключ: діти не впливають на зовнішній layout */
+  contain: layout paint; /* ізолює розкладку та малювання */
+  isolation: isolate; /* окремий stacking context для z-index, blend-mode тощо */
+
+  box-sizing: border-box;
 }
 
 /* ===== Блоки на канві ===== */
 .st-block {
   position: relative;
   display: flex;
+  max-width: 100%;
+  box-sizing: border-box;
   gap: 16px;
   padding: 24px;
   min-height: 80px;

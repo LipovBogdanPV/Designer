@@ -17,6 +17,10 @@
       maxw: $("#maxw", root),
       gridCols: $("#gridCols", root),
       gridGap: $("#gridGap", root),
+      marT: $("#marT", root),
+      marR: $("#marR", root),
+      marB: $("#marB", root),
+      marL: $("#marL", root),
     };
 
     const flexDirRow = $("#flexDirRow", root);
@@ -43,6 +47,12 @@
       controls.padR && (controls.padR.value = b.padding.r);
       controls.padB && (controls.padB.value = b.padding.b);
       controls.padL && (controls.padL.value = b.padding.l);
+      // margin — теж з дефолтом
+      const outer = b.outerMargin || { t: 0, r: 0, b: 0, l: 0 };
+      controls.marT && (controls.marT.value = outer.t ?? 0);
+      controls.marR && (controls.marR.value = outer.r ?? 0);
+      controls.marB && (controls.marB.value = outer.b ?? 0);
+      controls.marL && (controls.marL.value = outer.l ?? 0);
       controls.maxw && (controls.maxw.value = b.maxWidth || "");
       controls.gridCols && (controls.gridCols.value = b.grid?.cols ?? 2);
       controls.gridGap && (controls.gridGap.value = b.grid?.gap ?? 16);
@@ -99,6 +109,18 @@
           b.padding.r = r;
           b.padding.b = btm;
           b.padding.l = l;
+        });
+      });
+    });
+    ["marT", "marR", "marB", "marL"].forEach((k) => {
+      if (!controls[k]) return;
+      controls[k].addEventListener("input", () => {
+        api.updateSelected((b) => {
+          b.outerMargin = b.outerMargin || { t: 0, r: 0, b: 0, l: 0 };
+          b.outerMargin.t = +controls.marT.value || 0;
+          b.outerMargin.r = +controls.marR.value || 0;
+          b.outerMargin.b = +controls.marB.value || 0;
+          b.outerMargin.l = +controls.marL.value || 0;
         });
       });
     });

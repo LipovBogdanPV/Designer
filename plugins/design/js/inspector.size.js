@@ -16,6 +16,8 @@
       fixedHeight: $("#fixedHeight", root),
       dockWhere: $("#dockWhere", root),
       dockWidth: $("#dockWidth", root),
+      fillRow: $("#rowFillChildren", root),
+      fillBtn: $("#fillChildrenBtn", root),
     };
 
     api.subscribeSelection((b) => {
@@ -31,6 +33,30 @@
       controls.fullHeight && (controls.fullHeight.checked = !!L.fullHeight);
       controls.fixedHeight &&
         (controls.fixedHeight.value = L.fixedHeight || "");
+      // Показувати кнопку "Діти по ширині", якщо:
+      // - є хоч один дочірній блок
+      // - батько - flex-контейнер з напрямком row
+      controls.fillRow &&
+        (controls.fillRow.style.display =
+          b &&
+          b.display === "flex" &&
+          b.dir === "row" &&
+          Array.isArray(b.children) &&
+          b.children.length > 0
+            ? "grid"
+            : "none");
+      // dockWhere / dockWidth залишаю для майбутніх шаблонів
+      // Показувати кнопку "Діти по ширині", якщо батько - flex-контейнер
+      /*
+      if (controls.fillRow) {
+        const canFill =
+          b &&
+          b.displayParent === "flex" &&
+          b.dir === "row" &&
+          Array.isArray(b.children) &&
+          b.children.length > 0;
+        controls.fillRow.style.display = canFill ? "flex" : "none";
+      }*/
     });
 
     const upd = (fn) => api.updateSelected(fn);
@@ -103,7 +129,24 @@
           b.layout.fixedHeight = v;
         });
       });
-
+    // Заміна/оновлення обробника кнопки "заповнити дітей"
+    controls.fillBtn &&
+      controls.fillBtn.addEventListener("click", () => {
+        upd((b) => {
+          if (Array.isArray(b.children)) {
+            b.children.forEach((ch) => {
+              ch.layout = ch.layout || {};
+              // встановлюємо basis як "fill"
+              ch.layout.basis = { mode: "fill", value: 0, unit: "px" };
+              // забезпечуємо розтягування
+              ch.layout.grow = 1;
+              ch.layout.shrink = 1;
+              // прибираємо фіксовану ширину, якщо вона була
+              if ("widthPx" in ch.layout) delete ch.layout.widthPx;
+            });
+          }
+        });
+      });
     // dockWhere / dockWidth залишаю для майбутніх шаблонів
   }
 

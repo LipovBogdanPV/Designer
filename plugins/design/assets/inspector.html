@@ -21,6 +21,8 @@
                 <select id="display">
                   <option value="flex">Flex</option>
                   <option value="grid">Grid</option>
+                  <option value="block">Block</option>
+                  <option value="inline-block">Inline-block</option>
                 </select>
               </div>
             </div>
@@ -82,6 +84,20 @@
               </div>
             </div>
             <div class="row">
+              <label>Зовн. відступи (px)</label>
+              <div class="four">
+                <div class="two">
+                  <input id="marT" type="number" placeholder="Top" />
+                  <input id="marR" type="number" placeholder="Right" />
+                </div>
+                <div class="two">
+                  <input id="marB" type="number" placeholder="Bottom" />
+                  <input id="marL" type="number" placeholder="Left" />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
               <label>Макс. ширина</label>
               <div class="controls">
                 <select id="maxw">
@@ -96,7 +112,6 @@
           </div>
         </div>
       </details>
-
       <!-- РОЗМІР & РОЗПОДІЛ -->
       <details class="grp">
         <summary><span class="emoji">📐</span> Розмір & розподіл</summary>
@@ -165,6 +180,15 @@
                 <input id="dockWidth" type="number" placeholder="ширина (px)" />
               </div>
             </div>
+            <div class="row" id="rowFillChildren" style="display: none">
+              <label>Діти по ширині</label>
+              <div class="templates">
+                <button type="button" class="btn tag" id="fillChildrenBtn">
+                  Розтягнути усіх
+                </button>
+              </div>
+            </div>
+            <div class="divider"></div>
             <div class="row">
               <label>Швидкі пресети</label>
               <div class="templates">
@@ -179,7 +203,7 @@
           </div>
         </div>
       </details>
-
+      <!-- ЗАЛИВКА -->
       <details class="grp">
         <summary><span class="emoji">🎨</span> Заливка секції</summary>
         <div class="group">
@@ -278,7 +302,7 @@
           </div>
         </div>
       </details>
-
+      <!-- РАДІУСИ, КУТИ, -->
       <details class="grp">
         <summary><span class="emoji">🧊</span>Кути / Бордер</summary>
         <div class="group">
@@ -426,7 +450,7 @@
           </div>
         </div>
       </details>
-
+      <!-- ТІНІ, -->
       <details class="grp">
         <summary>🌫️<span></span>Тіні (outer / inset)</summary>
         <div class="group">
@@ -489,6 +513,7 @@
           </div>
         </div>
       </details>
+      <!-- Оверлеї: верх/низ, -->
       <details class="grp">
         <summary>🧵<span></span>Оверлеї: верх/низ</summary>
         <div class="group">
@@ -534,6 +559,7 @@
           </div>
         </div>
       </details>
+      <!-- ПРОКРУТКА, Скролбар, -->
       <details class="grp">
         <summary>🛰️<span></span>Прокрутка & Скролбар</summary>
         <div class="group">
@@ -586,6 +612,7 @@
           </div>
         </div>
       </details>
+      <!-- Копіювання -->
       <details class="grp">
         <summary>🧷<span></span>Копіювання</summary>
         <div class="group">
@@ -604,6 +631,7 @@
           </div>
         </div>
       </details>
+      <!-- РОБОЧЕ СЕРЕДОВИЩЕ, ШАБЛОНИ -->
       <details class="grp">
         <summary>🖥️<span></span>Робоче середовище</summary>
         <div class="group">
@@ -634,6 +662,7 @@
           </div>
         </div>
       </details>
+      <!-- ШАБЛОНИ, Збереження -->
       <details class="grp">
         <summary>🖥️<span></span> Шаблони / Збереження</summary>
         <div class="group">
@@ -679,6 +708,7 @@
           </div>
         </div>
       </details>
+      <!-- ЗАМОРОЖЕНІ ЗАГОТОВКИ ДЛЯ МАЙБУТНЬОГО ВИКОРИСТАННЯ -->
       <details class="grp">
         <summary>🌫️<span></span>Заготовка</summary>
         <div class="group">
@@ -686,9 +716,5 @@
         </div>
       </details>
     </div>
-
-    <!-- Заливка, Радіуси, Тіні, Оверлеї, Прокрутка, Робоче середовище, Шаблони -->
-    <!-- усе як у твоєму файлі: залишив маркап і айдішники — скрипт використовує їх  -->
-    <!-- Щоб відповідь не роздувати, вони не дублюються тут: просто візьми з твого HTML і встав у цей блок (або лиш те, що вже є у тебе). -->
   </div>
 </aside>

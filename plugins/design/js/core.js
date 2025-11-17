@@ -34,6 +34,7 @@
         align: "stretch",
         gap: 16,
         padding: { t: 24, r: 24, b: 24, l: 24 },
+        outerMargin: { t: 0, r: 0, b: 0, l: 0 },
         maxWidth: "",
         layout: {
           basis: { mode: "auto", value: 0, unit: "px" }, // auto|px|%|fill
@@ -419,13 +420,19 @@
       )}, minmax(0,1fr))`;
       el.style.gridGap = (b.grid.gap || 0) + "px";
       el.dataset.dir = "";
-    } else {
+    } else if (b.display === "flex") {
       el.style.display = "flex";
       el.dataset.dir = b.dir;
       el.style.flexDirection = b.dir;
       el.style.justifyContent = b.justify;
       el.style.alignItems = b.align;
       el.style.gap = (b.gap || 0) + "px";
+    } else if (b.display === "block") {
+      el.style.display = "block";
+      el.dataset.dir = "";
+    } else if (b.display === "inline-block") {
+      el.style.display = "inline-block";
+      el.dataset.dir = "";
     }
 
     el.style.paddingTop = (b.padding.t || 0) + "px";
@@ -433,7 +440,19 @@
     el.style.paddingBottom = (b.padding.b || 0) + "px";
     el.style.paddingLeft = (b.padding.l || 0) + "px";
     el.style.maxWidth = b.maxWidth || "";
-    el.style.margin = b.maxWidth ? "0 auto" : "";
+    const m = b.outerMargin || { t: 0, r: 0, b: 0, l: 0 };
+
+    el.style.marginTop = (m.t || 0) + "px";
+    el.style.marginBottom = (m.b || 0) + "px";
+
+    if (b.maxWidth) {
+      // центруємо по ширині, ігноруємо left/right margin
+      el.style.marginLeft = "auto";
+      el.style.marginRight = "auto";
+    } else {
+      el.style.marginLeft = (m.l || 0) + "px";
+      el.style.marginRight = (m.r || 0) + "px";
+    }
 
     const bgLayer = el.querySelector(":scope > .bg-layer");
     if (s.bg.type === "image") {
