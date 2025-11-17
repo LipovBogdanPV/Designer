@@ -109,6 +109,12 @@
           panEnable: false,
           panDir: "y",
           bgFixed: false,
+          // налаштування скролбару
+          sbHide: false,
+          sbThick: 8, // товщина, px
+          sbTrack: "#020617", // фон треку
+          sbThumb: "#64748b", // колір повзунка
+          sbRadius: 8, // радіус повзунка, px
         },
         children: [],
       },
@@ -117,6 +123,15 @@
   }
 
   const cloneBlock = (b) => JSON.parse(JSON.stringify(b));
+
+  function applyCopyOffset(node, offsetPx) {
+    const off = Number(offsetPx) || 0;
+    if (!off) return;
+    node.padding = node.padding || { t: 0, r: 0, b: 0, l: 0 };
+    node.padding.t = (node.padding.t || 0) + off;
+    node.padding.l = (node.padding.l || 0) + off;
+  }
+
   const computeRadii = (r) => {
     if (r.mode === "all") return { tl: r.all, tr: r.all, br: r.all, bl: r.all };
     if (r.mode === "per") return { tl: r.tl, tr: r.tr, br: r.br, bl: r.bl };
@@ -514,8 +529,19 @@
       arr.push(`0 0 ${soft}px ${Math.max(0, Math.floor(soft / 4))}px ${bcol}`);
     el.style.boxShadow = arr.join(", ");
 
-    el.style.overflowX = b.scroll.x ? "auto" : "hidden";
-    el.style.overflowY = b.scroll.y ? "auto" : "hidden";
+    const sc = b.scroll || {};
+
+    el.style.overflowX = sc.x ? "auto" : "hidden";
+    el.style.overflowY = sc.y ? "auto" : "hidden";
+
+    // прокрутка + кастомний скролбар через CSS-змінні
+    el.style.setProperty("--sb-thick", (sc.sbThick ?? 0) + "px");
+    el.style.setProperty("--sb-track", sc.sbTrack || "");
+    el.style.setProperty("--sb-thumb", sc.sbThumb || "");
+    el.style.setProperty("--sb-radius", (sc.sbRadius ?? 0) + "px");
+
+    if (sc.sbHide) el.classList.add("sb-hide-scrollbar");
+    else el.classList.remove("sb-hide-scrollbar");
 
     const L = b.layout || {};
     el.style.flexGrow = L.grow || 0;
@@ -745,6 +771,53 @@
     emitSelection();
     emitChange();
   }
+  // копіювання всередину
+  function copyInside(offsetPx = 0) {
+    const sel = getSelected();
+    if (!sel) return;
+
+    const copy = cloneBlock(sel);
+    copy.id = uid();
+    applyCopyOffset(copy, offsetPx);
+
+    sel.children = sel.children || [];
+    sel.children.push(copy);
+
+    selectedId = copy.id;
+    render();
+    emitSelection();
+    emitChange();
+  }
+
+  function copyOutside(offsetPx = 0) {
+    const sel = getSelected();
+    if (!sel) return;
+
+    const pos = findParentAndIndex(sel.id);
+    let arr, index;
+
+    if (pos) {
+      arr = pos.arr;
+      index = pos.index;
+    } else {
+      // якщо блок на верхньому рівні
+      arr = rootBlocks;
+      index = rootBlocks.findIndex((b) => b.id === sel.id);
+      if (index === -1) return;
+    }
+
+    const copy = cloneBlock(sel);
+    copy.id = uid();
+    applyCopyOffset(copy, offsetPx);
+
+    arr.splice(index + 1, 0, copy);
+
+    selectedId = copy.id;
+    render();
+    emitSelection();
+    emitChange();
+  }
+
   function deleteSelected() {
     if (!selectedId) return;
     const pos = findParentAndIndex(selectedId);
@@ -899,6 +972,8 @@
     addChild: addChildToSelected,
     duplicate: duplicateSelected,
     deleteSelected,
+    copyInside,
+    copyOutside,
     subscribeSelection(fn) {
       listeners.selection.push(fn);
       fn(getSelected());

@@ -13,6 +13,9 @@
     "plugins/design/js/inspector.size.js",
     "plugins/design/js/inspector.bg.js",
     "plugins/design/js/inspector.border.js",
+    "plugins/design/js/inspector.shadows.js",
+    "plugins/design/js/inspector.scroll.js",
+    "plugins/design/js/inspector.copy.js",
     "plugins/design/js/inspectorWindow.js",
     "plugins/design/js/index.js"
   ]

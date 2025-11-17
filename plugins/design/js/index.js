@@ -162,6 +162,10 @@ console.log("[design] index.js завантажений");
     if (window.STInspectorSize) STInspectorSize.init(coreApi, inspRoot);
     if (window.STInspectorBg) STInspectorBg.init(coreApi, inspRoot);
     if (window.STInspectorBorder) STInspectorBorder.init(coreApi, inspRoot);
+    if (window.STInspectorShadows) STInspectorShadows.init(coreApi, inspRoot);
+    if (window.STInspectorScroll) STInspectorScroll.init(coreApi, inspRoot);
+    if (window.STInspectorCopy) STInspectorCopy.init(coreApi, inspRoot);
+
     // 5) ресайз інспектора
     initInspectorResize(host);
 

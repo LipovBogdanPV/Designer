@@ -723,3 +723,30 @@
   justify-content: flex-end;
   gap: 8px;
 }
+/* ===== СКРОЛБАРИ ===== */
+.st-block {
+  /* щоб змінні працювали завжди */
+  --sb-thick: 8px;
+  --sb-track: transparent;
+  --sb-thumb: rgb(255, 255, 255);
+  --sb-radius: 8px;
+}
+
+/* WebKit */
+.st-block::-webkit-scrollbar {
+  width: var(--sb-thick);
+  height: var(--sb-thick);
+}
+.st-block::-webkit-scrollbar-track {
+  background: var(--sb-track);
+}
+.st-block::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border-radius: var(--sb-radius);
+}
+
+/* клас для прихованого скролбару */
+.st-block.sb-hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
