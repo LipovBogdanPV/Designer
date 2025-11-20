@@ -81,7 +81,7 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  min-height: calc(var(--vh) * 84.5);
+  min-height: calc(var(--vh) * 84);
   padding: 24px;
   padding-bottom: calc(24px + var(--safe-bottom));
   display: flex;
