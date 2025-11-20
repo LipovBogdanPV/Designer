@@ -319,6 +319,7 @@
 
     handleEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return; // тільки ЛКМ
+      if (window.ST_DESIGN_DND_ENABLED === false) return;
       e.preventDefault();
       e.stopPropagation();
       startDrag(blockId, e.clientX, e.clientY);
@@ -425,6 +426,7 @@
   // ===== render
   function applyBlockStyles(el, b) {
     const s = b.style,
+    
       r = computeRadii(s.radius);
 
     if (b.display === "grid") {
@@ -583,6 +585,25 @@
         s.overlay.bottom.alpha
       )} 0%, rgba(0,0,0,0) 100%)`;
     } else bot.style.display = "none";
+
+    if (s.overlay.top.enable) {
+      top.style.display = "block";
+      top.style.height = (s.overlay.top.h || 0) + "px";
+      top.style.background = `linear-gradient(180deg, ${hexToRgba(
+        s.overlay.top.color,
+        s.overlay.top.alpha
+      )} 0%, rgba(0,0,0,0) 100%)`;
+    } else top.style.display = "none";
+
+    if (s.overlay.bottom.enable) {
+      bot.style.display = "block";
+      bot.style.height = (s.overlay.bottom.h || 0) + "px";
+      bot.style.background = `linear-gradient(0deg, ${hexToRgba(
+        s.overlay.bottom.color,
+        s.overlay.bottom.alpha
+      )} 0%, rgba(0,0,0,0) 100%)`;
+    } else bot.style.display = "none";
+
   }
 
   function renderBlock(b) {

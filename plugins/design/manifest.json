@@ -16,6 +16,8 @@
     "plugins/design/js/inspector.shadows.js",
     "plugins/design/js/inspector.scroll.js",
     "plugins/design/js/inspector.copy.js",
+    "plugins/design/js/inspector.workspace.js",
+    "plugins/design/js/inspector.overlay.js",
     "plugins/design/js/inspectorWindow.js",
     "plugins/design/js/index.js"
   ]

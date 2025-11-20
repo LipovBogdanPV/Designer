@@ -1,0 +1,24 @@
+.st-block {
+  position: relative;
+}
+
+.st-block::before,
+.st-block::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.st-block::before {
+  top: 0;
+  height: var(--ov-top-h, 0px);
+  background: var(--ov-top-bg, transparent);
+}
+
+.st-block::after {
+  bottom: 0;
+  height: var(--ov-bot-h, 0px);
+  background: var(--ov-bot-bg, transparent);
+}

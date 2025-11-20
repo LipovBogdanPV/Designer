@@ -652,6 +652,30 @@
                 value="72"
               />
             </div>
+            <div class="divider"></div>
+            <!-- якщо проект пустий — кнопка створення головного контейнера -->
+            <div class="row" id="wsContainerRow">
+              <label>Головний контейнер</label>
+              <div class="templates">
+                <button type="button" class="btn" id="wsCreateContainer">
+                  Створити контейнер
+                </button>
+              </div>
+            </div>
+            <!-- налаштування самого контейнера (показуються, коли вибрано кореневий блок) -->
+            <div class="row" id="wsMaxWidthRow" style="display:none">
+              <label>Макс. ширина</label>
+              <select id="wsMaxWidth">
+                <option value="">Full width</option>
+                <option value="960">960</option>
+                <option value="1200">1200</option>
+                <option value="1440">1440</option>
+              </select>
+            </div>
+            <div class="row" id="wsPaddingRow" style="display:none">
+              <label>Внутр. відступ (px)</label>
+              <input type="number" id="wsPadding" min="0" value="24" />
+            </div>
             <div class="row">
               <label>Перетягування блоків</label
               ><label class="small"

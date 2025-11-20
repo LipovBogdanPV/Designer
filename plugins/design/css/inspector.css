@@ -39,6 +39,7 @@
 .st-app.insp-closed #right {
   display: none;
 }
+
 .right {
   border: 1px solid var(--border);
   background: var(--panel);
@@ -54,7 +55,7 @@
   overflow: auto; /* ← СКРОЛ ТУТ */
   padding: 12px;
   padding-bottom: calc(12px + var(--safe-bottom, 72px));
-  height: 100vh; /* щоб зайняти всю висоту правої колонки */
+  /*height: 100vh;  щоб зайняти всю висоту правої колонки */
 }
 .right .panel {
   display: flex;
@@ -141,7 +142,7 @@ details.grp .rows {
   padding: 6px 4px 8px;
 }
 .right {
-  position: relative;
+  position: fixed;
   height: 100%;
 }
 
@@ -200,3 +201,20 @@ details.grp .rows {
 .sidebar .sidebar-scroll::-webkit-scrollbar-thumb:active {
   background-color: rgba(255, 255, 255, 0.18);
 }
+.templates {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* === DESIGN PATCH: фіксований інспектор ========================= */
+
+/* Інспектор завжди притиснутий до краю вікна, а не їздить разом зі сторінкою */
+ .st-app.insp-right .insp-wrap,
+ .st-app.insp-left  .insp-wrap {
+  position: static;
+  top: var(--header-h, 56px);          /* відступ під верхню шапку адмінки */
+  bottom: 0;
+  z-index: 50;
+  height: auto;
+}
+

@@ -76,6 +76,10 @@ body {
   height: 100%;
 }
 body {
+  overflow-y: auto;
+}
+
+body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -136,7 +140,7 @@ a:hover {
 main {
   margin-left: var(--sidebar-w);
   padding-top: calc(var(--header-h) + 16px);
-  min-height: 100vh;
+  /*min-height: 100vh;*/
 }
 
 .container {

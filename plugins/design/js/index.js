@@ -64,7 +64,7 @@ console.log("[design] index.js завантажений");
       startW = isNaN(cur) ? 380 : cur;
 
       function onMove(ev) {
-        let w = startW + (ev.clientX - startX);
+        let w = startW - (ev.clientX - startX);
         if (w < INSP_MIN_W) w = INSP_MIN_W;
         if (w > INSP_MAX_W) w = INSP_MAX_W;
 
@@ -165,6 +165,8 @@ console.log("[design] index.js завантажений");
     if (window.STInspectorShadows) STInspectorShadows.init(coreApi, inspRoot);
     if (window.STInspectorScroll) STInspectorScroll.init(coreApi, inspRoot);
     if (window.STInspectorCopy) STInspectorCopy.init(coreApi, inspRoot);
+    if (window.STInspectorWorkspace) STInspectorWorkspace.init(coreApi, inspRoot);
+    if (window.STInspectorOverlay) STInspectorOverlay.init(coreApi, inspRoot);
 
     // 5) ресайз інспектора
     initInspectorResize(host);
