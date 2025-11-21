@@ -1,6 +1,6 @@
-<div class="st-app">
-  <div id="left"></div>
-  <div class="left">
+<div class="st-app" data-plugin="design"><!-- колишня st-app, але більш конкретно -->
+  <!-- Верхня панель конструктора -->
+   <div class="st-editor-top">
     <div class="toolbar">
       <button class="btn primary" id="add-root">＋ Нова секція</button>
       <button class="btn" id="add-child">Вставити блок усередину</button>
@@ -17,13 +17,21 @@
         ?
       </button>
     </div>
-    <div class="breadcrumbs" id="breadcrumbs"></div>
+   </div>
+   <div class="st-editor-top"></div>
+   <!-- Тіло редактора -->
+   <div class="st-editor-body">
+    <!-- Лівий (у тебе зараз це просто “полотно”) -->
     <div class="canvas-wrap" data-plugin="design_canvas">
       <div class="canvas" id="canvas">
         <!-- Динамічний вміст тут -->
       </div>
     </div>
-  </div>
-
-  <div id="right"></div>
+    <!-- Правий інспектор -->
+    <aside class="st-editor-inspector">
+      <!-- те, що зараз в inspector.html -->
+       <div id="left"></div> <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА ШОБ НЕ ДАВАЛО ПОМИЛКИ-->
+       <div id="right"></div>   <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА -->
+    </aside>
+   </div>
 </div>

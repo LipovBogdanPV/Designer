@@ -119,10 +119,10 @@ console.log("[design] index.js завантажений");
     let inspApi = null;
     if (window.InspectorWindow) {
       inspApi = await window.InspectorWindow.init({
-        rightSlotSel: "#right",
-        leftSlotSel: "#left",
-        appSel: ".st-app",
-        toolbarSel: ".toolbar",
+        rightSlotSel: '#right',
+        leftSlotSel: '#left',
+        appSel: '.st-app[data-plugin="design"]',
+        toolbarSel: '.st-app[data-plugin="design"] .st-editor-top .toolbar',
         htmlUrl: "plugins/design/assets/inspector.html",
       });
       console.log("[design] InspectorWindow init OK", inspApi);

@@ -248,50 +248,6 @@
     }
     return false;
   }
-  /*  просте переміщення блоку moveBlock
-  function moveBlock(dragId, targetId, mode) {
-    if (!dragId || !targetId || dragId === targetId) return;
-    const dragPos = findParentAndIndex(dragId);
-    const targetPos = findParentAndIndex(targetId);
-    if (!dragPos || !targetPos) return;
-
-    const dragArr = dragPos.arr;
-    const targetArr = targetPos.arr;
-
-    const [node] = dragArr.splice(dragPos.index, 1); // вирізаємо
-    if (!node) return;
-
-    // не даємо перетягнути в свого ж нащадка
-    if (mode === "inside" && isAncestor(dragId, targetId)) {
-      // повертаємо назад
-      dragArr.splice(dragPos.index, 0, node);
-      return;
-    }
-
-    if (mode === "inside") {
-      // знаходимо ВЛАСНЕ таргет-блок
-      const targetBlock = targetPos.parent;
-      if (!targetBlock) {
-        // повертаємо назад
-        dragArr.splice(dragPos.index, 0, node);
-        return;
-      }
-      if (!Array.isArray(targetBlock.children)) {
-        targetBlock.children = [];
-      }
-
-      targetBlock.children.push(node);
-    } else {
-      let insertIndex = targetPos.index;
-
-      // якщо рухаємо в межах того самого масиву – зсуваємо індекс
-      if (dragArr === targetArr && dragPos.index < targetPos.index) {
-        insertIndex -= 1;
-      }
-      if (mode === "after") insertIndex += 1;
-      targetArr.splice(insertIndex, 0, node);
-    }
-  }*/
   // просте переміщення блоку всередину іншого moveBlock
   function moveBlockInto(sourceId, targetId) {
     if (!sourceId || !targetId || sourceId === targetId) return;
@@ -374,7 +330,7 @@
     clearDropHints();
 
     const el = document.elementFromPoint(x, y);
-    const host = el && el.closest ? el.closest(".st-block") : null;
+    const host = el && el.closest ? el.closest('[data-plugin="design"] .st-block') : null;
     const targetId = host && host.dataset ? host.dataset.id : null;
 
     // не можна наводитись на самого себе

@@ -1,46 +1,21 @@
 /* inspector.css — ширші числові поля та читабельні цифри */
-/* коли інспектор справа */
-.st-app.insp-right {
-  display: grid;
-  grid-template-columns: 1fr var(--insp-w, 400px);
-  transition: grid-template-columns 0.2s ease;
+/* інспектор справа (за замовчуванням) */
+[data-plugin="design"] .st-app.insp-right .st-editor-body {
+  flex-direction: row;          /* полотно зліва, інспектор справа */
 }
 
-/* коли інспектор зліва */
-.st-app.insp-left {
-  display: grid;
-  grid-template-columns: var(--insp-w, 400px) 1fr;
-  transition: grid-template-columns 0.2s ease;
+/* інспектор зліва */
+[data-plugin="design"] .st-app.insp-left .st-editor-body {
+  flex-direction: row-reverse;  /* міняємо місцями */
 }
 
-/* повністю закрито — просто блочний потік, жодних колонок */
-.st-app.insp-closed {
-  display: block;
-}
-
-/* слоти за замовчуванням приховані, щоб "порожня колонка" не займала місце */
-#left {
-  display: none;
-  min-width: 0; /* важливо для гріда */
-  min-height: 0;
-  min-height: auto;
-}
-
-/* показуємо РІВНО той слот, який активний */
-.st-app.insp-left #left {
-  display: block;
-}
-.st-app.insp-right #right {
-  display: block;
-}
-
-/* коли закрито — обидва приховані */
-.st-app.insp-closed #left,
-.st-app.insp-closed #right {
+/* коли закрито – ховаємо колонку інспектора повністю */
+[data-plugin="design"] .st-app.insp-closed .st-editor-inspector {
   display: none;
 }
 
-.right {
+
+[data-plugin="design"] .right {
   border: 1px solid var(--border);
   background: var(--panel);
   min-height: 0;
@@ -49,15 +24,24 @@
   border-radius: 15px;
 }
 /* ТІЛО ІНСПЕКТОРА — ОСЬ ТУТ ЄДИНИЙ СКРОЛ */
-.insp-body {
+[data-plugin="design"] .insp-body {
   flex: 1 1 auto; /* займає увесь доступний простір */
   min-height: 0; /* дозволяє overflow працювати */
   overflow: auto; /* ← СКРОЛ ТУТ */
   padding: 12px;
   padding-bottom: calc(12px + var(--safe-bottom, 72px));
-  /*height: 100vh;  щоб зайняти всю висоту правої колонки */
 }
-.right .panel {
+
+[data-plugin="design"] .insp-wrap {
+  /* більше НЕ fixed */
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-plugin="design"] .right .panel {
   display: flex;
   flex-direction: column;
   height: 100%; /* займай увесь слот */
@@ -65,6 +49,7 @@
   border-left: 1px solid var(--border);
   background: var(--panel);
 }
+/*Оновленя стилі
 /* ==== Групи інспектора (details.grp) ==== */
 
 /* сама “плашка” */
@@ -141,12 +126,8 @@ details.grp .group {
 details.grp .rows {
   padding: 6px 4px 8px;
 }
-.right {
-  position: fixed;
-  height: 100%;
-}
 
-.insp-resizer {
+[data-plugin="design"] .insp-resizer {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -157,64 +138,113 @@ details.grp .rows {
   z-index: 10;
 }
 
-.insp-resizer:hover {
+[data-plugin="design"] .insp-resizer:hover {
   background: rgba(148, 163, 184, 0.15);
 }
 
-.insp-resizer:active {
+[data-plugin="design"] .insp-resizer:active {
   background: rgba(148, 163, 184, 0.25);
 }
 /* СТИЛІ ДЛЯ СКРОЛБАРА ІНСПЕКТОРА */
-.insp-body,
-.sidebar .sidebar-scroll {
+[data-plugin="design"] .insp-body,
+[data-plugin="design"].sidebar .sidebar-scroll {
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
 /* WebKit browsers */
-.insp-body::-webkit-scrollbar,
-.sidebar .sidebar-scroll::-webkit-scrollbar {
+[data-plugin="design"] .insp-body::-webkit-scrollbar,
+[data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.insp-body::-webkit-scrollbar-track,
-.sidebar .sidebar-scroll::-webkit-scrollbar-track {
+[data-plugin="design"] .insp-body::-webkit-scrollbar-track,
+[data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.insp-body::-webkit-scrollbar-thumb,
-.sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
+[data-plugin="design"] .insp-body::-webkit-scrollbar-thumb,
+[data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.06);
   border-radius: 999px;
   border: 2px solid transparent; /* дає відступ і м'який край */
   background-clip: padding-box;
 }
 
-.insp-body:hover::-webkit-scrollbar-thumb,
-.sidebar .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+[data-plugin="design"] .insp-body:hover::-webkit-scrollbar-thumb,
+[data-plugin="design"] .sidebar .sidebar-scroll:hover::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.12);
 }
 
-.insp-body::-webkit-scrollbar-thumb:active,
-.sidebar .sidebar-scroll::-webkit-scrollbar-thumb:active {
+[data-plugin="design"] .insp-body::-webkit-scrollbar-thumb:active,
+[data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-thumb:active {
   background-color: rgba(255, 255, 255, 0.18);
 }
-.templates {
+[data-plugin="design"] .templates {
   display: flex;
   gap: 0.5rem;
 }
 
-/* === DESIGN PATCH: фіксований інспектор ========================= */
-
-/* Інспектор завжди притиснутий до краю вікна, а не їздить разом зі сторінкою */
- .st-app.insp-right .insp-wrap,
- .st-app.insp-left  .insp-wrap {
-  position: static;
-  top: var(--header-h, 56px);          /* відступ під верхню шапку адмінки */
-  bottom: 0;
-  z-index: 50;
-  height: auto;
+[data-plugin="design"] .dock-panel .dock-head {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(11, 22, 47, 0.8);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+[data-plugin="design"] .dock-head .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #0b162f;
+    font-size: 12px;
+    color: var(--text);
+}
+[data-plugin="design"] .dock-head .hbtn {
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+}
+[data-plugin="design"] .row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    margin: 0.5rem 0;
+}
+[data-plugin="design"] .row input[type="text"], [data-plugin="design"] .row input[type="number"], [data-plugin="design"] .row input[type="range"],[data-plugin="design"] .row select {
+    width: 100%;
+    background: #0b162f;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.2rem 0.2rem;
+}
+[data-plugin="design"] .four {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+[data-plugin="design"] .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
 }
 

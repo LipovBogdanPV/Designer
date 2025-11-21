@@ -8,97 +8,50 @@
   --text: #e5e7eb;
   --accent: #60a5fa;
   --chip: #111827;
-  --header-h: 56px; /* висота вашої фіксованої шапки */
-  --insp-w: 380px; /* ширина інспектора */
-}
-/* за замовчуванням — НІЯКОГО grid */
-.st-app {
-  display: grid;
-  min-height: 100%;
-  grid-template-columns: 1fr var(--insp-w, 400px);
-  transition: grid-template-columns 0.2s ease;
+  --header-h: 56px;
+  --insp-w: 380px;
 }
 
-.toolbar {
-  display: flex;
-  width: 100%;  
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(15, 24, 48, 0.55);
-  backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  padding: 0.5rem 0.75rem;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.btn:hover {
-  border-color: #33518a;
-}
-.btn.primary {
-  background: linear-gradient(180deg, #2563eb, #1d4ed8);
-  border-color: #1d4ed8;
-}
-.btn.ghost {
-  background: transparent;
-}
-.btn.icon {
-  padding: 0.4rem;
-  width: 34px;
-  height: 34px;
-  justify-content: center;
-}
-.breadcrumbs {
-  font-size: 12px;
-  color: var(--muted);
-  padding: 0 1rem 0.5rem;
-}
-.canvas-wrap {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  background: var(--workspace);
-}
-.canvas-wrap[data-plugin="design_canvas"] {
-  position: relative;
-  /* канва не роздуває .st-app */
-  overflow: hidden;
-  /* на всякий випадок */
-  max-width: 100%;
-}
-.canvas {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  min-height: calc(var(--vh) * 84);
-  padding: 24px;
-  padding-bottom: calc(24px + var(--safe-bottom));
+/* кореневий контейнер конструктора */
+[data-plugin="design"] .st-app {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  /* ВСЕ переповнення тільки всередину канви */
-  overflow: hidden;
+  height: 100%;
+}
 
-  /* ключ: діти не впливають на зовнішній layout */
-  contain: layout paint; /* ізолює розкладку та малювання */
-  isolation: isolate; /* окремий stacking context для z-index, blend-mode тощо */
+/* верхня панель */
+[data-plugin="design"] .st-editor-top {
+  flex: 0 0 auto;
+}
 
-  box-sizing: border-box;
+/* тіло: полотно + інспектор */
+[data-plugin="design"] .st-editor-body {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;    /* обов'язково для коректного скролу всередині */
+}
+
+/* обгортка полотна */
+[data-plugin="design"] .st-editor-body .canvas-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;   /* скрол для полотна */
+}
+
+/* інспектор (колонка справа/зліва) */
+[data-plugin="design"] .st-editor-inspector {
+  flex: 0 0 var(--insp-w, 380px);
+  max-width: 500px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* власний внутрішній скрол у .insp-body */
+  background: var(--panel);
+  border-left: 1px solid var(--border);
 }
 
 /* ===== Блоки на канві ===== */
-.st-block {
+[data-plugin="design"] .st-block {
   position: relative;
   display: flex;
   max-width: 100%;
@@ -111,20 +64,20 @@
   transition: box-shadow 0.2s, border-color 0.2s;
   overflow: hidden;
 }
-.st-block[data-dir="row"] {
+[data-plugin="design"] .st-block[data-dir="row"] {
   flex-direction: row;
 }
-.st-block[data-dir="column"] {
+[data-plugin="design"] .st-block[data-dir="column"] {
   flex-direction: column;
 }
-.st-block:hover {
+[data-plugin="design"] .st-block:hover {
   border-color: #60a5fa;
 }
-.st-block.selected {
+[data-plugin="design"] .st-block.selected {
   outline: 2px solid var(--accent);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) inset;
 }
-.st-block .bg-layer {
+[data-plugin="design"] .st-block .bg-layer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -133,7 +86,7 @@
   background-position: center;
   background-repeat: no-repeat;
 }
-.st-block .overlay {
+[data-plugin="design"] .st-block .overlay {
   position: absolute;
   left: 0;
   right: 0;
@@ -141,40 +94,27 @@
   border-radius: inherit;
   z-index: 1;
 }
-.st-block .overlay.top {
+[data-plugin="design"] .st-block .overlay.top {
   top: 0;
 }
-.st-block .overlay.bottom {
+[data-plugin="design"] .st-block .overlay.bottom {
   bottom: 0;
 }
-.st-block > .st-block {
+[data-plugin="design"] .st-block > .st-block {
   position: relative;
   z-index: 2;
 }
-/* лінія перед блоком */
-.st-block.drop-before::before,
-.st-block.drop-after::after {
-  content: "";
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  height: 5px;
-  background: #60a5fa;
-  border-radius: 999px;
-  box-shadow: 0 0 15px rgb(96, 165, 250);
-  z-index: 10;
-}
-
-.st-block.drop-before::before {
-  top: -5px;
-}
-.st-block.drop-after::after {
-  bottom: -5px;
-}
-/* вставка "всередину" – підсвічуємо весь блок */
-.st-block.drop-inside {
-  outline: 5px dashed #60a5fa;
-  outline-offset: 4px;
+[data-plugin="design"] .toolbar{
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15, 24, 48, 0.55);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
 }
 .block-toolbar .drag-handle {
   width: 24px;
@@ -202,415 +142,66 @@
   gap: 6px;
   z-index: 7;
 }
-.design .chip {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  background: var(--chip);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.resizer {
-  position: absolute;
-  background: rgba(96, 165, 250, 0.5);
-  opacity: 0;
-  transition: opacity 0.15s;
-  z-index: 6;
-}
-.st-block:hover .resizer {
-  opacity: 0.2;
-}
-.st-block.selected .resizer {
-  opacity: 0.6;
-}
-.resizer.right {
-  top: 0;
-  right: -3px;
-  width: 6px;
-  height: 100%;
-  cursor: ew-resize;
-  border-radius: 3px;
-}
-.resizer.bottom {
-  left: 0;
-  bottom: -3px;
-  height: 6px;
-  width: 100%;
-  cursor: ns-resize;
-  border-radius: 3px;
-}
-.resizer.corner {
-  right: -6px;
-  bottom: -6px;
-  width: 12px;
-  height: 12px;
-  cursor: nwse-resize;
-  border-radius: 4px;
-}
-.group {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-.group > header {
-  padding: 0.6rem 0.8rem;
-  background: #0b162f;
-  border-bottom: 1px solid var(--border);
-  font-weight: 600;
-  display: flex;
+/* ===== Кінець блоку на канві ===== */
+
+/* ===== Інспектор справа ===== */
+[data-plugin="design"] .btn {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-}
-.group .rows {
-  padding: 0.8rem;
-}
-.row {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 0.75rem;
-  align-items: center;
-  margin: 0.5rem 0;
-}
-.row .controls {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.row input[type="text"],
-.row input[type="number"],
-.row input[type="range"],
-.row select {
-  width: 100%;
-  background: #0b162f;
+  border: 1px solid var(--border);
+  background: var(--surface);
   color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.2rem 0.2rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
 }
-.row input[type="color"] {
-  width: 44px;
-  height: 28px;
-  border: none;
+[data-plugin="design"] .btn:hover {
+  border-color: #33518a;
+}
+[data-plugin="design"] .btn.primary {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+  border-color: #1d4ed8;
+}
+[data-plugin="design"] .btn.ghost {
   background: transparent;
 }
-.two {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+[data-plugin="design"] .btn.icon {
+  padding: 0.4rem;
+  width: 34px;
+  height: 34px;
+  justify-content: center;
 }
-.three {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-}
-.four {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-}
-.templates {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-.tag {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem 0.5rem;
-  background: #0b162f;
-  cursor: pointer;
-}
-.small {
-  font-size: 12px;
-  color: var(--muted);
-}
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 0.6rem 0;
-}
-.kbd {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 11px;
-  border: 1px solid var(--border);
-  padding: 0.1rem 0.35rem;
-  border-radius: 6px;
-  background: #0b162f;
-  color: #cbd5e1;
-}
-/* ===== Floating (draggable) inspector ===== */
-.floating-panel {
-  position: fixed;
-  left: 24px;
-  top: 24px;
-  width: 440px;
-  height: 72vh; /* стартова висота */
-  min-height: 25px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 999999; /* поверх усього */
-}
+/* Кінець інспектора справа ===== */
+/* початок блоку на канві ===== */
 
-.floating-panel .drag-handle {
-  height: 32px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px;
-  cursor: move;
-  user-select: none;
-  background: #0b162f;
-  border-bottom: 1px solid var(--border);
-}
-.floating-panel .drag-handle .title {
-  font-size: 12px;
-  color: var(--muted);
-}
-.floating-panel .drag-handle .spacer {
-  flex: 1 1 auto;
-}
-.floating-panel .drag-handle .btn {
-  height: 24px;
-  padding: 0 8px;
-  font-size: 12px;
-}
-
-.floating-panel .panel {
-  flex: 1 1 auto;
-  overflow: auto;
-  padding: 12px;
-  padding-bottom: calc(12px + var(--safe-bottom));
-}
-
-/* Мінімізований стан — тонка смужка (перетягувана) */
-.floating-panel.minimized {
-  width: 360px;
-  height: 25px;
-  border-radius: 10px;
-}
-.floating-panel.minimized .panel {
-  display: none;
-}
-.floating-panel.minimized .drag-handle {
-  height: 25px;
-  border-bottom: none;
-}
-.grp {
-  margin: 10px 0 14px;
-}
-
-/* ===== Docked section inspector ===== */
-.dock-panel {
-  background: var(--panel);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  z-index: 20;
-}
-
-.dock-panel.left {
-  left: 0;
-  right: auto;
-  border-left: none;
-  border-right: 1px solid var(--border);
-  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
-}
-
-/* заголовок як у скріні */
-.dock-panel .dock-head {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(11, 22, 47, 0.8);
-  backdrop-filter: blur(6px);
-  position: sticky; /* завжди зверху, коли контент скролиться */
-  top: 0;
-  z-index: 1;
-}
-
-/* пігулка назви */
-.dock-head .badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: #0b162f;
-  font-size: 12px;
-  color: var(--text);
-}
-
-/* маленькі кнопки в хедері */
-.dock-head .hbtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-}
-.dock-head .hbtn:hover {
-  border-color: #33518a;
-}
-
-/* тіло з відступом і власним скролом */
-.dock-panel .panel {
-  flex: 1 1 auto;
-  overflow: auto;
-  padding: 12px;
-  padding-bottom: calc(12px + var(--safe-bottom, 72px));
-}
-
-/* дрібна адаптація */
-@media (max-width: 1400px) {
-  :root {
-    --insp-w: 360px;
-  }
-}
-/* заголовок усередині інспектора (і в колонці, і у флотінгу) */
-.dock-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: #0b162f;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.dock-head .badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: #0b162f;
-  font-size: 12px;
-  color: var(--text);
-}
-.dock-head .spacer {
-  flex: 1 1 auto;
-}
-.dock-head .hbtn {
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-}
-.dock-head .hbtn:hover {
-  border-color: #33518a;
-}
-
-/* флотінг панель */
-#st-dock-inspector {
-  z-index: 1;
-  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel);
-  overflow: hidden;
-}
-#st-dock-inspector.left {
-  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
-}
-
-/* ручка для ресайзу (праворуч або ліворуч, залежно від сторони) */
-#st-dock-inspector .resize-grip {
+/* лінія перед блоком */
+[data-plugin="design"] .st-block.drop-before::before,
+[data-plugin="design"] .st-block.drop-after::after {
+  content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 8px;
-  opacity: 0.4;
-  cursor: ew-resize;
-  right: 0; /* за замовчуванням панель праворуч, тягнемо правою гранню */
-}
-#st-dock-inspector.left .resize-grip {
-  right: auto;
-  left: 0;
-}
-.st-block {
-  border: 1px dashed rgba(96, 165, 250, 0.35);
-  padding: 16px;
-  border-radius: 12px;
-  margin: 8px 0;
-  color: #94a3b8;
-}
-.st-block.selected {
-  outline: 2px solid #60a5fa;
-}
-/* ==== FULLSCREEN PREVIEW ==== */
-
-/* корінь плагіну у фулскріні */
-.st-fullscreen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: #020617;
-  padding: 16px 24px;
-  box-sizing: border-box;
+  left: 10px;
+  right: 10px;
+  height: 5px;
+  background: #60a5fa;
+  border-radius: 999px;
+  box-shadow: 0 0 15px rgb(96, 165, 250);
+  z-index: 10;
 }
 
-/* розтягуємо .st-app на всю висоту контейнера */
-.st-fullscreen .st-app {
-  height: 100%;
+[data-plugin="design"] .st-block.drop-before::before {
+  top: -5px;
 }
-
-/* ховаємо інспектор та лівий слот у фулскріні */
-.st-fullscreen #right,
-.st-fullscreen #left {
-  display: none !important;
+[data-plugin="design"] .st-block.drop-after::after {
+  bottom: -5px;
 }
-
-/* прибираємо сітку колонок st-app, щоб центр був ширший */
-.st-fullscreen .st-app {
-  display: block;
+/* вставка "всередину" – підсвічуємо весь блок */
+[data-plugin="design"] .st-block.drop-inside {
+  outline: 5px dashed #60a5fa;
+  outline-offset: 4px;
 }
-
-/* тулбар залишаємо зверху, решта — внизу */
-.st-fullscreen .canvas-wrap {
-  height: calc(100vh - 80px); /* можна підкрутити */
-}
-
-/* трохи підчистимо тулбар у фулскріні */
-.st-fullscreen .toolbar {
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 12px;
-  margin-bottom: 12px;
-}
-
-/* підсвічуємо кнопку, коли режим активний */
-.btn.icon.active {
-  outline: 1px solid rgba(96, 165, 250, 0.8);
-}
-
+/*кінець блоку на канві ===== */
+/* Ресайз блоку на канві */
 .resize-handle {
   position: absolute;
   z-index: 20;
@@ -619,12 +210,9 @@
   opacity: 0;
   transition: opacity 0.2s;
 }
-
 .st-block:hover .resize-handle {
   opacity: 1;
-}
-
-/* правий край */
+}/* правий край */
 .resize-right {
   top: 0;
   right: -4px;
@@ -641,7 +229,6 @@
   height: 6px;
   cursor: ns-resize;
 }
-
 /* кут */
 .resize-corner {
   right: -4px;
@@ -650,7 +237,9 @@
   height: 12px;
   cursor: nwse-resize;
 }
+/* Кінець ресайзу блоку на канві */
 
+/*Модальне вікно інспектора*/
 /* вставка "перед блоком" – підсвічуємо лінією зверху модалка*/
 /* кнопка з іконкою ? */
 .btn.icon {
@@ -723,30 +312,15 @@
   justify-content: flex-end;
   gap: 8px;
 }
-/* ===== СКРОЛБАРИ ===== */
-.st-block {
-  /* щоб змінні працювали завжди */
-  --sb-thick: 8px;
-  --sb-track: transparent;
-  --sb-thumb: rgb(255, 255, 255);
-  --sb-radius: 8px;
+/* Кінець модалки інспектора */
+.st-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #020617;
+    padding: 16px 24px;
+    box-sizing: border-box;
 }
-
-/* WebKit */
-.st-block::-webkit-scrollbar {
-  width: var(--sb-thick);
-  height: var(--sb-thick);
-}
-.st-block::-webkit-scrollbar-track {
-  background: var(--sb-track);
-}
-.st-block::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb);
-  border-radius: var(--sb-radius);
-}
-
-/* клас для прихованого скролбару */
-.st-block.sb-hide-scrollbar::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+.btn.ghost {
+  background: transparent;
 }
