@@ -9,45 +9,58 @@
   --accent: #60a5fa;
   --chip: #111827;
   --header-h: 56px;
-  --insp-w: 380px;
+  --insp-w: 300px;
+  --design-toolbar-h: 56px;  /* висота локального тулбара конструктора */
 }
 
 /* кореневий контейнер конструктора */
 [data-plugin="design"] .st-app {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: calc(100vh - var(--header-h));
+  /*min-height: calc(100vh - var(--header-h) - var(--design-toolbar-h));*/
 }
 
-/* верхня панель */
-[data-plugin="design"] .st-editor-top {
-  flex: 0 0 auto;
+/* Верхня панель конструктора — липка під глобальною шапкою */
+[data-plugin="design"] .st-app .st-editor-top {
+  /*flex: 0 0 auto;*/
+  position: sticky;
+  top: var(--header-h);
+  z-index: 40;
+  background: var(--workspace);
 }
 
 /* тіло: полотно + інспектор */
-[data-plugin="design"] .st-editor-body {
+[data-plugin="design"] .st-app .st-editor-body {
   flex: 1 1 auto;
   display: flex;
   min-height: 0;    /* обов'язково для коректного скролу всередині */
+  gap: 16px;
 }
 
 /* обгортка полотна */
 [data-plugin="design"] .st-editor-body .canvas-wrap {
   flex: 1 1 auto;
   min-width: 0;
+  border-radius: 16px;
   overflow: auto;   /* скрол для полотна */
 }
 
 /* інспектор (колонка справа/зліва) */
-[data-plugin="design"] .st-editor-inspector {
+[data-plugin="design"].st-app .st-editor-inspector {
   flex: 0 0 var(--insp-w, 380px);
   max-width: 500px;
+  min-width: 320px;
+  display: flex;
+  /*
+  flex: 0 0 var(--insp-w, 380px);
+  max-width: 400px;
   min-width: 280px;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* власний внутрішній скрол у .insp-body */
+  overflow: hidden; /* власний внутрішній скрол у .insp-body 
   background: var(--panel);
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--border);*/
 }
 
 /* ===== Блоки на канві ===== */
@@ -116,7 +129,7 @@
   position: sticky;
   top: 0;
 }
-.block-toolbar .drag-handle {
+[data-plugin="design"] .block-toolbar .drag-handle {
   width: 24px;
   height: 24px;
   border-radius: 6px;
@@ -129,12 +142,12 @@
   font-size: 12px;
   color: #9ca3af;
 }
-.block-toolbar .drag-handle:active {
+[data-plugin="design"] .block-toolbar .drag-handle:active {
   cursor: grabbing;
 }
 
 /* ===== Блоки на канві ===== */
-.block-toolbar {
+[data-plugin="design"] .block-toolbar {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -202,7 +215,7 @@
 }
 /*кінець блоку на канві ===== */
 /* Ресайз блоку на канві */
-.resize-handle {
+[data-plugin="design"] .resize-handle {
   position: absolute;
   z-index: 20;
   background: rgba(255, 255, 255, 0.35);
@@ -210,10 +223,10 @@
   opacity: 0;
   transition: opacity 0.2s;
 }
-.st-block:hover .resize-handle {
+[data-plugin="design"] .st-block:hover .resize-handle {
   opacity: 1;
 }/* правий край */
-.resize-right {
+[data-plugin="design"] .resize-right {
   top: 0;
   right: -4px;
   width: 6px;
@@ -222,7 +235,7 @@
 }
 
 /* нижній край */
-.resize-bottom {
+[data-plugin="design"] .resize-bottom {
   bottom: -4px;
   left: 0;
   width: 100%;
@@ -230,7 +243,7 @@
   cursor: ns-resize;
 }
 /* кут */
-.resize-corner {
+[data-plugin="design"] .resize-corner {
   right: -4px;
   bottom: -4px;
   width: 12px;
@@ -242,7 +255,7 @@
 /*Модальне вікно інспектора*/
 /* вставка "перед блоком" – підсвічуємо лінією зверху модалка*/
 /* кнопка з іконкою ? */
-.btn.icon {
+[data-plugin="design"] .btn.icon {
   padding: 0.4rem;
   width: 32px;
   height: 32px;
@@ -255,7 +268,7 @@
 }
 
 /* бекдроп модалки */
-.st-modal-backdrop {
+[data-plugin="design"] .st-modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.75);
@@ -266,12 +279,12 @@
 }
 
 /* коли відкрита */
-.st-modal-backdrop.open {
+[data-plugin="design"] .st-modal-backdrop.open {
   display: flex;
 }
 
 /* вікно */
-.st-modal {
+[data-plugin="design"] .st-modal {
   background: var(--panel, #0f172a);
   border-radius: 16px;
   max-width: 520px;
@@ -284,36 +297,36 @@
 }
 
 /* шапка модалки */
-.st-modal-head {
+[data-plugin="design"] .st-modal-head {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.st-modal-head h2 {
+[data-plugin="design"] .st-modal-head h2 {
   font-size: 16px;
   margin: 0;
 }
 
-.st-modal-body {
+[data-plugin="design"] .st-modal-body {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.st-modal-body .kbd {
+[data-plugin="design"] .st-modal-body .kbd {
   margin-left: 4px;
 }
 
-.st-modal-footer {
+[data-plugin="design"] .st-modal-footer {
   margin-top: 16px;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
 /* Кінець модалки інспектора */
-.st-fullscreen {
+[data-plugin="design"] .st-fullscreen {
     position: fixed;
     inset: 0;
     z-index: 9999;
@@ -321,6 +334,6 @@
     padding: 16px 24px;
     box-sizing: border-box;
 }
-.btn.ghost {
+[data-plugin="design"] .btn.ghost {
   background: transparent;
 }
