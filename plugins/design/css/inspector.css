@@ -141,7 +141,7 @@ details.grp .rows {
 
 /* ручка з боку правого краю інспектора */
 [data-plugin="design"] .insp-resizer.right {
-  right: -3px;
+  right: 0;
 }
 
 .insp-resizer:hover {
