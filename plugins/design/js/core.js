@@ -34,7 +34,7 @@
         align: "stretch",
         gap: 16,
         padding: { t: 24, r: 24, b: 24, l: 24 },
-        outerMargin: { t: 0, r: 0, b: 0, l: 0 },
+        outerMargin: { t: 5, r: 5, b: 5, l: 5 },
         maxWidth: "",
         layout: {
           basis: { mode: "auto", value: 0, unit: "px" }, // auto|px|%|fill
@@ -176,7 +176,9 @@
   let dnd = {
     draggingId: null,
     hoverId: null,
-    ghost: null,
+    hoverMode: null,  // 'before' | 'after' | 'inside'
+    hoverEl: null
+    //ghost: null,
   };
 
   function clearDropHints() {
@@ -227,6 +229,7 @@
   function getSelected() {
     return selectedId ? findById(rootBlocks, selectedId) : null;
   }
+  /*
   function findParentAndIndex(id, list = rootBlocks) {
     for (let i = 0; i < list.length; i++) {
       const b = list[i];
@@ -247,8 +250,75 @@
       stack.push(...n.children);
     }
     return false;
+  }*/
+  // розширене переміщення блоку moveBlock
+  // Переміщення з before/after/inside
+function findParentAndIndex(id, list = rootBlocks, parent = null) {
+  for (let i = 0; i < list.length; i++) {
+    const b = list[i];
+    if (b.id === id) {
+      return { parent, arr: list, index: i };
+    }
+    if (b.children && b.children.length) {
+      const res = findParentAndIndex(id, b.children, b);
+      if (res) return res;
+    }
   }
+  return null;
+}
+
+function isAncestor(ancestorId, nodeId) {
+  const pos = findParentAndIndex(ancestorId);
+  if (!pos) return false;
+
+  const anc = pos.arr[pos.index];
+  const stack = [...(anc.children || [])];
+
+  while (stack.length) {
+    const n = stack.shift();
+    if (n.id === nodeId) return true;
+    if (n.children && n.children.length) {
+      stack.push(...n.children);
+    }
+  }
+  return false;
+}
+function moveBlockRelative(sourceId, targetId, mode) {
+  if (!sourceId || !targetId || sourceId === targetId) return;
+
+  const srcPos = findParentAndIndex(sourceId);
+  const tgtPos = findParentAndIndex(targetId);
+  if (!srcPos || !tgtPos) return;
+
+  // не дозволяємо кидати батька у свого нащадка
+  if (mode === "inside" && isAncestor(sourceId, targetId)) return;
+
+  const srcArr = srcPos.arr;
+  const tgtArr = tgtPos.arr;
+
+  const [node] = srcArr.splice(srcPos.index, 1);
+
+  if (mode === "inside") {
+    const tgtNode = tgtArr[tgtPos.index];
+    tgtNode.children = tgtNode.children || [];
+    tgtNode.children.push(node);
+    return;
+  }
+
+  // вставка перед / після target у той самий масив
+  let insertIndex = tgtPos.index;
+
+  // якщо тягнемо вниз у той самий масив – індекс зміщується
+  if (srcArr === tgtArr && srcPos.index < tgtPos.index) {
+    insertIndex -= 1;
+  }
+  if (mode === "after") insertIndex += 1;
+
+  tgtArr.splice(insertIndex, 0, node);
+}
+
   // просте переміщення блоку всередину іншого moveBlock
+  /*
   function moveBlockInto(sourceId, targetId) {
     if (!sourceId || !targetId || sourceId === targetId) return;
 
@@ -269,6 +339,10 @@
     targetNode.children = targetNode.children || [];
     targetNode.children.push(srcNode);
   }
+    */
+   // запуск перетягування (на іконці "⠿" чи на всьому блоці – як у тебе)
+
+
 
   function attachDragHandle(handleEl, blockId) {
     if (!handleEl) return;
@@ -330,16 +404,36 @@
     clearDropHints();
 
     const el = document.elementFromPoint(x, y);
-    const host = el && el.closest ? el.closest('[data-plugin="design"] .st-block') : null;
+    const host =
+      el && el.closest ? el.closest('[data-plugin="design"] .st-block') : null;
     const targetId = host && host.dataset ? host.dataset.id : null;
 
     // не можна наводитись на самого себе
     if (targetId && targetId !== dnd.draggingId) {
       dnd.hoverId = targetId;
-      host.classList.add("drop-inside"); // просто підсвічуємо блок, куди впаде
+
+      const rect = host.getBoundingClientRect();
+      const relY = (y - rect.top) / rect.height;
+
+      let mode;
+      if (relY < 0.25) mode = "before";
+      else if (relY > 0.75) mode = "after";
+      else mode = "inside";
+
+      dnd.hoverMode = mode;
+
+      host.classList.add(
+        mode === "before"
+          ? "drop-before"
+          : mode === "after"
+          ? "drop-after"
+          : "drop-inside"
+      );
     } else {
       dnd.hoverId = null;
+      dnd.hoverMode = null;
     }
+
   }
 
   function onDragEnd() {
@@ -357,14 +451,16 @@
 
     const fromId = dnd.draggingId;
     const toId = dnd.hoverId;
+    const mode = dnd.hoverMode || "inside";
 
     if (fromId && toId && fromId !== toId) {
-      moveBlockInto(fromId, toId);
+      moveBlockRelative(fromId, toId, mode);
       render();
       emitSelection();
       emitChange();
     }
 
+    dnd.hoverMode = null;
     dnd.draggingId = null;
     dnd.hoverId = null;
   }

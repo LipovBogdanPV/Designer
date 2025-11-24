@@ -51,8 +51,9 @@
   flex: 0 0 var(--insp-w, 380px);
   max-width: 500px;
   min-width: 320px;
-  display: flex;
   /*
+  display: flex;
+  
   flex: 0 0 var(--insp-w, 380px);
   max-width: 400px;
   min-width: 280px;
@@ -157,7 +158,7 @@
 }
 /* ===== Кінець блоку на канві ===== */
 
-/* ===== Інспектор справа ===== */
+/* Кнопки */
 [data-plugin="design"] .btn {
   display: inline-flex;
   align-items: center;
@@ -185,9 +186,11 @@
   height: 34px;
   justify-content: center;
 }
-/* Кінець інспектора справа ===== */
+[data-plugin="design"] .btn.ghost {
+  background: transparent;
+}
+/*Кінець кнопок */
 /* початок блоку на канві ===== */
-
 /* лінія перед блоком */
 [data-plugin="design"] .st-block.drop-before::before,
 [data-plugin="design"] .st-block.drop-after::after {
@@ -195,10 +198,10 @@
   position: absolute;
   left: 10px;
   right: 10px;
-  height: 5px;
+  height: 10px;
   background: #60a5fa;
   border-radius: 999px;
-  box-shadow: 0 0 15px rgb(96, 165, 250);
+  box-shadow: 0px 0px 25px rgb(96, 165, 250);
   z-index: 10;
 }
 
@@ -218,7 +221,7 @@
 [data-plugin="design"] .resize-handle {
   position: absolute;
   z-index: 20;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(96, 165, 250, 0.8);
   border-radius: 4px;
   opacity: 0;
   transition: opacity 0.2s;
@@ -326,6 +329,7 @@
   gap: 8px;
 }
 /* Кінець модалки інспектора */
+/* Повноекранний режим редактора */
 [data-plugin="design"] .st-fullscreen {
     position: fixed;
     inset: 0;
@@ -333,7 +337,5 @@
     background: #020617;
     padding: 16px 24px;
     box-sizing: border-box;
-}
-[data-plugin="design"] .btn.ghost {
-  background: transparent;
+    overflow: auto;
 }
