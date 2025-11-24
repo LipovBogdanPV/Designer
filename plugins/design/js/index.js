@@ -33,62 +33,60 @@ console.log("[design] index.js завантажений");
   }
 
   // ===== Ініціалізація ресайзу інспектора
-  function initInspectorResize(host) {
-    // host – це .st-app, який ти передаєш у STDesignCore.mount(host)
-    const resizer = host.querySelector(".insp-resizer");
-    if (!resizer) {
-      console.warn("[design] insp-resizer не знайдено");
-      return;
-    }
+ // ===== Ініціалізація ресайзу інспектора
+function initInspectorResize(host) {
+    const left = host.querySelector(".insp-resizer.left");
+    const right = host.querySelector(".insp-resizer.right");
 
+    if (!left && !right) {
+        console.warn("[design] insp-resizer elements not found");
+        return;
+    }
     // відновлюємо значення з localStorage, якщо воно є
-    const saved = Number(localStorage.getItem(INSP_LS_KEY));
-    if (saved && saved >= INSP_MIN_W && saved <= INSP_MAX_W) {
+    const raw = localStorage.getItem(INSP_LS_KEY);
+    const saved = parseInt(raw, 10);
+
+    if (!isNaN(saved) && saved >= INSP_MIN_W && saved <= INSP_MAX_W) {
       document.documentElement.style.setProperty("--insp-w", saved + "px");
     }
 
-    let startX = 0;
-    let startW = 0;
+    const MIN = 350;
+    const MAX = 500;
 
-    resizer.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    const startResize = (side, startX) => {
+        const root = document.documentElement;
+        const current = parseInt(getComputedStyle(root).getPropertyValue("--insp-w")) || 380;
 
-      startX = e.clientX;
-      // беремо поточне значення змінної або дефолт
-      const rootStyles = getComputedStyle(document.documentElement);
-      const cur = parseInt(
-        rootStyles.getPropertyValue("--insp-w").trim() || "380",
-        10
-      );
-      startW = isNaN(cur) ? 380 : cur;
+        const move = (ev) => {
+            let w;
 
-      function onMove(ev) {
-        let w = startW - (ev.clientX - startX);
-        if (w < INSP_MIN_W) w = INSP_MIN_W;
-        if (w > INSP_MAX_W) w = INSP_MAX_W;
+            if (side === "left") {
+                w = current + (startX - ev.clientX);
+            } else {
+                w = current + (ev.clientX - startX);
+            }
 
-        document.documentElement.style.setProperty("--insp-w", w + "px");
-      }
+            if (w < MIN) w = MIN;
+            if (w > MAX) w = MAX;
 
-      function onUp() {
-        const rootStyles = getComputedStyle(document.documentElement);
-        const finalW = parseInt(
-          rootStyles.getPropertyValue("--insp-w").trim() || "380",
-          10
-        );
-        if (!isNaN(finalW)) {
-          localStorage.setItem(INSP_LS_KEY, String(finalW));
-        }
+            root.style.setProperty("--insp-w", w + "px");
+        };
 
-        document.removeEventListener("mousemove", onMove);
-        document.removeEventListener("mouseup", onUp);
-      }
+        const up = () => {
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", up);
+            localStorage.setItem("st:insp:width", root.style.getPropertyValue("--insp-w"));
+        };
 
-      document.addEventListener("mousemove", onMove);
-      document.addEventListener("mouseup", onUp);
-    });
-  }
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", up);
+    };
+
+    left?.addEventListener("mousedown", (e) => startResize("left", e.clientX));
+    right?.addEventListener("mousedown", (e) => startResize("right", e.clientX));
+}
+
+
   // ===== Головний bootstrap плагіна design
   async function bootstrap() {
     console.log("[design] bootstrap start");

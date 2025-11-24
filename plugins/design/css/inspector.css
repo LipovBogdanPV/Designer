@@ -42,10 +42,6 @@
 }
 
 [data-plugin="design"] .panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* займай увесь слот */
-  min-height: 0; /* дозволяє .insp-body мати власний скрол */
   border-left: 1px solid var(--border);
   background: var(--panel);
 }
@@ -126,25 +122,36 @@ details.grp .group {
 details.grp .rows {
   padding: 6px 4px 8px;
 }
-
-[data-plugin="design"] .insp-resizer {
+/* ==== Ручка ресайзу інспектора ==== */
+/* базовий стиль для обох ручок */
+.insp-resizer {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0; /* якщо інспектор справа, ручка на лівому краю */
   width: 6px;
   cursor: col-resize;
   background: transparent;
-  z-index: 11;
+  z-index: 10;
 }
 
-[data-plugin="design"] .insp-resizer:hover {
+/* ручка з боку лівого краю інспектора */
+[data-plugin="design"] .insp-resizer.left {
+  left: 0;
+}
+
+/* ручка з боку правого краю інспектора */
+[data-plugin="design"] .insp-resizer.right {
+  right: -3px;
+}
+
+.insp-resizer:hover {
   background: rgba(148, 163, 184, 0.15);
 }
 
-[data-plugin="design"] .insp-resizer:active {
+.insp-resizer:active {
   background: rgba(148, 163, 184, 0.25);
 }
+
 /* СТИЛІ ДЛЯ СКРОЛБАРА ІНСПЕКТОРА */
 [data-plugin="design"] .insp-body,
 [data-plugin="design"].sidebar .sidebar-scroll {
