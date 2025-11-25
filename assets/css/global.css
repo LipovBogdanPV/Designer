@@ -110,10 +110,47 @@ a:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.55);
 }
-.plugin-host.plugin-design {
+.plugin-host {
   height: calc(100vh - var(--topbar-h, 56px));
   /* якщо щось ще дає скрол – можна додати overflow: hidden; */
   overflow: hidden;
+}
+/* СТИЛІ ДЛЯ СКРОЛБАРА  plugin-host */
+.plugin-host,
+.sidebar .sidebar-scroll {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* WebKit browsers */
+.plugin-host::-webkit-scrollbar,
+.sidebar .sidebar-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.plugin-host::-webkit-scrollbar-track,
+.sidebar .sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.plugin-host::-webkit-scrollbar-thumb,
+.sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  border: 2px solid transparent; /* дає відступ і м'який край */
+  background-clip: padding-box;
+}
+
+.plugin-host:hover::-webkit-scrollbar-thumb,
+.sidebar .sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.plugin-host::-webkit-scrollbar-thumb:active,
+.sidebar .sidebar-scroll::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.18);
 }
 
 .sidebar {
