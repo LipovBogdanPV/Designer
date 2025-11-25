@@ -76,7 +76,7 @@ body {
   height: 100%;
 }
 body {
-  overflow-y: auto;
+  overflow-y: clip;
 }
 
 body {
@@ -109,6 +109,11 @@ a {
 a:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.55);
+}
+.plugin-host.plugin-design {
+  height: calc(100vh - var(--topbar-h, 56px));
+  /* якщо щось ще дає скрол – можна додати overflow: hidden; */
+  overflow: hidden;
 }
 
 .sidebar {
