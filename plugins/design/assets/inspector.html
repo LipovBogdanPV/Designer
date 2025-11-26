@@ -69,18 +69,12 @@
               <label>Відступи (px)</label>
               <div class="four">
                 <div class="two">
-                  <input id="padT" type="number" placeholder="Top" /><input
-                    id="padR"
-                    type="number"
-                    placeholder="Right"
-                  />
+                  <input id="padT" type="number" placeholder="Top" /><input id="padR" type="number"
+                    placeholder="Right" />
                 </div>
                 <div class="two">
-                  <input id="padB" type="number" placeholder="Bottom" /><input
-                    id="padL"
-                    type="number"
-                    placeholder="Left"
-                  />
+                  <input id="padB" type="number" placeholder="Bottom" /><input id="padL" type="number"
+                    placeholder="Left" />
                 </div>
               </div>
             </div>
@@ -133,12 +127,8 @@
             <div class="row">
               <label>Гнучкість</label>
               <div class="three">
-                <label class="small"
-                  ><input type="checkbox" id="grow" /> grow</label
-                >
-                <label class="small"
-                  ><input type="checkbox" id="shrink" checked /> shrink</label
-                >
+                <label class="small"><input type="checkbox" id="grow" /> grow</label>
+                <label class="small"><input type="checkbox" id="shrink" checked /> shrink</label>
                 <select id="alignSelf">
                   <option value="auto">align-self: auto</option>
                   <option value="stretch">stretch</option>
@@ -149,26 +139,18 @@
               </div>
             </div>
             <div class="row">
-              <label>Мін. висота (px)</label
-              ><input id="minH" type="number" placeholder="напр. 320" />
+              <label>Мін. висота (px)</label><input id="minH" type="number" placeholder="напр. 320" />
             </div>
             <div class="row">
-              <label>Явна ширина (px)</label
-              ><input id="widthPx" type="number" placeholder="для колонки" />
+              <label>Явна ширина (px)</label><input id="widthPx" type="number" placeholder="для колонки" />
             </div>
             <div class="divider"></div>
             <div class="row">
               <label>Full height</label>
               <div class="two">
-                <label class="small"
-                  ><input type="checkbox" id="fullHeight" /> на всю
-                  висоту</label
-                >
-                <input
-                  id="fixedHeight"
-                  type="number"
-                  placeholder="або фіксована висота (px)"
-                />
+                <label class="small"><input type="checkbox" id="fullHeight" /> на всю
+                  висоту</label>
+                <input id="fixedHeight" type="number" placeholder="або фіксована висота (px)" />
               </div>
             </div>
             <div class="row">
@@ -222,13 +204,7 @@
               <div class="row">
                 <label>Колір</label>
                 <div class="controls">
-                  <input type="color" id="bgColor" /><input
-                    type="range"
-                    id="bgAlpha"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                  />
+                  <input type="color" id="bgColor" /><input type="range" id="bgAlpha" min="0" max="1" step="0.01" />
                 </div>
               </div>
             </div>
@@ -236,36 +212,22 @@
               <div class="row">
                 <label>Color A</label>
                 <div class="controls">
-                  <input type="color" id="gA" /><input
-                    type="range"
-                    id="gAalpha"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                  />
+                  <input type="color" id="gA" /><input type="range" id="gAalpha" min="0" max="1" step="0.01" />
                 </div>
               </div>
               <div class="row">
                 <label>Color B</label>
                 <div class="controls">
-                  <input type="color" id="gB" /><input
-                    type="range"
-                    id="gBalpha"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                  />
+                  <input type="color" id="gB" /><input type="range" id="gBalpha" min="0" max="1" step="0.01" />
                 </div>
               </div>
               <div class="row">
-                <label>Кут (deg)</label
-                ><input type="range" id="gAngle" min="0" max="360" step="1" />
+                <label>Кут (deg)</label><input type="range" id="gAngle" min="0" max="360" step="1" />
               </div>
             </div>
             <div id="bgImgRows" style="display: none">
               <div class="row">
-                <label>URL</label
-                ><input type="text" id="bgUrl" placeholder="https://..." />
+                <label>URL</label><input type="text" id="bgUrl" placeholder="https://..." />
               </div>
               <div class="row">
                 <label>Size / Pos</label>
@@ -273,8 +235,8 @@
                   <select id="bgSize">
                     <option>cover</option>
                     <option>contain</option>
-                    <option>auto</option></select
-                  ><select id="bgPos">
+                    <option>auto</option>
+                  </select><select id="bgPos">
                     <option value="center">center</option>
                     <option value="top">top</option>
                     <option value="bottom">bottom</option>
@@ -286,18 +248,12 @@
               <div class="row">
                 <label>Overlay</label>
                 <div class="two">
-                  <input type="color" id="bgOverlayColor" /><input
-                    type="range"
-                    id="bgOverlayAlpha"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                  />
+                  <input type="color" id="bgOverlayColor" /><input type="range" id="bgOverlayAlpha" min="0" max="1"
+                    step="0.01" />
                 </div>
               </div>
               <div class="row">
-                <label>Grayscale</label
-                ><input type="range" id="bgGray" min="0" max="1" step="0.01" />
+                <label>Grayscale</label><input type="range" id="bgGray" min="0" max="1" step="0.01" />
               </div>
             </div>
           </div>
@@ -328,76 +284,54 @@
                 </select>
               </div>
               <div id="rAll" class="row">
-                <label>Радіус (px)</label
-                ><input id="rAllVal" type="range" min="0" max="120" step="1" />
+                <label>Радіус (px)</label><input id="rAllVal" type="range" min="0" max="120" step="1" />
               </div>
               <div id="rPer" style="display: none">
                 <div class="row">
                   <label>TL / TR</label>
                   <div class="two">
-                    <input id="rTL" type="number" /><input
-                      id="rTR"
-                      type="number"
-                    />
+                    <input id="rTL" type="number" /><input id="rTR" type="number" />
                   </div>
                 </div>
                 <div class="row">
                   <label>BL / BR</label>
                   <div class="two">
-                    <input id="rBL" type="number" /><input
-                      id="rBR"
-                      type="number"
-                    />
+                    <input id="rBL" type="number" /><input id="rBR" type="number" />
                   </div>
                 </div>
               </div>
               <div id="rDiag1" style="display: none">
                 <div class="row">
-                  <label>TL/BR</label
-                  ><input id="rD1A" type="range" min="0" max="120" />
+                  <label>TL/BR</label><input id="rD1A" type="range" min="0" max="120" />
                 </div>
                 <div class="row">
-                  <label>TR/BL</label
-                  ><input id="rD1B" type="range" min="0" max="120" />
+                  <label>TR/BL</label><input id="rD1B" type="range" min="0" max="120" />
                 </div>
               </div>
               <div id="rDiag2" style="display: none">
                 <div class="row">
-                  <label>TR/BL</label
-                  ><input id="rD2A" type="range" min="0" max="120" />
+                  <label>TR/BL</label><input id="rD2A" type="range" min="0" max="120" />
                 </div>
                 <div class="row">
-                  <label>TL/BR</label
-                  ><input id="rD2B" type="range" min="0" max="120" />
+                  <label>TL/BR</label><input id="rD2B" type="range" min="0" max="120" />
                 </div>
               </div>
             </div>
 
             <div id="chamferBox" style="display: none">
               <div class="row">
-                <label>Однаковий зріз (%)</label
-                ><input id="chAll" type="range" min="0" max="40" step="1" />
+                <label>Однаковий зріз (%)</label><input id="chAll" type="range" min="0" max="40" step="1" />
               </div>
               <div class="row">
                 <label>TL / TR (%)</label>
                 <div class="two">
-                  <input id="chTL" type="number" min="0" max="40" /><input
-                    id="chTR"
-                    type="number"
-                    min="0"
-                    max="40"
-                  />
+                  <input id="chTL" type="number" min="0" max="40" /><input id="chTR" type="number" min="0" max="40" />
                 </div>
               </div>
               <div class="row">
                 <label>BL / BR (%)</label>
                 <div class="two">
-                  <input id="chBL" type="number" min="0" max="40" /><input
-                    id="chBR"
-                    type="number"
-                    min="0"
-                    max="40"
-                  />
+                  <input id="chBL" type="number" min="0" max="40" /><input id="chBR" type="number" min="0" max="40" />
                 </div>
               </div>
               <div class="small">
@@ -407,8 +341,7 @@
 
             <div id="polygonBox" style="display: none">
               <div class="row">
-                <label>К-сть точок</label
-                ><input id="polyCount" type="number" min="3" max="30" />
+                <label>К-сть точок</label><input id="polyCount" type="number" min="3" max="30" />
               </div>
               <div class="row">
                 <label>Точки (0–100%)</label>
@@ -441,12 +374,10 @@
               </div>
             </div>
             <div class="row">
-              <label>Прозорість</label
-              ><input id="bAlpha" type="range" min="0" max="1" step="0.01" />
+              <label>Прозорість</label><input id="bAlpha" type="range" min="0" max="1" step="0.01" />
             </div>
             <div class="row">
-              <label>М’який контур</label
-              ><input id="bBlur" type="range" min="0" max="40" step="1" />
+              <label>М’який контур</label><input id="bBlur" type="range" min="0" max="40" step="1" />
             </div>
           </div>
         </div>
@@ -465,22 +396,13 @@
             <div class="row">
               <label>Blur / Spread</label>
               <div class="two">
-                <input id="shBlur" type="number" /><input
-                  id="shSpread"
-                  type="number"
-                />
+                <input id="shBlur" type="number" /><input id="shSpread" type="number" />
               </div>
             </div>
             <div class="row">
               <label>Колір / α</label>
               <div class="two">
-                <input id="shColor" type="color" /><input
-                  id="shAlpha"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                />
+                <input id="shColor" type="color" /><input id="shAlpha" type="range" min="0" max="1" step="0.01" />
               </div>
             </div>
 
@@ -493,22 +415,13 @@
             <div class="row">
               <label>Blur / Spread</label>
               <div class="two">
-                <input id="inBlur" type="number" /><input
-                  id="inSpread"
-                  type="number"
-                />
+                <input id="inBlur" type="number" /><input id="inSpread" type="number" />
               </div>
             </div>
             <div class="row">
               <label>Колір / α</label>
               <div class="two">
-                <input id="inColor" type="color" /><input
-                  id="inAlpha"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                />
+                <input id="inColor" type="color" /><input id="inAlpha" type="range" min="0" max="1" step="0.01" />
               </div>
             </div>
           </div>
@@ -525,37 +438,23 @@
             <div class="row">
               <label>Top: колір/α</label>
               <div class="two">
-                <input type="color" id="ovTopColor" /><input
-                  type="range"
-                  id="ovTopAlpha"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                />
+                <input type="color" id="ovTopColor" /><input type="range" id="ovTopAlpha" min="0" max="1" step="0.01" />
               </div>
             </div>
             <div class="row">
               <label>Top: висота(px)</label><input type="number" id="ovTopH" />
             </div>
             <div class="row">
-              <label>Bottom: вкл</label
-              ><input type="checkbox" id="ovBotEnable" />
+              <label>Bottom: вкл</label><input type="checkbox" id="ovBotEnable" />
             </div>
             <div class="row">
               <label>Bottom: колір/α</label>
               <div class="two">
-                <input type="color" id="ovBotColor" /><input
-                  type="range"
-                  id="ovBotAlpha"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                />
+                <input type="color" id="ovBotColor" /><input type="range" id="ovBotAlpha" min="0" max="1" step="0.01" />
               </div>
             </div>
             <div class="row">
-              <label>Bottom: висота(px)</label
-              ><input type="number" id="ovBotH" />
+              <label>Bottom: висота(px)</label><input type="number" id="ovBotH" />
             </div>
           </div>
         </div>
@@ -574,9 +473,7 @@
             <div class="row">
               <label>Pan фон</label>
               <div class="two">
-                <label class="small"
-                  ><input type="checkbox" id="panEnable" /> з прокруткою</label
-                >
+                <label class="small"><input type="checkbox" id="panEnable" /> з прокруткою</label>
                 <select id="panDir">
                   <option value="y">Вгору/Вниз</option>
                   <option value="x">Вліво/Вправо</option>
@@ -590,25 +487,19 @@
 
             <div class="divider"></div>
             <div class="row">
-              <label>Скролбар: сховати</label
-              ><input type="checkbox" id="sbHide" />
+              <label>Скролбар: сховати</label><input type="checkbox" id="sbHide" />
             </div>
             <div class="row">
-              <label>Товщина (px)</label
-              ><input id="sbThick" type="number" min="0" max="24" />
+              <label>Товщина (px)</label><input id="sbThick" type="number" min="0" max="24" />
             </div>
             <div class="row">
               <label>Track / Thumb</label>
               <div class="two">
-                <input type="color" id="sbTrack" /><input
-                  type="color"
-                  id="sbThumb"
-                />
+                <input type="color" id="sbTrack" /><input type="color" id="sbThumb" />
               </div>
             </div>
             <div class="row">
-              <label>Радіус повзунка</label
-              ><input id="sbRadius" type="number" min="0" max="24" />
+              <label>Радіус повзунка</label><input id="sbRadius" type="number" min="0" max="24" />
             </div>
           </div>
         </div>
@@ -619,8 +510,7 @@
         <div class="group">
           <div class="rows">
             <div class="row">
-              <label>Відступ копії (px)</label
-              ><input id="copyOffset" type="number" min="0" value="4" />
+              <label>Відступ копії (px)</label><input id="copyOffset" type="number" min="0" value="4" />
             </div>
             <div class="row">
               <label>Дії</label>
@@ -644,14 +534,7 @@
               </div>
             </div>
             <div class="row">
-              <label>Нижнє поле (px)</label
-              ><input
-                type="number"
-                id="safeBottom"
-                min="0"
-                step="1"
-                value="72"
-              />
+              <label>Нижнє поле (px)</label><input type="number" id="safeBottom" min="0" step="1" value="72" />
             </div>
             <div class="divider"></div>
             <!-- якщо проект пустий — кнопка створення головного контейнера -->
@@ -678,11 +561,8 @@
               <input type="number" id="wsPadding" min="0" value="24" />
             </div>
             <div class="row">
-              <label>Перетягування блоків</label
-              ><label class="small"
-                ><input type="checkbox" id="dndEnable" checked />
-                увімкнено</label
-              >
+              <label>Перетягування блоків</label><label class="small"><input type="checkbox" id="dndEnable" checked />
+                увімкнено</label>
             </div>
           </div>
         </div>
@@ -694,12 +574,7 @@
           <div class="group">
             <div class="rows">
               <div class="row">
-                <label>Назва</label
-                ><input
-                  id="tplName"
-                  type="text"
-                  placeholder="Hero Split 60/40"
-                />
+                <label>Назва</label><input id="tplName" type="text" placeholder="Hero Split 60/40" />
               </div>
               <div class="row">
                 <label>Категорія</label>
@@ -715,14 +590,8 @@
                 <div class="templates">
                   <button class="btn" id="saveTpl">Зберегти</button>
                   <button class="btn" id="exportTpl">Експорт JSON</button>
-                  <label class="btn"
-                    >Імпорт
-                    <input
-                      id="importFile"
-                      type="file"
-                      accept="application/json"
-                      style="display: none"
-                  /></label>
+                  <label class="btn">Імпорт
+                    <input id="importFile" type="file" accept="application/json" style="display: none" /></label>
                 </div>
               </div>
               <div class="row">

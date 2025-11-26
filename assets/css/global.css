@@ -2,18 +2,26 @@
 :root {
   /* Розміри */
   --header-h: 56px;
-  --sidebar-w: 240px; /* ширина, коли меню розгорнуте */
-  --sidebar-w-compact: 72px; /* ширина, коли меню згорнуте */
+  --sidebar-w: 240px;
+  /* ширина, коли меню розгорнуте */
+  --sidebar-w-compact: 72px;
+  /* ширина, коли меню згорнуте */
   --radius: 12px;
   --gap: 12px;
 
   /* Кольори */
-  --bg: #0f172a; /* темний фон */
-  --panel: #101827; /* панелі */
-  --text: #e5e7eb; /* основний текст */
-  --muted: #9ca3af; /* вторинний текст */
-  --primary: #6d5efc; /* акцент */
-  --hover: #1f2937; /* ховери */
+  --bg: #0f172a;
+  /* темний фон */
+  --panel: #101827;
+  /* панелі */
+  --text: #e5e7eb;
+  /* основний текст */
+  --muted: #9ca3af;
+  /* вторинний текст */
+  --primary: #6d5efc;
+  /* акцент */
+  --hover: #1f2937;
+  /* ховери */
   --border: #1f2a44;
 
   /* Типографіка */
@@ -62,6 +70,82 @@
   --tbl-pad: 10px 12px;
 }
 
+/* ============================
+   СВІТЛА ТЕМА
+   ============================ */
+:root[data-theme="light"] {
+  /* Розміри — НЕ міняються */
+  --header-h: 56px;
+  --sidebar-w: 240px;
+  --sidebar-w-compact: 72px;
+  --radius: 12px;
+  --gap: 12px;
+
+  /* КОЛЬОРИ — світлі версії */
+  --bg: #f4f6fb;
+  /* світлий фон */
+  --panel: #ffffff;
+  /* білі панелі */
+  --text: #1e293b;
+  /* темний текст */
+  --muted: #64748b;
+  /* вторинний текст */
+  --primary: #4f46e5;
+  /* фіолетовий акцент (легший) */
+  --hover: #e2e8f0;
+  /* світлий hover */
+  --border: #d1d5db;
+  /* світла рамка */
+
+  /* Типографіка — не міняється */
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fw-semibold: 600;
+
+  /* Sidebar */
+  --sidebar-text: #1e293b;
+  --sidebar-bg: #ffffff;
+  --sidebar-hover: rgba(0, 0, 0, 0.06);
+  --sidebar-active: rgba(79, 70, 229, 0.12);
+  --sidebar-border: #d1d5db;
+  --sidebar-border-w: 1px;
+  --sidebar-radius: 10px;
+  --sidebar-shadow: 0px 4px 18px rgba(0, 0, 0, 0.05);
+
+  --logo-pad-x: 12px;
+  --logo-pad-y: 14px;
+  --logo-icon: 40px;
+  --logo-wide-h: 28px;
+  --logo-gap: 12px;
+  --logo-underline-w: 1px;
+  --logo-underline: rgba(0, 0, 0, 0.1);
+
+  /* Панелі */
+  --panel-bg: #ffffff;
+  --panel-border: #d1d5db;
+  --panel-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  --panel-radius: 12px;
+
+  /* Buttons */
+  --btn-bg: #e2e8f0;
+  --btn-hover: #cbd5e1;
+  --btn-text: #1e293b;
+  --btn-radius: 8px;
+  --btn-border: #cbd5e1;
+
+  /* Таблиці */
+  --tbl-row-hover: #f1f5f9;
+  --tbl-border: #d1d5db;
+  --tbl-radius: 12px;
+  --tbl-pad: 10px 12px;
+}
+
+
+
 /* Коли сайдбар згорнутий — міняємо ширину через клас на body */
 body.sidebar-collapsed {
   --sidebar-w: var(--sidebar-w-compact);
@@ -71,10 +155,12 @@ body.sidebar-collapsed {
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
 }
+
 body {
   overflow-y: clip;
 }
@@ -102,19 +188,27 @@ header {
   z-index: 50;
 }
 
+[data-theme="light"] header {
+  background: rgba(244, 246, 251);
+  border-bottom: 1px solid var(--border);
+}
+
 a {
   cursor: pointer;
   transition: all 0.18s ease-in-out;
 }
+
 a:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(2, 6, 23, 0.55);
 }
+
 .plugin-host {
   height: calc(100vh - var(--topbar-h, 56px));
   /* якщо щось ще дає скрол – можна додати overflow: hidden; */
   overflow: hidden;
 }
+
 /* СТИЛІ ДЛЯ СКРОЛБАРА  plugin-host */
 .plugin-host,
 .sidebar .sidebar-scroll {
@@ -139,7 +233,8 @@ a:hover {
 .sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.06);
   border-radius: 999px;
-  border: 2px solid transparent; /* дає відступ і м'який край */
+  border: 2px solid transparent;
+  /* дає відступ і м'який край */
   background-clip: padding-box;
 }
 
@@ -161,9 +256,15 @@ a:hover {
   width: var(--sidebar-w);
   background: var(--panel);
   border-right: 1px solid var(--border);
-  overflow: hidden; /* приховуємо, поки не потрібно скролити */
+  overflow: hidden;
+  /* приховуємо, поки не потрібно скролити */
   z-index: 40;
   transition: width 0.28s ease, transform 0.28s ease;
+}
+
+[data-theme="light"] .sidebar {
+  background: var(--bg);
+  border-right: 1px solid var(--border);
 }
 
 /* Якщо контент не вміщається — з’являється скрол тільки всередині */
@@ -191,6 +292,7 @@ main {
   align-items: center;
   gap: 10px;
 }
+
 .logo {
   display: inline-flex;
   align-items: center;
@@ -198,10 +300,12 @@ main {
   color: var(--text);
   text-decoration: none;
 }
+
 .logo img {
   height: 28px;
   display: block;
 }
+
 .logo .title {
   font-weight: var(--fw-semibold);
   letter-spacing: 0.3px;
@@ -213,6 +317,7 @@ main {
   gap: 8px;
   align-items: center;
 }
+
 .chip {
   background: #1b2336;
   border: 1px solid var(--border);
@@ -221,6 +326,13 @@ main {
   font-size: var(--fs-sm);
   color: var(--text);
 }
+
+[data-theme="light"] .chip {
+  background: #f4f6fb;
+  border-color: var(--border);
+  color: var(--text);
+}
+
 .input {
   height: 32px;
   padding: 0 10px;
@@ -229,6 +341,11 @@ main {
   background: #0f172a;
   color: var(--text);
   font-size: var(--fs-sm);
+}
+
+[data-theme="light"] .input {
+  background: #f4f6fb;
+  color: var(--text);
 }
 
 /* ====== КНОПКА ЗГОРТАННЯ САЙДБАРУ ====== */
@@ -244,6 +361,7 @@ main {
   border-radius: 8px;
   cursor: pointer;
 }
+
 .btn:hover {
   background: var(--hover);
 }
@@ -254,6 +372,7 @@ main {
   gap: 4px;
   padding: 10px;
 }
+
 .nav a {
   display: grid;
   grid-template-columns: 28px 1fr;
@@ -265,14 +384,17 @@ main {
   text-decoration: none;
   border-radius: 10px;
 }
+
 .nav a .label {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .nav a:hover {
   background: var(--hover);
 }
+
 .nav a.active {
   background: rgba(109, 94, 252, 0.14);
   outline: 1px solid rgba(109, 94, 252, 0.35);
@@ -282,6 +404,7 @@ main {
 body.sidebar-collapsed .nav a .label {
   display: none;
 }
+
 body.sidebar-collapsed .nav a {
   grid-template-columns: 1fr;
   justify-items: center;
@@ -291,12 +414,15 @@ body.sidebar-collapsed .nav a {
 .logo-full {
   display: inline-flex;
 }
+
 .logo-compact {
   display: none;
 }
+
 body.sidebar-collapsed .logo-full {
   display: none;
 }
+
 body.sidebar-collapsed .logo-compact {
   display: inline-flex;
 }
@@ -306,11 +432,13 @@ body.sidebar-collapsed .logo-compact {
   :root {
     --sidebar-w: var(--sidebar-w-compact);
   }
+
   body:not(.sidebar-collapsed) {
     /* на вузьких екранах нехай одразу компакт */
     --sidebar-w: var(--sidebar-w-compact);
   }
 }
+
 /* Всередині плагінів теги <header> не є топбаром */
 .plugin-host header {
   position: static;
@@ -320,6 +448,7 @@ body.sidebar-collapsed .logo-compact {
   background: none;
   z-index: auto;
 }
+
 /* сайдбар */
 .sidebar {
   width: var(--sidebar-w);
@@ -327,16 +456,20 @@ body.sidebar-collapsed .logo-compact {
   border-right: var(--sidebar-border-w) solid var(--sidebar-border);
   box-shadow: var(--sidebar-shadow);
 }
+
 body.sidebar-collapsed {
   --sidebar-w: var(--sidebar-w-compact);
 }
+
 .nav a {
   color: var(--sidebar-text);
   border-radius: var(--sidebar-radius);
 }
+
 .nav a:hover {
   background: var(--sidebar-hover);
 }
+
 .nav a.active {
   background: var(--sidebar-active);
   outline: 1px solid rgba(109, 94, 252, 0.35);
@@ -347,14 +480,17 @@ body.sidebar-collapsed {
   padding: 3px;
   gap: var(--logo-gap);
 }
+
 .logo img {
   height: var(--logo-icon);
   width: var(--logo-icon);
 }
+
 .logo-full img {
   height: var(--logo-wide-h);
   width: auto;
 }
+
 .logo::after {
   content: "";
   display: block;
@@ -379,6 +515,7 @@ body.sidebar-collapsed {
   color: var(--btn-text);
   border-radius: var(--btn-radius);
 }
+
 .btn:hover {
   background: var(--btn-hover);
 }
@@ -388,9 +525,11 @@ body.sidebar-collapsed {
   border: 1px solid var(--tbl-border);
   border-radius: var(--tbl-radius);
 }
+
 .table tr:hover {
   background: var(--tbl-row-hover);
 }
+
 .table td,
 .table th {
   padding: var(--tbl-pad);
@@ -399,9 +538,47 @@ body.sidebar-collapsed {
 .muted {
   color: var(--muted);
 }
+
 .pp {
   color: var(--muted);
   font-size: var(--fs-sm);
   padding: 0;
   margin: 0;
+}
+
+/*кнопка перемикання теми*/
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Кнопка перемикача теми у шапці */
+.top-actions .theme-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Іконки сонце/місяць */
+.theme-icon {
+  pointer-events: none;
+  font-size: 16px;
+}
+
+.theme-icon-moon {
+  display: none;
+}
+
+/* У світлій темі показуємо місяць, ховаємо сонце */
+:root[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-icon-moon {
+  display: inline;
 }

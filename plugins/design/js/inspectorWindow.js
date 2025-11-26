@@ -9,7 +9,7 @@
   function persistOpen(v) {
     try {
       localStorage.setItem(LS_OPEN, v ? "1" : "0");
-    } catch {}
+    } catch { }
   }
   function restoreOpen() {
     try {
@@ -22,7 +22,7 @@
   function persistSide(side) {
     try {
       localStorage.setItem(LS_SIDE, side);
-    } catch {}
+    } catch { }
   }
   function restoreSide() {
     try {
@@ -192,6 +192,7 @@
       app.classList.remove("insp-left", "insp-closed");
       app.classList.add("insp-right");
     },
+
     mountLeft(htmlFragment) {
       if (slotLeft && htmlFragment && !slotLeft.firstChild) {
         slotLeft.appendChild(htmlFragment);

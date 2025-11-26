@@ -1,39 +1,37 @@
 <!DOCTYPE html>
 <html lang="uk">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Конструктор — Шаблон</title>
 
-    <!-- Глобальні стилі з CSS-зміними (кольори, шрифти, розміри) -->
-    <link rel="stylesheet" href="assets/css/global.css" />
-    <!-- Стилі застосунку (шапка, сайдбар, основний вміст) -->
-    <link rel="stylesheet" href="assets/css/design.css" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Конструктор — Шаблон</title>
 
-    <!-- Lucide (іконки) -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  </head>
-  <body>
-    <!-- ШАПКА та САЙДБАР підтягуються як окремі файли -->
-    <header data-include="assets/partials/header.html"></header>
-    <aside
-      class="sidebar"
-      data-include="assets/partials/sidebar.html"
-      aria-label="Навігація"
-    ></aside>
+  <!-- Глобальні стилі з CSS-зміними (кольори, шрифти, розміри) -->
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <!-- Стилі застосунку (шапка, сайдбар, основний вміст) -->
+  <link rel="stylesheet" href="assets/css/design.css" />
+  <!-- Lucide (іконки) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
 
-    <!-- Основний вміст -->
-    <main id="main" role="main" tabindex="-1">
-      <!-- За замовчуванням покажемо «Design» -->
-      <div class="container">
-        <h1>Ласкаво просимо</h1>
-        <p>Обирайте розділ ліворуч: «Дизайн» або «Шаблони».</p>
-      </div>
-    </main>
+<body>
+  <!-- ШАПКА та САЙДБАР підтягуються як окремі файли -->
+  <header data-include="assets/partials/header.html"></header>
+  <aside class="sidebar" data-include="assets/partials/sidebar.html" aria-label="Навігація"></aside>
 
-    <!-- Шаблонізатор (підключає partials/плагіни) -->
-    <script src="assets/js/templater.js"></script>
-    <!-- Логіка застосунку: стан сайдбара, роутер, лого, іконки -->
-    <script src="assets/js/app.js"></script>
-  </body>
+  <!-- Основний вміст -->
+  <main id="main" role="main" tabindex="-1">
+    <!-- За замовчуванням покажемо «Design» -->
+    <div class="container">
+      <h1>Ласкаво просимо</h1>
+      <p>Обирайте розділ ліворуч: «Дизайн» або «Шаблони».</p>
+    </div>
+  </main>
+
+  <!-- Шаблонізатор (підключає partials/плагіни) -->
+  <script src="assets/js/templater.js"></script>
+  <!-- Логіка застосунку: стан сайдбара, роутер, лого, іконки -->
+  <script src="assets/js/app.js"></script>
+</body>
+
 </html>

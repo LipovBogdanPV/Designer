@@ -22,6 +22,33 @@
 
   const STORAGE_KEY = "st:design:blocks:v1";
 
+  function applyHeight(node, px) {
+    node.style.height = px + "px";
+    node.style.minHeight = px + "px";
+    node.style.flexGrow = 0;
+    node.style.flexShrink = 0;
+    node.style.alignSelf = "flex-start";
+  }
+  let resizeHintTimer = null;
+
+  function showResizeHint() {
+    if (!host) return; // host = корінь плагіна, у тебе вже є
+
+    let el = host.querySelector(".st-resize-hint");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "st-resize-hint";
+      el.textContent = "Спочатку виберіть блок для редагування";
+      host.appendChild(el);
+    }
+
+    el.classList.add("visible");
+    clearTimeout(resizeHintTimer);
+    resizeHintTimer = setTimeout(() => {
+      el.classList.remove("visible");
+    }, 1500);
+  }
+
   // ===== model
   function createBlock(partial = {}) {
     return Object.assign(
@@ -153,9 +180,9 @@
       const ov =
         bg.overlayAlpha > 0
           ? `linear-gradient(${hexToRgba(
-              bg.overlayColor,
-              bg.overlayAlpha
-            )}, ${hexToRgba(bg.overlayColor, bg.overlayAlpha)}), `
+            bg.overlayColor,
+            bg.overlayAlpha
+          )}, ${hexToRgba(bg.overlayColor, bg.overlayAlpha)}), `
           : "";
       return `${ov}url('${bg.url}')`;
     }
@@ -253,96 +280,70 @@
   }*/
   // розширене переміщення блоку moveBlock
   // Переміщення з before/after/inside
-function findParentAndIndex(id, list = rootBlocks, parent = null) {
-  for (let i = 0; i < list.length; i++) {
-    const b = list[i];
-    if (b.id === id) {
-      return { parent, arr: list, index: i };
+  function findParentAndIndex(id, list = rootBlocks, parent = null) {
+    for (let i = 0; i < list.length; i++) {
+      const b = list[i];
+      if (b.id === id) {
+        return { parent, arr: list, index: i };
+      }
+      if (b.children && b.children.length) {
+        const res = findParentAndIndex(id, b.children, b);
+        if (res) return res;
+      }
     }
-    if (b.children && b.children.length) {
-      const res = findParentAndIndex(id, b.children, b);
-      if (res) return res;
+    return null;
+  }
+
+  function isAncestor(ancestorId, nodeId) {
+    const pos = findParentAndIndex(ancestorId);
+    if (!pos) return false;
+
+    const anc = pos.arr[pos.index];
+    const stack = [...(anc.children || [])];
+
+    while (stack.length) {
+      const n = stack.shift();
+      if (n.id === nodeId) return true;
+      if (n.children && n.children.length) {
+        stack.push(...n.children);
+      }
     }
+    return false;
   }
-  return null;
-}
-
-function isAncestor(ancestorId, nodeId) {
-  const pos = findParentAndIndex(ancestorId);
-  if (!pos) return false;
-
-  const anc = pos.arr[pos.index];
-  const stack = [...(anc.children || [])];
-
-  while (stack.length) {
-    const n = stack.shift();
-    if (n.id === nodeId) return true;
-    if (n.children && n.children.length) {
-      stack.push(...n.children);
-    }
-  }
-  return false;
-}
-function moveBlockRelative(sourceId, targetId, mode) {
-  if (!sourceId || !targetId || sourceId === targetId) return;
-
-  const srcPos = findParentAndIndex(sourceId);
-  const tgtPos = findParentAndIndex(targetId);
-  if (!srcPos || !tgtPos) return;
-
-  // не дозволяємо кидати батька у свого нащадка
-  if (mode === "inside" && isAncestor(sourceId, targetId)) return;
-
-  const srcArr = srcPos.arr;
-  const tgtArr = tgtPos.arr;
-
-  const [node] = srcArr.splice(srcPos.index, 1);
-
-  if (mode === "inside") {
-    const tgtNode = tgtArr[tgtPos.index];
-    tgtNode.children = tgtNode.children || [];
-    tgtNode.children.push(node);
-    return;
-  }
-
-  // вставка перед / після target у той самий масив
-  let insertIndex = tgtPos.index;
-
-  // якщо тягнемо вниз у той самий масив – індекс зміщується
-  if (srcArr === tgtArr && srcPos.index < tgtPos.index) {
-    insertIndex -= 1;
-  }
-  if (mode === "after") insertIndex += 1;
-
-  tgtArr.splice(insertIndex, 0, node);
-}
-
-  // просте переміщення блоку всередину іншого moveBlock
-  /*
-  function moveBlockInto(sourceId, targetId) {
+  function moveBlockRelative(sourceId, targetId, mode) {
     if (!sourceId || !targetId || sourceId === targetId) return;
 
     const srcPos = findParentAndIndex(sourceId);
-    if (!srcPos) return;
+    const tgtPos = findParentAndIndex(targetId);
+    if (!srcPos || !tgtPos) return;
 
-    const srcNode = srcPos.arr[srcPos.index];
-    let targetNode = findById(rootBlocks, targetId);
-    if (!targetNode) return;
+    // не дозволяємо кидати батька у свого нащадка
+    if (mode === "inside" && isAncestor(sourceId, targetId)) return;
 
-    // не дозволяємо кидати батька у власного нащадка
-    if (isAncestor(sourceId, targetId)) return;
+    const srcArr = srcPos.arr;
+    const tgtArr = tgtPos.arr;
 
-    // вирізаємо з попереднього місця
-    srcPos.arr.splice(srcPos.index, 1);
+    const [node] = srcArr.splice(srcPos.index, 1);
 
-    // додаємо в children таргету
-    targetNode.children = targetNode.children || [];
-    targetNode.children.push(srcNode);
+    if (mode === "inside") {
+      const tgtNode = tgtArr[tgtPos.index];
+      tgtNode.children = tgtNode.children || [];
+      tgtNode.children.push(node);
+      return;
+    }
+
+    // вставка перед / після target у той самий масив
+    let insertIndex = tgtPos.index;
+
+    // якщо тягнемо вниз у той самий масив – індекс зміщується
+    if (srcArr === tgtArr && srcPos.index < tgtPos.index) {
+      insertIndex -= 1;
+    }
+    if (mode === "after") insertIndex += 1;
+
+    tgtArr.splice(insertIndex, 0, node);
   }
-    */
-   // запуск перетягування (на іконці "⠿" чи на всьому блоці – як у тебе)
-
-
+  // запуск перетягування (на іконці "⠿" чи на всьому блоці – як у тебе)
 
   function attachDragHandle(handleEl, blockId) {
     if (!handleEl) return;
@@ -426,8 +427,8 @@ function moveBlockRelative(sourceId, targetId, mode) {
         mode === "before"
           ? "drop-before"
           : mode === "after"
-          ? "drop-after"
-          : "drop-inside"
+            ? "drop-after"
+            : "drop-inside"
       );
     } else {
       dnd.hoverId = null;
@@ -478,7 +479,7 @@ function moveBlockRelative(sourceId, targetId, mode) {
   // ===== render
   function applyBlockStyles(el, b) {
     const s = b.style,
-    
+
       r = computeRadii(s.radius);
 
     if (b.display === "grid") {
@@ -552,15 +553,13 @@ function moveBlockRelative(sourceId, targetId, mode) {
     el.style.borderStyle = s.border.style;
     el.style.borderColor = s.border.width ? bcol : "transparent";
 
-    const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${
-      s.shadow.blur || 0
-    }px ${s.shadow.spread || 0}px ${hexToRgba(s.shadow.color, s.shadow.alpha)}`;
-    const inner = `${s.shadow.inset.x || 0}px ${s.shadow.inset.y || 0}px ${
-      s.shadow.inset.blur || 0
-    }px ${s.shadow.inset.spread || 0}px ${hexToRgba(
-      s.shadow.inset.color,
-      s.shadow.inset.alpha
-    )} inset`;
+    const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0
+      }px ${s.shadow.spread || 0}px ${hexToRgba(s.shadow.color, s.shadow.alpha)}`;
+    const inner = `${s.shadow.inset.x || 0}px ${s.shadow.inset.y || 0}px ${s.shadow.inset.blur || 0
+      }px ${s.shadow.inset.spread || 0}px ${hexToRgba(
+        s.shadow.inset.color,
+        s.shadow.inset.alpha
+      )} inset`;
     const arr = [];
     if (
       (s.shadow.blur || 0) > 0 ||
@@ -596,28 +595,48 @@ function moveBlockRelative(sourceId, targetId, mode) {
 
     if (sc.sbHide) el.classList.add("sb-hide-scrollbar");
     else el.classList.remove("sb-hide-scrollbar");
-
+    // розміри та поведінка в flex-контейнері
     const L = b.layout || {};
     el.style.flexGrow = L.grow || 0;
     el.style.flexShrink = L.shrink == null ? 1 : L.shrink;
-    if (L.basis?.mode === "auto") el.style.flexBasis = "auto";
-    else if (L.basis?.mode === "px")
+
+    if (L.basis?.mode === "auto") {
+      el.style.flexBasis = "auto";
+    } else if (L.basis?.mode === "px") {
       el.style.flexBasis = (L.basis.value || 0) + "px";
-    else if (L.basis?.mode === "%")
+    } else if (L.basis?.mode === "%") {
       el.style.flexBasis = (L.basis.value || 0) + "%";
-    else if (L.basis?.mode === "fill") {
+    } else if (L.basis?.mode === "fill") {
       el.style.flexBasis = "0px";
       el.style.flexGrow = 1;
       el.style.flexShrink = 1;
     }
 
-    el.style.alignSelf =
+    // базове align-self з layout (якщо користувач явно вибрав)
+    let selfAlign =
       L.alignSelf && L.alignSelf !== "auto" ? L.alignSelf : "";
+
+    // явна ширина
     el.style.width = L.widthPx ? L.widthPx + "px" : "";
 
-    if (L.fullHeight) el.style.minHeight = `calc(100vh - 160px)`;
-    else if (L.fixedHeight) el.style.minHeight = (L.fixedHeight | 0) + "px";
-    else el.style.minHeight = L.minHeightPx ? L.minHeightPx + "px" : "";
+    // ВИСОТА / МІН-ВИСОТА
+    if (L.fullHeight) {
+      el.style.minHeight = `calc(100vh - 160px)`;
+    } else if (L.fixedHeight) {
+      const h = L.fixedHeight | 0;
+      el.style.minHeight = h ? h + "px" : "";
+      // якщо користувач не задав alignSelf – не даємо flex'у нас розтягувати
+      if (!selfAlign) selfAlign = "flex-start";
+    } else if (L.minHeightPx) {
+      el.style.minHeight = L.minHeightPx + "px";
+      if (!selfAlign) selfAlign = "flex-start";
+    } else {
+      el.style.minHeight = "";
+    }
+
+    // тільки тут виставляємо align-self
+    el.style.alignSelf = selfAlign;
+
 
     const top = el.querySelector(":scope > .overlay.top");
     const bot = el.querySelector(":scope > .overlay.bottom");
@@ -701,15 +720,36 @@ function moveBlockRelative(sourceId, targetId, mode) {
     const resizeRight = document.createElement("div");
     resizeRight.className = "resize-handle resize-right";
 
+    const resizeLeft = document.createElement("div");
+    resizeLeft.className = "resize-handle resize-left";
+
     const resizeBottom = document.createElement("div");
     resizeBottom.className = "resize-handle resize-bottom";
 
-    const resizeCorner = document.createElement("div");
-    resizeCorner.className = "resize-handle resize-corner";
+    const resizeTop = document.createElement("div");
+    resizeTop.className = "resize-handle resize-top";
+
+    // кути
+    const resizeCornerBR = document.createElement("div");
+    resizeCornerBR.className = "resize-handle resize-corner br";
+
+    const resizeCornerTR = document.createElement("div");
+    resizeCornerTR.className = "resize-handle resize-corner tr";
+
+    const resizeCornerBL = document.createElement("div");
+    resizeCornerBL.className = "resize-handle resize-corner bl";
+
+    const resizeCornerTL = document.createElement("div");
+    resizeCornerTL.className = "resize-handle resize-corner tl";
 
     el.appendChild(resizeRight);
+    el.appendChild(resizeLeft);
     el.appendChild(resizeBottom);
-    el.appendChild(resizeCorner);
+    el.appendChild(resizeTop);
+    el.appendChild(resizeCornerBR);
+    el.appendChild(resizeCornerTR);
+    el.appendChild(resizeCornerBL);
+    el.appendChild(resizeCornerTL);
 
     // привʼязуємо ресайз
     attachResizeHandlers(el, b.id);
@@ -792,10 +832,8 @@ function moveBlockRelative(sourceId, targetId, mode) {
     bc.innerHTML = path
       .map(
         (b, i) =>
-          `<span class="small">${i ? "› " : ""}</span><a href="#" data-id="${
-            b.id
-          }" style="color:#93c5fd">Block(${
-            b.display === "grid" ? "grid" : b.dir
+          `<span class="small">${i ? "› " : ""}</span><a href="#" data-id="${b.id
+          }" style="color:#93c5fd">Block(${b.display === "grid" ? "grid" : b.dir
           })</a>`
       )
       .join(" ");
@@ -825,6 +863,12 @@ function moveBlockRelative(sourceId, targetId, mode) {
       dir: "column",
       style: { ...createBlock().style },
     });
+    // 🧩 якщо батько — flex + горизонтальний ряд,
+    // робимо дитину "FILL" (flex: 1 1 0)
+    if (sel.display === "flex" && sel.dir === "row") {
+      child.layout.basis.mode = "fill";
+      child.layout.basis.value = 0;
+    }
     sel.children.push(child);
     selectedId = child.id;
     render();
@@ -861,7 +905,6 @@ function moveBlockRelative(sourceId, targetId, mode) {
     emitSelection();
     emitChange();
   }
-
   function copyOutside(offsetPx = 0) {
     const sel = getSelected();
     if (!sel) return;
@@ -1062,12 +1105,24 @@ function moveBlockRelative(sourceId, targetId, mode) {
   // ===== обробники зміни розміру
   function attachResizeHandlers(blockEl, blockId) {
     const right = blockEl.querySelector(".resize-right");
+    const left = blockEl.querySelector(".resize-left");
     const bottom = blockEl.querySelector(".resize-bottom");
-    const corner = blockEl.querySelector(".resize-corner");
+    const top = blockEl.querySelector(".resize-top");
+
+    const cornerBR = blockEl.querySelector(".resize-corner.br");
+    const cornerTR = blockEl.querySelector(".resize-corner.tr");
+    const cornerBL = blockEl.querySelector(".resize-corner.bl");
+    const cornerTL = blockEl.querySelector(".resize-corner.tl");
 
     function startResize(e, mode) {
       e.preventDefault();
       e.stopPropagation();
+
+      // 🔒 дозволяємо ресайз тільки для поточно вибраного блоку
+      if (selectedId !== blockId) {
+        showResizeHint();   // можна закоментити, якщо підказка не потрібна
+        return;
+      }
 
       const sel = findById(rootBlocks, blockId);
       if (!sel) return;
@@ -1105,9 +1160,19 @@ function moveBlockRelative(sourceId, targetId, mode) {
       window.addEventListener("mouseup", onUp);
     }
 
+    // горизонтальні
     right?.addEventListener("mousedown", (e) => startResize(e, "x"));
+    left?.addEventListener("mousedown", (e) => startResize(e, "x"));
+
+    // вертикальні
     bottom?.addEventListener("mousedown", (e) => startResize(e, "y"));
-    corner?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+    top?.addEventListener("mousedown", (e) => startResize(e, "y"));
+
+    // кути
+    cornerBR?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+    cornerTR?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+    cornerBL?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+    cornerTL?.addEventListener("mousedown", (e) => startResize(e, "xy"));
   }
 
   window.STDesignCore = api;

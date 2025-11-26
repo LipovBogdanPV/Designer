@@ -5,7 +5,10 @@
   "icon": "pencil",
   "order": 10,
   "html": "plugins/design/index.html",
-  "css": ["plugins/design/css/style.css", "plugins/design/css/inspector.css"],
+  "css": [
+    "plugins/design/css/style.css",
+    "plugins/design/css/inspector.css"
+  ],
   "js": [
     "plugins/design/js/core.js",
     "plugins/design/js/toolbar.js",

@@ -73,6 +73,18 @@
         const v = controls.dir.value;
         upd((b) => {
           b.dir = v;
+           // Якщо перевели в flex-row — робимо дітей "fill" тільки якщо вони 
+           // досі в "auto" і не мають явної ширини widthPx
+           // якщо це flex + row — авто-розтяг для дітей
+          if (b.display === "flex" && v === "row") {
+            b.children.forEach((ch) => {
+              // не чіпаємо, якщо користувач вже явно вибрав розмір
+              if (ch.layout && ch.layout.basis?.mode === "auto" && !ch.layout.widthPx) {
+                ch.layout.basis.mode = "fill";
+                ch.layout.basis.value = 0;
+              }
+            });
+          }
         });
       });
     controls.justify &&

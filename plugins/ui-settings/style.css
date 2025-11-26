@@ -1,51 +1,153 @@
-.plugin-ui-settings h1{ margin:0 0 10px 0; }
-.plugin-ui-settings .grp{ margin: 10px 0 14px; }
-.plugin-ui-settings summary{
-  cursor: pointer; user-select: none; padding: 6px 0; font-weight: 600;
+/* ============================
+   Світла тема для UI-налаштувань
+   ============================ */
+:root [data-theme="light"] {
+  --settings-bg: #ffffff;
+  --settings-surface: #f9fafb;
+  --settings-input-bg: #ffffff;
+  --settings-border: #d1d5db;
+  --settings-muted: #6b7280;
 }
-.plugin-ui-settings .muted{ color: var(--muted); }
-.plugin-ui-settings .grid{
-  display:grid; gap:10px; grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+
+[data-theme="light"] .plugin-ui-settings {
+  background: var(--settings-bg);
+  color: var(--text);
+  padding: 14px 20px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.plugin-ui-settings h1 {
+  margin: 0 0 10px 0;
+}
+
+.plugin-ui-settings .grp {
+  margin: 10px 0 14px;
+}
+
+.plugin-ui-settings summary {
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 0;
+  font-weight: 600;
+}
+
+.plugin-ui-settings .muted {
+  color: var(--muted);
+}
+
+[data-theme="light"] .plugin-ui-settings .muted {
+  color: var(--settings-muted);
+}
+
+
+.plugin-ui-settings .grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   margin: 8px 0 4px;
 }
-.plugin-ui-settings .fld{
-  background:#101827; border:1px solid var(--border); border-radius:12px; padding:10px;
-  display:flex; align-items:center; gap:10px; justify-content:space-between;
+
+.plugin-ui-settings .fld {
+  background: #101827;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
 }
-.plugin-ui-settings .fld input[type="text"],
-.plugin-ui-settings .fld input[type="number"]{
-  width: 140px; height: 32px; background:#0f172a; color:var(--text);
-  border:1px solid var(--panel-border); border-radius:8px; padding:0 8px;
+
+[data-theme="light"] .plugin-ui-settings .fld {
+  background: var(--settings-surface);
+  border-color: var(--settings-border);
 }
-/*
-.plugin-ui-settings .fld > span{ color:var(--muted); }
+
+
 .plugin-ui-settings .fld input[type="text"],
-.plugin-ui-settings .fld input[type="number"]{
-  width: 140px; height: 32px; background:#0f172a; color:var(--text);
-  border:1px solid var(--border); border-radius:8px; padding:0 8px;
-}*/
+.plugin-ui-settings .fld input[type="number"] {
+  width: 140px;
+  height: 32px;
+  background: #0f172a;
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 0 8px;
+}
+
+[data-theme="light"] .plugin-ui-settings .fld input[type="text"],
+[data-theme="light"] .plugin-ui-settings .fld input[type="number"] {
+  background: var(--settings-input-bg);
+  color: var(--text);
+  border-color: var(--settings-border);
+}
+
+
 /* ---- DnD список ---- */
-.plugin-ui-settings .nav-sort{ display:grid; gap:10px; }
-.plugin-ui-settings .nav-list{
-  list-style:none; padding:0; margin:0;
-  display:grid; gap:8px; max-width:560px;
+.plugin-ui-settings .nav-sort {
+  display: grid;
+  gap: 10px;
 }
-.plugin-ui-settings .nav-list li{
-  display:grid; grid-template-columns: 28px 1fr auto;
-  align-items:center; gap:10px;
-  background:var(--panel-bg); border:1px solid var(--panel-border);
-  border-radius:10px; padding:8px 10px;
+
+.plugin-ui-settings .nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
 }
-.plugin-ui-settings .nav-list li .grab{
-  display:inline-flex; align-items:center; justify-content:center; cursor:grab; user-select:none;
+
+.plugin-ui-settings .nav-list li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 8px 10px;
 }
-.plugin-ui-settings .nav-list li .name{ display:flex; align-items:center; gap:8px; }
-.plugin-ui-settings .nav-list li .id{ opacity:.6; font-size:12px; }
-.plugin-ui-settings .nav-list li.dragging{
-  opacity:.7; outline:1px dashed rgba(109,94,252,.6);
+
+[data-theme="light"] .plugin-ui-settings .nav-list li {
+  background: var(--settings-surface);
+  border-color: var(--settings-border);
 }
-.plugin-ui-settings .nav-list li.drop-before{ box-shadow: 0 -3px 0 0 rgba(109,94,252,.8) inset; }
-.plugin-ui-settings .nav-list li.drop-after { box-shadow: 0  3px 0 0 rgba(109,94,252,.8) inset; }
-.plugin-ui-settings{
+
+
+.plugin-ui-settings .nav-list li .grab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+}
+
+.plugin-ui-settings .nav-list li .name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plugin-ui-settings .nav-list li .id {
+  opacity: .6;
+  font-size: 12px;
+}
+
+.plugin-ui-settings .nav-list li.dragging {
+  opacity: .7;
+  outline: 1px dashed rgba(109, 94, 252, .6);
+}
+
+.plugin-ui-settings .nav-list li.drop-before {
+  box-shadow: 0 -3px 0 0 rgba(109, 94, 252, .8) inset;
+}
+
+.plugin-ui-settings .nav-list li.drop-after {
+  box-shadow: 0 3px 0 0 rgba(109, 94, 252, .8) inset;
+}
+
+.plugin-ui-settings {
   overflow: auto;
 }

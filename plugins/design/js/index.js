@@ -33,14 +33,13 @@ console.log("[design] index.js завантажений");
   }
 
   // ===== Ініціалізація ресайзу інспектора
- // ===== Ініціалізація ресайзу інспектора
-function initInspectorResize(host) {
+  function initInspectorResize(host) {
     const left = host.querySelector(".insp-resizer.left");
     const right = host.querySelector(".insp-resizer.right");
 
     if (!left && !right) {
-        console.warn("[design] insp-resizer elements not found");
-        return;
+      console.warn("[design] insp-resizer elements not found");
+      return;
     }
     // відновлюємо значення з localStorage, якщо воно є
     const raw = localStorage.getItem(INSP_LS_KEY);
@@ -54,37 +53,38 @@ function initInspectorResize(host) {
     const MAX = 500;
 
     const startResize = (side, startX) => {
-        const root = document.documentElement;
-        const current = parseInt(getComputedStyle(root).getPropertyValue("--insp-w")) || 380;
+      const root = document.documentElement;
+      const current = parseInt(getComputedStyle(root).getPropertyValue("--insp-w")) || 380;
 
-        const move = (ev) => {
-            let w;
+      const move = (ev) => {
+        let w;
 
-            if (side === "left") {
-                w = current + (startX - ev.clientX);
-            } else {
-                w = current + (ev.clientX - startX);
-            }
+        if (side === "left") {
+          w = current + (startX - ev.clientX);
+        } else {
+          w = current + (ev.clientX - startX);
+        }
 
-            if (w < MIN) w = MIN;
-            if (w > MAX) w = MAX;
+        if (w < MIN) w = MIN;
+        if (w > MAX) w = MAX;
 
-            root.style.setProperty("--insp-w", w + "px");
-        };
+        root.style.setProperty("--insp-w", w + "px");
+      };
 
-        const up = () => {
-            document.removeEventListener("mousemove", move);
-            document.removeEventListener("mouseup", up);
-            localStorage.setItem("st:insp:width", root.style.getPropertyValue("--insp-w"));
-        };
+      const up = () => {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+        localStorage.setItem("st:insp:width", root.style.getPropertyValue("--insp-w"));
+      };
 
-        document.addEventListener("mousemove", move);
-        document.addEventListener("mouseup", up);
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
     };
+
 
     left?.addEventListener("mousedown", (e) => startResize("left", e.clientX));
     right?.addEventListener("mousedown", (e) => startResize("right", e.clientX));
-}
+  }
 
 
   // ===== Головний bootstrap плагіна design

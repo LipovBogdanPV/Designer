@@ -72,7 +72,6 @@
       fsBtn.addEventListener("click", () => {
         applyFullscreen(!canvasFullscreen);
       });
-
       // ESC для выхода з fullscreen
       const escHandler = (e) => {
         if (e.key === "Escape" && canvasFullscreen) {

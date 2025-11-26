@@ -1,12 +1,14 @@
 /* inspector.css — ширші числові поля та читабельні цифри */
 /* інспектор справа (за замовчуванням) */
 [data-plugin="design"] .st-app.insp-right .st-editor-body {
-  flex-direction: row;          /* полотно зліва, інспектор справа */
+  flex-direction: row;
+  /* полотно зліва, інспектор справа */
 }
 
 /* інспектор зліва */
 [data-plugin="design"] .st-app.insp-left .st-editor-body {
-  flex-direction: row-reverse;  /* міняємо місцями */
+  flex-direction: row-reverse;
+  /* міняємо місцями */
 }
 
 /* коли закрито – ховаємо колонку інспектора повністю */
@@ -25,6 +27,7 @@
   border: 1px solid var(--border);
   background: var(--panel);
 }
+
 /* панель розтягується на всю висоту sticky-блоку */
 .right.insp-wrap .panel {
   display: flex;
@@ -32,11 +35,15 @@
   height: 100%;
   min-height: 0;
 }
+
 /* ТІЛО ІНСПЕКТОРА — ОСЬ ТУТ ЄДИНИЙ СКРОЛ */
 [data-plugin="design"] .insp-body {
-  flex: 1 1 auto; /* займає увесь доступний простір */
-  min-height: 0; /* дозволяє overflow працювати */
-  overflow: auto; /* ← СКРОЛ ТУТ */
+  flex: 1 1 auto;
+  /* займає увесь доступний простір */
+  min-height: 0;
+  /* дозволяє overflow працювати */
+  overflow: auto;
+  /* ← СКРОЛ ТУТ */
   padding: 12px;
   padding-bottom: calc(12px + var(--safe-bottom, 72px));
 }
@@ -45,6 +52,7 @@
   border-left: 1px solid var(--border);
   background: var(--panel);
 }
+
 /*Оновленя стилі
 /* ==== Групи інспектора (details.grp) ==== */
 
@@ -53,25 +61,40 @@ details.grp {
   margin: 8px 0;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: rgba(
-    11,
-    22,
-    47,
-    0.9
-  ); /* твій темний відтінок, можна підкрутити */
+  background: rgba(11,
+      22,
+      47,
+      0.9);
+  /* твій темний відтінок, можна підкрутити */
   overflow: hidden;
 }
 
+/* світла */
+[data-theme="light"] [data-plugin="design"] details.grp {
+  background: rgba(249, 250, 251, 0.9);
+}
+
+/* внутрішнє тіло */
+[data-theme="light"] [data-plugin="design"] details.grp .group {
+  background: #ffffff;
+}
+
+/* кружочок-емодзі */
+[data-theme="light"] [data-plugin="design"] details.grp>summary .emoji {
+  background: #e5e7eb;
+}
+
 /* прибираємо стандартний трикутник */
-details.grp > summary::-webkit-details-marker {
+details.grp>summary::-webkit-details-marker {
   display: none;
 }
-details.grp > summary::marker {
+
+details.grp>summary::marker {
   content: "";
 }
 
 /* хедер-плашка */
-details.grp > summary {
+details.grp>summary {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -84,7 +107,7 @@ details.grp > summary {
 }
 
 /* маленька іконка-емодзі зліва */
-details.grp > summary .emoji {
+details.grp>summary .emoji {
   width: 20px;
   height: 20px;
   display: inline-flex;
@@ -96,7 +119,7 @@ details.grp > summary .emoji {
 }
 
 /* кастомна стрілка праворуч */
-details.grp > summary::after {
+details.grp>summary::after {
   content: "›";
   margin-left: auto;
   font-size: 20px;
@@ -106,7 +129,7 @@ details.grp > summary::after {
 }
 
 /* коли секція відкрита — стрілка повертається */
-details.grp[open] > summary::after {
+details.grp[open]>summary::after {
   transform: rotate(90deg);
   opacity: 1;
 }
@@ -114,7 +137,8 @@ details.grp[open] > summary::after {
 /* внутрішнє тіло секції */
 details.grp .group {
   border-top: 1px solid var(--border);
-  background: var(--panel); /* як і було раніше */
+  background: var(--panel);
+  /* як і було раніше */
   padding: 8px 10px 10px;
 }
 
@@ -122,6 +146,7 @@ details.grp .group {
 details.grp .rows {
   padding: 6px 4px 8px;
 }
+
 /* ==== Ручка ресайзу інспектора ==== */
 /* базовий стиль для обох ручок */
 .insp-resizer {
@@ -176,7 +201,8 @@ details.grp .rows {
 [data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.06);
   border-radius: 999px;
-  border: 2px solid transparent; /* дає відступ і м'який край */
+  border: 2px solid transparent;
+  /* дає відступ і м'який край */
   background-clip: padding-box;
 }
 
@@ -189,69 +215,105 @@ details.grp .rows {
 [data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-thumb:active {
   background-color: rgba(255, 255, 255, 0.18);
 }
+
 [data-plugin="design"] .templates {
   display: flex;
   gap: 0.5rem;
 }
 
 [data-plugin="design"] .dock-panel .dock-head {
-    height: 44px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 12px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(11, 22, 47, 0.8);
-    backdrop-filter: blur(6px);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-[data-plugin="design"] .dock-head .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    height: 28px;
-    padding: 0 10px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: #0b162f;
-    font-size: 12px;
-    color: var(--text);
-}
-[data-plugin="design"] .dock-head .hbtn {
-    height: 28px;
-    padding: 0 10px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface);
-    color: var(--text);
-    font-size: 12px;
-    cursor: pointer;
-}
-[data-plugin="design"] .row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 0.75rem;
-    align-items: center;
-    margin: 0.5rem 0;
-}
-[data-plugin="design"] .row input[type="text"], [data-plugin="design"] .row input[type="number"], [data-plugin="design"] .row input[type="range"],[data-plugin="design"] .row select {
-    width: 100%;
-    background: #0b162f;
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.2rem 0.2rem;
-}
-[data-plugin="design"] .four {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-}
-[data-plugin="design"] .two {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(11, 22, 47, 0.8);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
+/* dock head */
+[data-theme="light"] [data-plugin="design"] .dock-panel .dock-head {
+  background: rgba(249, 250, 251, 0.9);
+}
+
+[data-plugin="design"] .dock-head .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #0b162f;
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* badge "Інспектор секцій" */
+[data-theme="light"] [data-plugin="design"] .dock-head .badge {
+  background: #e5e7eb;
+  color: var(--text);
+}
+
+[data-plugin="design"] .dock-head .hbtn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* кнопки "Перемістити", "Закрити" */
+[data-theme="light"] [data-plugin="design"] .dock-head .hbtn {
+  background: var(--surface);
+  color: var(--text);
+}
+
+[data-plugin="design"] .row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+[data-plugin="design"] .row input[type="text"],
+[data-plugin="design"] .row input[type="number"],
+[data-plugin="design"] .row input[type="range"],
+[data-plugin="design"] .row select {
+  width: 100%;
+  background: #0b162f;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.2rem 0.2rem;
+}
+
+[data-theme="light"] [data-plugin="design"] .row input[type="text"],
+[data-theme="light"] [data-plugin="design"] .row input[type="number"],
+[data-theme="light"] [data-plugin="design"] .row input[type="range"],
+[data-theme="light"] [data-plugin="design"] .row select {
+  background: #f9fafb;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+
+[data-plugin="design"] .four {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+[data-plugin="design"] .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}

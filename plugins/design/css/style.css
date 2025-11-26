@@ -10,7 +10,27 @@
   --chip: #111827;
   --header-h: 56px;
   --insp-w: 300px;
-  --design-toolbar-h: 56px;  /* висота локального тулбара конструктора */
+  --design-toolbar-h: 56px;
+  /* висота локального тулбара конструктора */
+}
+
+:root[data-theme="light"] {
+  --workspace: #f3f4f6;
+  /* фон полотна */
+  --border: #d1d5db;
+  /* бордери */
+  --surface: #ffffff;
+  /* кнопки, поверхні */
+  --panel: #f9fafb;
+  /* панелі, інспектор */
+  --muted: #6b7280;
+  /* другорядний текст */
+  --text: #111827;
+  /* основний текст */
+  --accent: #2563eb;
+  /* акцент/outline блоків */
+  --chip: #e5e7eb;
+  /* фонові "чіпи" */
 }
 
 /* кореневий контейнер конструктора */
@@ -35,7 +55,8 @@
 [data-plugin="design"] .st-app .st-editor-body {
   flex: 1 1 auto;
   display: flex;
-  min-height: 0;    /* обов'язково для коректного скролу всередині */
+  min-height: 0;
+  /* обов'язково для коректного скролу всередині */
   gap: 16px;
 }
 
@@ -44,8 +65,10 @@
   flex: 1 1 auto;
   min-width: 0;
   border-radius: 16px;
-  overflow: auto;   /* скрол для полотна */
+  overflow: auto;
+  /* скрол для полотна */
 }
+
 /* СТИЛІ ДЛЯ СКРОЛБАРА  canvas-wrap */
 [data-plugin="design"] .canvas-wrap,
 [data-plugin="design"].sidebar .sidebar-scroll {
@@ -55,6 +78,7 @@
 }
 
 /* WebKit browsers */
+/* Стилі для скролбарів полотна та сайдбару */
 [data-plugin="design"] .canvas-wrap::-webkit-scrollbar,
 [data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar {
   width: 8px;
@@ -70,7 +94,8 @@
 [data-plugin="design"] .sidebar .sidebar-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.06);
   border-radius: 999px;
-  border: 2px solid transparent; /* дає відступ і м'який край */
+  border: 2px solid transparent;
+  /* дає відступ і м'який край */
   background-clip: padding-box;
 }
 
@@ -84,23 +109,23 @@
   background-color: rgba(255, 255, 255, 0.18);
 }
 
+[data-theme="light"] [data-plugin="design"] .canvas-wrap::-webkit-scrollbar-thumb,
+[data-theme="light"] [data-plugin="design"] .insp-body::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.6);
+}
+
+[data-theme="light"] [data-plugin="design"] .canvas-wrap:hover::-webkit-scrollbar-thumb,
+[data-theme="light"] [data-plugin="design"] .insp-body:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 114, 128, 0.8);
+}
+
+
 
 /* інспектор (колонка справа/зліва) */
 [data-plugin="design"].st-app .st-editor-inspector {
   flex: 0 0 var(--insp-w, 380px);
   max-width: 500px;
   min-width: 320px;
-  /*
-  display: flex;
-  
-  flex: 0 0 var(--insp-w, 380px);
-  max-width: 400px;
-  min-width: 280px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* власний внутрішній скрол у .insp-body 
-  background: var(--panel);
-  border-left: 1px solid var(--border);*/
 }
 
 /* ===== Блоки на канві ===== */
@@ -117,19 +142,24 @@
   transition: box-shadow 0.2s, border-color 0.2s;
   overflow: hidden;
 }
+
 [data-plugin="design"] .st-block[data-dir="row"] {
   flex-direction: row;
 }
+
 [data-plugin="design"] .st-block[data-dir="column"] {
   flex-direction: column;
 }
+
 [data-plugin="design"] .st-block:hover {
   border-color: #60a5fa;
 }
+
 [data-plugin="design"] .st-block.selected {
   outline: 2px solid var(--accent);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) inset;
 }
+
 [data-plugin="design"] .st-block .bg-layer {
   position: absolute;
   inset: 0;
@@ -139,6 +169,7 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+
 [data-plugin="design"] .st-block .overlay {
   position: absolute;
   left: 0;
@@ -147,17 +178,21 @@
   border-radius: inherit;
   z-index: 1;
 }
+
 [data-plugin="design"] .st-block .overlay.top {
   top: 0;
 }
+
 [data-plugin="design"] .st-block .overlay.bottom {
   bottom: 0;
 }
-[data-plugin="design"] .st-block > .st-block {
+
+[data-plugin="design"] .st-block>.st-block {
   position: relative;
   z-index: 2;
 }
-[data-plugin="design"] .toolbar{
+
+[data-plugin="design"] .toolbar {
   display: flex;
   width: 100%;
   gap: 0.5rem;
@@ -169,6 +204,12 @@
   position: sticky;
   top: 0;
 }
+
+/* Світла */
+[data-theme="light"] [data-plugin="design"] .toolbar {
+  background: rgba(255, 255, 255, 0.8);
+}
+
 [data-plugin="design"] .block-toolbar .drag-handle {
   width: 24px;
   height: 24px;
@@ -182,6 +223,14 @@
   font-size: 12px;
   color: #9ca3af;
 }
+
+/* Світла тема: більш світлий handle */
+[data-theme="light"] [data-plugin="design"] .block-toolbar .drag-handle {
+  background: #e5e7eb;
+  border-color: #cbd5f5;
+  color: #4b5563;
+}
+
 [data-plugin="design"] .block-toolbar .drag-handle:active {
   cursor: grabbing;
 }
@@ -195,6 +244,7 @@
   gap: 6px;
   z-index: 7;
 }
+
 /* ===== Кінець блоку на канві ===== */
 
 /* Кнопки */
@@ -209,25 +259,31 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
 [data-plugin="design"] .btn:hover {
   border-color: #33518a;
 }
+
 [data-plugin="design"] .btn.primary {
   background: linear-gradient(180deg, #2563eb, #1d4ed8);
   border-color: #1d4ed8;
 }
+
 [data-plugin="design"] .btn.ghost {
   background: transparent;
 }
+
 [data-plugin="design"] .btn.icon {
   padding: 0.4rem;
   width: 34px;
   height: 34px;
   justify-content: center;
 }
+
 [data-plugin="design"] .btn.ghost {
   background: transparent;
 }
+
 /*Кінець кнопок */
 /* початок блоку на канві ===== */
 /* лінія перед блоком */
@@ -247,55 +303,97 @@
 [data-plugin="design"] .st-block.drop-before::before {
   top: -5px;
 }
+
 [data-plugin="design"] .st-block.drop-after::after {
   bottom: -5px;
 }
+
 /* вставка "всередину" – підсвічуємо весь блок */
 [data-plugin="design"] .st-block.drop-inside {
   outline: 5px dashed #60a5fa;
   outline-offset: 4px;
 }
+
 /*кінець блоку на канві ===== */
-/* Ресайз блоку на канві */
+/* Ресайз блоку на канві руки для зміни розміру блоку */
 [data-plugin="design"] .resize-handle {
   position: absolute;
+  width: 8px;
+  height: 8px;
   z-index: 20;
   background: rgba(96, 165, 250, 0.8);
-  border-radius: 4px;
+  border-radius: 999px;
   opacity: 0;
   transition: opacity 0.2s;
 }
+
 [data-plugin="design"] .st-block:hover .resize-handle {
   opacity: 1;
-}/* правий край */
-[data-plugin="design"] .resize-right {
-  top: 0;
+}
+
+/* боки */
+.st-block .resize-right {
+  top: 50%;
   right: -4px;
-  width: 6px;
-  height: 100%;
+  transform: translateY(-50%);
   cursor: ew-resize;
 }
 
-/* нижній край */
-[data-plugin="design"] .resize-bottom {
+.st-block .resize-left {
+  top: 50%;
+  left: -4px;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.st-block .resize-bottom {
+  left: 50%;
   bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 6px;
+  transform: translateX(-50%);
   cursor: ns-resize;
 }
-/* кут */
-[data-plugin="design"] .resize-corner {
-  right: -4px;
-  bottom: -4px;
-  width: 12px;
-  height: 12px;
+
+.st-block .resize-top {
+  left: 50%;
+  top: -4px;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+/* кути */
+.st-block .resize-corner {
+  width: 10px;
+  height: 10px;
+}
+
+.st-block .resize-corner.br {
+  right: -5px;
+  bottom: -5px;
   cursor: nwse-resize;
 }
-/* Кінець ресайзу блоку на канві */
+
+.st-block .resize-corner.tr {
+  right: -5px;
+  top: -5px;
+  cursor: nesw-resize;
+}
+
+.st-block .resize-corner.bl {
+  left: -5px;
+  bottom: -5px;
+  cursor: nesw-resize;
+}
+
+.st-block .resize-corner.tl {
+  left: -5px;
+  top: -5px;
+  cursor: nwse-resize;
+}
+
+/* Кінець ресайзу блоку на канві ручки  */
 
 /*Модальне вікно інспектора*/
-/* вставка "перед блоком" – підсвічуємо лінією зверху модалка*/
+/* вставка "перед блоком" – підсічуємо лінією зверху модалка*/
 /* кнопка з іконкою ? */
 [data-plugin="design"] .btn.icon {
   padding: 0.4rem;
@@ -318,6 +416,13 @@
   align-items: center;
   justify-content: center;
   z-index: 10000;
+}
+
+/* саме вікно */
+[data-theme="light"] [data-plugin="design"] .st-modal {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  color: #111827;
 }
 
 /* коли відкрита */
@@ -367,14 +472,46 @@
   justify-content: flex-end;
   gap: 8px;
 }
+
 /* Кінець модалки інспектора */
 /* Повноекранний режим редактора */
 [data-plugin="design"] .st-fullscreen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #020617;
-    padding: 16px 24px;
-    box-sizing: border-box;
-    overflow: auto;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #020617;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+[data-theme="light"] [data-plugin="design"] .st-fullscreen {
+  background: #f3f4f6;
+}
+
+/* Підказка про зміну розміру вікна редактора */
+.st-app[data-plugin="design"] .st-resize-hint {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #e5e7eb;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 50;
+}
+
+[data-theme="light"] .st-app[data-plugin="design"] .st-resize-hint {
+  background: rgba(31, 41, 55, 0.9);
+  color: #f9fafb;
+}
+
+
+.st-app[data-plugin="design"] .st-resize-hint.visible {
+  opacity: 1;
 }

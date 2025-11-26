@@ -5,11 +5,6 @@
   // Значення за замовчуванням (як у твоїй попередній версії)
   const defaults = {
     sidebar: {
-      text: "#e5e7eb",
-      bg: "#101827",
-      hoverBg: "rgba(255,255,255,.06)",
-      activeBg: "rgba(109,94,252,.16)",
-      borderColor: "#1f2a44",
       borderW: "1px",
       radius: "10px",
       shadow: "none",
@@ -23,28 +18,16 @@
       wideH: "28px",
       gap: "12px",
       underlineW: "1px",
-      underlineColor: "#000000",
     },
     panel: {
-      pageBg: "#0f172a",
-      bg: "#101827",
-      border: "#1f2a44",
       shadow: "none",
       radius: "12px",
-      text: "#e5e7eb",
-      muted: "#9ca3af",
       fontBase: 14,
     },
     btn: {
-      bg: "#1b2336",
-      hover: "#1f2937",
-      text: "#e5e7eb",
       radius: "8px",
-      border: "#1f2a44",
     },
     table: {
-      rowHover: "#162036",
-      border: "#1f2a44",
       radius: "12px",
       pad: "10px 12px",
     },
@@ -74,7 +57,7 @@
   const saveSettings = (cfg) => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(cfg));
-    } catch {}
+    } catch { }
   };
   const readOrder = () => {
     try {
@@ -86,12 +69,13 @@
   const writeOrder = (order) => {
     try {
       localStorage.setItem(NAV_KEY, JSON.stringify(order));
-    } catch {}
+    } catch { }
   };
 
   // Застосувати в CSS змінні
   function apply(cfg) {
     const r = document.documentElement.style;
+    /*
     r.setProperty("--sidebar-text", cfg.sidebar.text);
     r.setProperty("--sidebar-bg", cfg.sidebar.bg);
     r.setProperty("--sidebar-hover", cfg.sidebar.hoverBg);
@@ -125,21 +109,52 @@
     r.setProperty("--panel-border", cfg.panel.border);
     r.setProperty("--panel-shadow", cfg.panel.shadow);
     r.setProperty("--panel-radius", cfg.panel.radius);
+    
     // НОВЕ: кольори тексту (використовуються по всьому UI)
     r.setProperty("--text", cfg.panel.text);
     r.setProperty("--muted", cfg.panel.muted);
+    */
     // НОВЕ: базовий розмір шрифту
     document.body.style.fontSize = (Number(cfg.panel.fontBase) || 14) + "px";
   }
 
   function hydrateForm(host, cfg) {
     host.querySelectorAll("[data-key]").forEach((el) => {
-      const path = el.dataset.key.split(".");
-      let v = cfg[path[0]][path[1]];
-      if (el.type === "number") v = parseInt(v, 10);
-      el.value = v;
+      const [group, key] = el.dataset.key.split(".");
+      const groupCfg = cfg[group] || {};
+      let v = groupCfg[key];
+
+      // number → парсимо число
+      if (el.type === "number") {
+        if (v === undefined || v === null || v === "") {
+          // або залишаємо поточне el.value, або ставимо 0
+          v = el.value || 0;
+        }
+        v = parseInt(v, 10);
+      }
+
+      // color → гарантуємо валідний #rrggbb
+      if (el.type === "color") {
+        const isValidHex =
+          typeof v === "string" &&
+          /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v);
+
+        if (!isValidHex) {
+          // fallback: залишаємо те, що вже в інпуті, або ставимо чорний
+          v =
+            (el.value &&
+              /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(el.value) &&
+              el.value) ||
+            "#000000";
+        }
+      }
+
+      if (v !== undefined && v !== null && v !== "") {
+        el.value = v;
+      }
     });
   }
+
   function collectForm(host) {
     const out = deepMerge(defaults, {});
     host.querySelectorAll("[data-key]").forEach((el) => {
@@ -337,7 +352,7 @@
     renderNavList(host);
   }
 
-  function unmount() {}
+  function unmount() { }
 
   window.__plugins = window.__plugins || {};
   window.__plugins["ui-settings"] = { mount, unmount };
