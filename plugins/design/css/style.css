@@ -318,76 +318,61 @@
 /* Ресайз блоку на канві руки для зміни розміру блоку */
 [data-plugin="design"] .resize-handle {
   position: absolute;
-  width: 8px;
-  height: 8px;
   z-index: 20;
   background: rgba(96, 165, 250, 0.8);
-  border-radius: 999px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.15s;
 }
 
 [data-plugin="design"] .st-block:hover .resize-handle {
   opacity: 1;
 }
 
-/* боки */
+/* ПРАВА сторона – ручка по всій висоті */
 .st-block .resize-right {
-  top: 50%;
-  right: -4px;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  right: -3px;
+  /* трохи за межі блоку */
+  width: 6px;
   cursor: ew-resize;
+  background: rgba(96, 165, 250, 0.3);
 }
 
+/* ЛІВА сторона – по всій висоті */
 .st-block .resize-left {
-  top: 50%;
-  left: -4px;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  left: -3px;
+  width: 6px;
   cursor: ew-resize;
+  background: rgba(96, 165, 250, 0.3);
 }
 
+/* НИЖНЯ сторона – по всій ширині */
 .st-block .resize-bottom {
-  left: 50%;
-  bottom: -4px;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 6px;
   cursor: ns-resize;
+  background: rgba(96, 165, 250, 0.3);
 }
 
+/* ВЕРХНЯ сторона – по всій ширині */
 .st-block .resize-top {
-  left: 50%;
-  top: -4px;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  top: -3px;
+  height: 6px;
   cursor: ns-resize;
+  background: rgba(96, 165, 250, 0.3);
 }
 
-/* кути */
+/* Якщо кути вже не потрібні – можна просто видалити цей блок.
+   Якщо хочеш залишити – можна сховати: */
 .st-block .resize-corner {
-  width: 10px;
-  height: 10px;
-}
-
-.st-block .resize-corner.br {
-  right: -5px;
-  bottom: -5px;
-  cursor: nwse-resize;
-}
-
-.st-block .resize-corner.tr {
-  right: -5px;
-  top: -5px;
-  cursor: nesw-resize;
-}
-
-.st-block .resize-corner.bl {
-  left: -5px;
-  bottom: -5px;
-  cursor: nesw-resize;
-}
-
-.st-block .resize-corner.tl {
-  left: -5px;
-  top: -5px;
-  cursor: nwse-resize;
+  display: none;
 }
 
 /* Кінець ресайзу блоку на канві ручки  */

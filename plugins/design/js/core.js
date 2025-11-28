@@ -256,28 +256,6 @@
   function getSelected() {
     return selectedId ? findById(rootBlocks, selectedId) : null;
   }
-  /*
-  function findParentAndIndex(id, list = rootBlocks) {
-    for (let i = 0; i < list.length; i++) {
-      const b = list[i];
-      if (b.id === id) return { parent: null, index: i, arr: list };
-      const res = deepFindParent(b, id);
-      if (res) return res;
-    }
-    return null;
-  }
-  // перевірка, що target не є нащадком source
-  function isAncestor(ancestorId, nodeId) {
-    const anc = findById(rootBlocks, ancestorId);
-    if (!anc) return false;
-    const stack = [...anc.children];
-    while (stack.length) {
-      const n = stack.shift();
-      if (n.id === nodeId) return true;
-      stack.push(...n.children);
-    }
-    return false;
-  }*/
   // розширене переміщення блоку moveBlock
   // Переміщення з before/after/inside
   function findParentAndIndex(id, list = rootBlocks, parent = null) {
@@ -478,9 +456,17 @@
 
   // ===== render
   function applyBlockStyles(el, b) {
-    const s = b.style,
+    const s = b.style;
+    const r = computeRadii(s.radius);
 
-      r = computeRadii(s.radius);
+    // хелпер: якщо value порожнє → прибираємо стиль
+    const set = (prop, value) => {
+      if (value === undefined || value === null || value === "") {
+        el.style.removeProperty(prop);
+      } else {
+        el.style.setProperty(prop, value);
+      }
+    };
 
     if (b.display === "grid") {
       el.style.display = "grid";
@@ -525,33 +511,54 @@
     }
 
     const bgLayer = el.querySelector(":scope > .bg-layer");
+
     if (s.bg.type === "image") {
-      el.style.background = "transparent";
+      // фон-картинка – все в .bg-layer, сам блок прозорий
       bgLayer.style.display = "block";
       bgLayer.style.background = buildBackground(s.bg);
-      bgLayer.style.backgroundSize = s.bg.size;
-      bgLayer.style.backgroundPosition = s.bg.pos;
-      bgLayer.style.backgroundAttachment = b.scroll.bgFixed
-        ? "fixed"
-        : "scroll";
+      bgLayer.style.backgroundSize = s.bg.size || "cover";
+      bgLayer.style.backgroundPosition = s.bg.pos || "center";
+      bgLayer.style.backgroundAttachment = b.scroll?.bgFixed ? "fixed" : "scroll";
       bgLayer.style.filter = `grayscale(${s.bg.gray || 0})`;
-    } else {
+
+      set("background", "transparent");
+      set("background-size", "");
+      set("background-position", "");
+      set("background-repeat", "");
+    } else if (s.bg.type === "none" || !s.bg.type) {
+      // фон вимкнено — прибираємо інлайновий background взагалі
       bgLayer.style.display = "none";
-      el.style.background = buildBackground(s.bg);
-      el.style.backgroundSize = "";
-      el.style.backgroundPosition = "";
-      el.style.backgroundRepeat = "";
+      set("background", "");
+      set("background-size", "");
+      set("background-position", "");
+      set("background-repeat", "");
+    } else {
+      // color / gradient
+      bgLayer.style.display = "none";
+      set("background", buildBackground(s.bg));
+      set("background-size", "");
+      set("background-position", "");
+      set("background-repeat", "");
     }
+
 
     el.style.borderTopLeftRadius = r.tl + "px";
     el.style.borderTopRightRadius = r.tr + "px";
     el.style.borderBottomRightRadius = r.br + "px";
     el.style.borderBottomLeftRadius = r.bl + "px";
-
+    // бордер
     const bcol = hexToRgba(s.border.color, s.border.alpha);
-    el.style.borderWidth = (s.border.width || 0) + "px";
-    el.style.borderStyle = s.border.style;
-    el.style.borderColor = s.border.width ? bcol : "transparent";
+    if (s.border.width && s.border.width > 0) {
+      set("border-width", `${s.border.width}px`);
+      set("border-style", s.border.style || "solid");
+      set("border-color", bcol);
+    } else {
+      // повністю чистимо бордер, щоб не заважав дефолтним стилям
+      set("border-width", "");
+      set("border-style", "");
+      set("border-color", "");
+    }
+
 
     const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0
       }px ${s.shadow.spread || 0}px ${hexToRgba(s.shadow.color, s.shadow.alpha)}`;
@@ -580,7 +587,8 @@
     const soft = s.border.soft || 0;
     if (soft > 0 && s.border.width > 0)
       arr.push(`0 0 ${soft}px ${Math.max(0, Math.floor(soft / 4))}px ${bcol}`);
-    el.style.boxShadow = arr.join(", ");
+    set("box-shadow", arr.length ? arr.join(", ") : "");
+    // прокрутка
 
     const sc = b.scroll || {};
 
@@ -621,17 +629,13 @@
 
     // ВИСОТА / МІН-ВИСОТА
     if (L.fullHeight) {
-      el.style.minHeight = `calc(100vh - 160px)`;
+      set("min-height", `calc(100vh - 160px)`);
     } else if (L.fixedHeight) {
-      const h = L.fixedHeight | 0;
-      el.style.minHeight = h ? h + "px" : "";
-      // якщо користувач не задав alignSelf – не даємо flex'у нас розтягувати
-      if (!selfAlign) selfAlign = "flex-start";
+      set("min-height", (L.fixedHeight | 0) + "px");
     } else if (L.minHeightPx) {
-      el.style.minHeight = L.minHeightPx + "px";
-      if (!selfAlign) selfAlign = "flex-start";
+      set("min-height", L.minHeightPx + "px");
     } else {
-      el.style.minHeight = "";
+      set("min-height", "");
     }
 
     // тільки тут виставляємо align-self
