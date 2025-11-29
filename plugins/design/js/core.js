@@ -92,30 +92,30 @@
           },
           radius: {
             mode: "all",
-            all: 16,
-            tl: 16,
-            tr: 16,
-            br: 16,
-            bl: 16,
-            d1a: 24,
-            d1b: 8,
-            d2a: 24,
-            d2b: 8,
+            all: 0,
+            tl: 0,
+            tr: 0,
+            br: 0,
+            bl: 0,
+            d1a: 0,
+            d1b: 0,
+            d2a: 0,
+            d2b: 0,
           },
           border: {
-            width: 1,
+            width: 0,
             style: "solid",
             color: "#334155",
-            alpha: 0.4,
-            soft: 6,
+            alpha: 1,
+            soft: 0,
           },
           shadow: {
             x: 0,
-            y: 8,
-            blur: 24,
+            y: 0,
+            blur: 0,
             spread: 0,
             color: "#000000",
-            alpha: 0.25,
+            alpha: 0,
             inset: {
               x: 0,
               y: 0,
@@ -129,6 +129,8 @@
             top: { enable: false, color: "#000000", alpha: 0.4, h: 120 },
             bottom: { enable: false, color: "#000000", alpha: 0.4, h: 120 },
           },
+          // 🔥 НОВЕ — загальний перемикач
+          cornersOn: false,
         },
         scroll: {
           x: false,
@@ -169,7 +171,7 @@
     return { tl: 0, tr: 0, br: 0, bl: 0 };
   };
   function buildBackground(bg) {
-    if (bg.type === "none") return "transparent";
+    if (!bg || bg.type === "none") return "";
     if (bg.type === "color") return hexToRgba(bg.color, bg.alpha);
     if (bg.type === "gradient") {
       const ca = hexToRgba(bg.gA, bg.gAalpha),
@@ -186,7 +188,7 @@
           : "";
       return `${ov}url('${bg.url}')`;
     }
-    return "transparent";
+    return "";
   }
 
   // ===== state
@@ -458,15 +460,9 @@
   function applyBlockStyles(el, b) {
     const s = b.style;
     const r = computeRadii(s.radius);
+    const cornersOn = !!s.cornersOn;
 
-    // хелпер: якщо value порожнє → прибираємо стиль
-    const set = (prop, value) => {
-      if (value === undefined || value === null || value === "") {
-        el.style.removeProperty(prop);
-      } else {
-        el.style.setProperty(prop, value);
-      }
-    };
+    //r = computeRadii(s.radius);
 
     if (b.display === "grid") {
       el.style.display = "grid";
@@ -511,85 +507,111 @@
     }
 
     const bgLayer = el.querySelector(":scope > .bg-layer");
-
+    // фон /
     if (s.bg.type === "image") {
-      // фон-картинка – все в .bg-layer, сам блок прозорий
+      // фон малюємо через окремий шар, сам блочний фон очищаємо
+      el.style.background = "";
       bgLayer.style.display = "block";
       bgLayer.style.background = buildBackground(s.bg);
-      bgLayer.style.backgroundSize = s.bg.size || "cover";
-      bgLayer.style.backgroundPosition = s.bg.pos || "center";
-      bgLayer.style.backgroundAttachment = b.scroll?.bgFixed ? "fixed" : "scroll";
+      bgLayer.style.backgroundSize = s.bg.size;
+      bgLayer.style.backgroundPosition = s.bg.pos;
+      bgLayer.style.backgroundAttachment = b.scroll.bgFixed
+        ? "fixed"
+        : "scroll";
       bgLayer.style.filter = `grayscale(${s.bg.gray || 0})`;
-
-      set("background", "transparent");
-      set("background-size", "");
-      set("background-position", "");
-      set("background-repeat", "");
-    } else if (s.bg.type === "none" || !s.bg.type) {
-      // фон вимкнено — прибираємо інлайновий background взагалі
-      bgLayer.style.display = "none";
-      set("background", "");
-      set("background-size", "");
-      set("background-position", "");
-      set("background-repeat", "");
     } else {
-      // color / gradient
       bgLayer.style.display = "none";
-      set("background", buildBackground(s.bg));
-      set("background-size", "");
-      set("background-position", "");
-      set("background-repeat", "");
+
+      const bg = buildBackground(s.bg); // "" або реальний фон
+      el.style.background = bg;
+
+      // ці властивості теж очищаємо, якщо ними не користуємось
+      el.style.backgroundSize = "";
+      el.style.backgroundPosition = "";
+      el.style.backgroundRepeat = "";
+    }
+
+    // радіуси
+    // ----- КУТИ / БОРДЕР / ТІНІ -----
+    if (cornersOn) {
+      // радіуси
+      el.style.borderTopLeftRadius = r.tl + "px";
+      el.style.borderTopRightRadius = r.tr + "px";
+      el.style.borderBottomRightRadius = r.br + "px";
+      el.style.borderBottomLeftRadius = r.bl + "px";
+
+      // бордер
+      const bw = s.border.width || 0;
+      const bcol = hexToRgba(s.border.color, s.border.alpha);
+
+      if (bw > 0) {
+        el.style.borderWidth = bw + "px";
+        el.style.borderStyle = s.border.style || "solid";
+        el.style.borderColor = bcol;
+      } else {
+        el.style.borderWidth = "";
+        el.style.borderStyle = "";
+        el.style.borderColor = "";
+      }
+
+      // тіні
+      const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0
+        }px ${s.shadow.spread || 0}px ${hexToRgba(
+          s.shadow.color,
+          s.shadow.alpha
+        )}`;
+
+      const inner = `${s.shadow.inset.x || 0}px ${s.shadow.inset.y || 0}px ${s.shadow.inset.blur || 0
+        }px ${s.shadow.inset.spread || 0}px ${hexToRgba(
+          s.shadow.inset.color,
+          s.shadow.inset.alpha
+        )} inset`;
+
+      const arr = [];
+
+      if (
+        (s.shadow.blur || 0) > 0 ||
+        (s.shadow.spread || 0) !== 0 ||
+        (s.shadow.x || 0) !== 0 ||
+        (s.shadow.y || 0) !== 0 ||
+        (s.shadow.alpha || 0) > 0
+      ) {
+        arr.push(outer);
+      }
+
+      if (
+        (s.shadow.inset.blur || 0) > 0 ||
+        (s.shadow.inset.spread || 0) !== 0 ||
+        (s.shadow.inset.x || 0) !== 0 ||
+        (s.shadow.inset.y || 0) !== 0 ||
+        (s.shadow.inset.alpha || 0) > 0
+      ) {
+        arr.push(inner);
+      }
+
+      const soft = s.border.soft || 0;
+      if (soft > 0 && s.border.width > 0) {
+        const blur = Math.max(0, Math.floor(soft / 4));
+        arr.push(`0 0 ${soft}px ${blur}px ${bcol}`);
+      }
+
+      el.style.boxShadow = arr.join(", ");
+    } else {
+      // 🔄 все вимикаємо
+      el.style.borderTopLeftRadius = "";
+      el.style.borderTopRightRadius = "";
+      el.style.borderBottomRightRadius = "";
+      el.style.borderBottomLeftRadius = "";
+
+      el.style.borderWidth = "";
+      el.style.borderStyle = "";
+      el.style.borderColor = "";
+
+      el.style.boxShadow = "";
     }
 
 
-    el.style.borderTopLeftRadius = r.tl + "px";
-    el.style.borderTopRightRadius = r.tr + "px";
-    el.style.borderBottomRightRadius = r.br + "px";
-    el.style.borderBottomLeftRadius = r.bl + "px";
-    // бордер
-    const bcol = hexToRgba(s.border.color, s.border.alpha);
-    if (s.border.width && s.border.width > 0) {
-      set("border-width", `${s.border.width}px`);
-      set("border-style", s.border.style || "solid");
-      set("border-color", bcol);
-    } else {
-      // повністю чистимо бордер, щоб не заважав дефолтним стилям
-      set("border-width", "");
-      set("border-style", "");
-      set("border-color", "");
-    }
-
-
-    const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0
-      }px ${s.shadow.spread || 0}px ${hexToRgba(s.shadow.color, s.shadow.alpha)}`;
-    const inner = `${s.shadow.inset.x || 0}px ${s.shadow.inset.y || 0}px ${s.shadow.inset.blur || 0
-      }px ${s.shadow.inset.spread || 0}px ${hexToRgba(
-        s.shadow.inset.color,
-        s.shadow.inset.alpha
-      )} inset`;
-    const arr = [];
-    if (
-      (s.shadow.blur || 0) > 0 ||
-      (s.shadow.spread || 0) !== 0 ||
-      (s.shadow.x || 0) !== 0 ||
-      (s.shadow.y || 0) !== 0 ||
-      (s.shadow.alpha || 0) > 0
-    )
-      arr.push(outer);
-    if (
-      (s.shadow.inset.blur || 0) > 0 ||
-      (s.shadow.inset.spread || 0) !== 0 ||
-      (s.shadow.inset.x || 0) !== 0 ||
-      (s.shadow.inset.y || 0) !== 0 ||
-      (s.shadow.inset.alpha || 0) > 0
-    )
-      arr.push(inner);
-    const soft = s.border.soft || 0;
-    if (soft > 0 && s.border.width > 0)
-      arr.push(`0 0 ${soft}px ${Math.max(0, Math.floor(soft / 4))}px ${bcol}`);
-    set("box-shadow", arr.length ? arr.join(", ") : "");
     // прокрутка
-
     const sc = b.scroll || {};
 
     el.style.overflowX = sc.x ? "auto" : "hidden";
@@ -629,17 +651,43 @@
 
     // ВИСОТА / МІН-ВИСОТА
     if (L.fullHeight) {
-      set("min-height", `calc(100vh - 160px)`);
+      el.style.minHeight = `calc(100vh - 160px)`;
     } else if (L.fixedHeight) {
-      set("min-height", (L.fixedHeight | 0) + "px");
+      const h = L.fixedHeight | 0;
+      el.style.minHeight = h ? h + "px" : "";
+      // якщо користувач не задав alignSelf – не даємо flex'у нас розтягувати
+      if (!selfAlign) selfAlign = "flex-start";
     } else if (L.minHeightPx) {
-      set("min-height", L.minHeightPx + "px");
+      el.style.minHeight = L.minHeightPx + "px";
+      if (!selfAlign) selfAlign = "flex-start";
     } else {
-      set("min-height", "");
+      el.style.minHeight = "";
     }
 
     // тільки тут виставляємо align-self
     el.style.alignSelf = selfAlign;
+    // ----- PIN / FIXED ПОЗИЦІЯ -----
+    const pin = L.pin || {};
+    if (pin.enabled) {
+      el.style.position = "fixed";
+      el.style.zIndex = 1000;
+      el.style.top = "";
+      el.style.right = "";
+      el.style.bottom = "";
+      el.style.left = "";
+
+      if (pin.side === "top") el.style.top = "0";
+      else if (pin.side === "bottom") el.style.bottom = "0";
+      else if (pin.side === "left") el.style.left = "0";
+      else if (pin.side === "right") el.style.right = "0";
+    } else {
+      el.style.position = "";
+      el.style.top = "";
+      el.style.right = "";
+      el.style.bottom = "";
+      el.style.left = "";
+      el.style.zIndex = "";
+    }
 
 
     const top = el.querySelector(":scope > .overlay.top");
@@ -1118,13 +1166,13 @@
     const cornerBL = blockEl.querySelector(".resize-corner.bl");
     const cornerTL = blockEl.querySelector(".resize-corner.tl");
 
-    function startResize(e, mode) {
+    function startResize(e, axis, side) {
       e.preventDefault();
       e.stopPropagation();
 
       // 🔒 дозволяємо ресайз тільки для поточно вибраного блоку
       if (selectedId !== blockId) {
-        showResizeHint();   // можна закоментити, якщо підказка не потрібна
+        showResizeHint();
         return;
       }
 
@@ -1138,19 +1186,42 @@
       const startWidth = rect.width;
       const startHeight = rect.height;
 
+      const isLeft =
+        side === "left" || side === "tl" || side === "bl";
+      const isTop =
+        side === "top" || side === "tl" || side === "tr";
+
       function onMove(ev) {
         const dx = ev.clientX - startX;
         const dy = ev.clientY - startY;
 
         updateSelected((b) => {
-          if (mode === "x" || mode === "xy") {
-            const newW = Math.max(40, startWidth + dx);
-            b.layout.widthPx = Math.round(newW);
+          b.layout = b.layout || {};
+          const L = b.layout;
+
+          // --- ШИРИНА ---
+          if (axis === "x" || axis === "xy") {
+            let newW = isLeft ? startWidth - dx : startWidth + dx;
+            newW = Math.max(80, Math.round(newW)); // мінімальна ширина
+
+            L.widthPx = newW;
+
+            // перевести в режим фіксованої ширини
+            if (L.basis) {
+              L.basis.mode = "auto";
+              L.basis.value = 0;
+            }
+            L.grow = 0;
+            // shrink можна залишити як є
           }
-          if (mode === "y" || mode === "xy") {
-            const newH = Math.max(40, startHeight + dy);
-            b.layout.fixedHeight = Math.round(newH);
-            b.layout.fullHeight = false; // якщо вручну тягнемо — fullHeight скидається
+
+          // --- ВИСОТА ---
+          if (axis === "y" || axis === "xy") {
+            let newH = isTop ? startHeight - dy : startHeight + dy;
+            newH = Math.max(40, Math.round(newH)); // мінімальна висота
+
+            L.fixedHeight = newH;
+            L.fullHeight = false; // якщо вручну тягнемо — скидаємо fullHeight
           }
         });
       }
@@ -1165,19 +1236,20 @@
     }
 
     // горизонтальні
-    right?.addEventListener("mousedown", (e) => startResize(e, "x"));
-    left?.addEventListener("mousedown", (e) => startResize(e, "x"));
+    right?.addEventListener("mousedown", (e) => startResize(e, "x", "right"));
+    left?.addEventListener("mousedown", (e) => startResize(e, "x", "left"));
 
     // вертикальні
-    bottom?.addEventListener("mousedown", (e) => startResize(e, "y"));
-    top?.addEventListener("mousedown", (e) => startResize(e, "y"));
+    bottom?.addEventListener("mousedown", (e) => startResize(e, "y", "bottom"));
+    top?.addEventListener("mousedown", (e) => startResize(e, "y", "top"));
 
-    // кути
-    cornerBR?.addEventListener("mousedown", (e) => startResize(e, "xy"));
-    cornerTR?.addEventListener("mousedown", (e) => startResize(e, "xy"));
-    cornerBL?.addEventListener("mousedown", (e) => startResize(e, "xy"));
-    cornerTL?.addEventListener("mousedown", (e) => startResize(e, "xy"));
+    // кути (міняємо і ширину, і висоту)
+    cornerBR?.addEventListener("mousedown", (e) => startResize(e, "xy", "br"));
+    cornerTR?.addEventListener("mousedown", (e) => startResize(e, "xy", "tr"));
+    cornerBL?.addEventListener("mousedown", (e) => startResize(e, "xy", "bl"));
+    cornerTL?.addEventListener("mousedown", (e) => startResize(e, "xy", "tl"));
   }
+
 
   window.STDesignCore = api;
 })();

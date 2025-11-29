@@ -4,150 +4,237 @@
 
   function init(api, root = document) {
     if (!api) return;
+
     const controls = {
-      sizeMode: $("#sizeMode", root),
-      sizeVal: $("#sizeVal", root),
+      widthMode: $("#widthMode", root),
+      widthValue: $("#widthValue", root),
+      heightMode: $("#heightMode", root),
+      heightValue: $("#heightValue", root),
       grow: $("#grow", root),
       shrink: $("#shrink", root),
       alignSelf: $("#alignSelf", root),
-      minH: $("#minH", root),
-      widthPx: $("#widthPx", root),
-      fullHeight: $("#fullHeight", root),
-      fixedHeight: $("#fixedHeight", root),
-      dockWhere: $("#dockWhere", root),
-      dockWidth: $("#dockWidth", root),
-      fillRow: $("#rowFillChildren", root),
-      fillBtn: $("#fillChildrenBtn", root),
+      pinEnabled: $("#pinEnabled", root),
+      pinSide: $("#pinSide", root),
     };
-
-    api.subscribeSelection((b) => {
-      if (!b) return;
-      const L = b.layout;
-      controls.sizeMode && (controls.sizeMode.value = L.basis.mode);
-      controls.sizeVal && (controls.sizeVal.value = L.basis.value || "");
-      controls.grow && (controls.grow.checked = !!L.grow);
-      controls.shrink && (controls.shrink.checked = !!L.shrink);
-      controls.alignSelf && (controls.alignSelf.value = L.alignSelf || "auto");
-      controls.minH && (controls.minH.value = L.minHeightPx || "");
-      controls.widthPx && (controls.widthPx.value = L.widthPx || "");
-      controls.fullHeight && (controls.fullHeight.checked = !!L.fullHeight);
-      controls.fixedHeight &&
-        (controls.fixedHeight.value = L.fixedHeight || "");
-      // Показувати кнопку "Діти по ширині", якщо:
-      // - є хоч один дочірній блок
-      // - батько - flex-контейнер з напрямком row
-      controls.fillRow &&
-        (controls.fillRow.style.display =
-          b &&
-          b.display === "flex" &&
-          b.dir === "row" &&
-          Array.isArray(b.children) &&
-          b.children.length > 0
-            ? "grid"
-            : "none");
-      // dockWhere / dockWidth залишаю для майбутніх шаблонів
-      // Показувати кнопку "Діти по ширині", якщо батько - flex-контейнер
-      /*
-      if (controls.fillRow) {
-        const canFill =
-          b &&
-          b.displayParent === "flex" &&
-          b.dir === "row" &&
-          Array.isArray(b.children) &&
-          b.children.length > 0;
-        controls.fillRow.style.display = canFill ? "flex" : "none";
-      }*/
-    });
 
     const upd = (fn) => api.updateSelected(fn);
 
-    controls.sizeMode &&
-      controls.sizeMode.addEventListener("change", () => {
-        const m = controls.sizeMode.value;
+    function syncWidthInputs(mode) {
+      if (!controls.widthValue) return;
+      const disable = mode === "auto" || mode === "fill";
+      controls.widthValue.disabled = disable;
+      controls.widthValue.placeholder =
+        mode === "%" ? "% від контейнера" : "px";
+    }
+
+    function syncHeightInputs(mode) {
+      if (!controls.heightValue) return;
+      const disable = mode === "content" || mode === "screen";
+      controls.heightValue.disabled = disable;
+      controls.heightValue.placeholder = "px";
+    }
+
+    // коли змінюємо вибраний блок — підтягуємо значення в форму
+    api.subscribeSelection((b) => {
+      if (!b) return;
+      const L = b.layout || {};
+
+      // ----- ширина -----
+      let wMode = (L.basis && L.basis.mode) || "auto";
+      let wVal = (L.basis && L.basis.value) || "";
+
+      if (wMode === "px" && L.widthPx) wVal = L.widthPx;
+
+      if (controls.widthMode) controls.widthMode.value = wMode;
+      if (controls.widthValue) controls.widthValue.value = wVal;
+      syncWidthInputs(wMode);
+
+      // ----- висота -----
+      let hMode = "content";
+      let hVal = "";
+
+      if (L.fullHeight) {
+        hMode = "screen";
+      } else if (L.fixedHeight) {
+        hMode = "fixed";
+        hVal = L.fixedHeight | 0;
+      } else if (L.minHeightPx) {
+        hMode = "min";
+        hVal = L.minHeightPx | 0;
+      }
+
+      if (controls.heightMode) controls.heightMode.value = hMode;
+      if (controls.heightValue) controls.heightValue.value = hVal;
+      syncHeightInputs(hMode);
+
+      // ----- flex-grow / shrink -----
+      if (controls.grow) controls.grow.checked = !!L.grow;
+      if (controls.shrink)
+        controls.shrink.checked = L.shrink == null ? true : !!L.shrink;
+
+      if (controls.alignSelf)
+        controls.alignSelf.value = L.alignSelf || "auto";
+
+      // ----- pin -----
+      const pin = L.pin || { enabled: false, side: "top" };
+      if (controls.pinEnabled) controls.pinEnabled.checked = !!pin.enabled;
+      if (controls.pinSide) controls.pinSide.value = pin.side || "top";
+    });
+
+    // ====== обробка подій ======
+
+    // --- ширина ---
+    if (controls.widthMode) {
+      controls.widthMode.addEventListener("change", () => {
+        const mode = controls.widthMode.value;
+        syncWidthInputs(mode);
+        const val = Number(controls.widthValue?.value || 0) || 0;
+
         upd((b) => {
-          b.layout.basis.mode = m;
-          if (m === "fill") {
-            b.layout.grow = 1;
-            b.layout.shrink = 1;
-            b.layout.basis.value = 0;
+          b.layout = b.layout || {};
+          const L = b.layout;
+
+          L.basis = L.basis || { mode: "auto", value: 0 };
+
+          if (mode === "auto") {
+            L.basis.mode = "auto";
+            L.basis.value = 0;
+            delete L.widthPx;
+          } else if (mode === "fill") {
+            L.basis.mode = "fill";
+            L.basis.value = 0;
+            L.grow = 1;
+            if (L.shrink == null) L.shrink = 1;
+            delete L.widthPx;
+          } else if (mode === "px") {
+            L.basis.mode = "px";
+            L.basis.value = val;
+            L.widthPx = val;
+          } else if (mode === "%") {
+            L.basis.mode = "%";
+            L.basis.value = val;
+            delete L.widthPx;
           }
         });
       });
-    controls.sizeVal &&
-      controls.sizeVal.addEventListener("input", () => {
-        const v = +controls.sizeVal.value || 0;
+    }
+
+    if (controls.widthValue) {
+      controls.widthValue.addEventListener("input", () => {
+        const mode = controls.widthMode.value;
+        const val = Number(controls.widthValue.value || 0) || 0;
+        if (mode === "auto" || mode === "fill") return;
+
         upd((b) => {
-          b.layout.basis.value = v;
+          b.layout = b.layout || {};
+          const L = b.layout;
+          L.basis = L.basis || { mode: mode, value: 0 };
+          L.basis.mode = mode;
+          L.basis.value = val;
+          if (mode === "px") L.widthPx = val;
         });
       });
+    }
+
+    // --- висота ---
+    if (controls.heightMode) {
+      controls.heightMode.addEventListener("change", () => {
+        const mode = controls.heightMode.value;
+        syncHeightInputs(mode);
+        const val = Number(controls.heightValue?.value || 0) || 0;
+
+        upd((b) => {
+          b.layout = b.layout || {};
+          const L = b.layout;
+
+          L.fullHeight = false;
+          delete L.fixedHeight;
+          delete L.minHeightPx;
+
+          if (mode === "content") {
+            // все скинули вище
+          } else if (mode === "screen") {
+            L.fullHeight = true;
+          } else if (mode === "fixed") {
+            L.fixedHeight = val;
+          } else if (mode === "min") {
+            L.minHeightPx = val;
+          }
+        });
+      });
+    }
+
+    if (controls.heightValue) {
+      controls.heightValue.addEventListener("input", () => {
+        const mode = controls.heightMode.value;
+        const val = Number(controls.heightValue.value || 0) || 0;
+        if (mode === "content" || mode === "screen") return;
+
+        upd((b) => {
+          b.layout = b.layout || {};
+          const L = b.layout;
+          if (mode === "fixed") {
+            L.fixedHeight = val;
+          } else if (mode === "min") {
+            L.minHeightPx = val;
+          }
+        });
+      });
+    }
+
+    // --- grow/shrink/alignSelf ---
     controls.grow &&
       controls.grow.addEventListener("change", () => {
-        const v = controls.grow.checked ? 1 : 0;
+        const checked = controls.grow.checked;
         upd((b) => {
-          b.layout.grow = v;
+          b.layout = b.layout || {};
+          b.layout.grow = checked ? 1 : 0;
         });
       });
+
     controls.shrink &&
       controls.shrink.addEventListener("change", () => {
-        const v = controls.shrink.checked ? 1 : 0;
+        const checked = controls.shrink.checked;
         upd((b) => {
-          b.layout.shrink = v;
+          b.layout = b.layout || {};
+          b.layout.shrink = checked ? 1 : 0;
         });
       });
+
     controls.alignSelf &&
       controls.alignSelf.addEventListener("change", () => {
         const v = controls.alignSelf.value;
         upd((b) => {
+          b.layout = b.layout || {};
           b.layout.alignSelf = v;
         });
       });
-    controls.minH &&
-      controls.minH.addEventListener("input", () => {
-        const v = +controls.minH.value || 0;
+
+    // --- pin (fixed) ---
+    if (controls.pinEnabled) {
+      controls.pinEnabled.addEventListener("change", () => {
+        const enabled = controls.pinEnabled.checked;
+        const side = controls.pinSide ? controls.pinSide.value : "top";
         upd((b) => {
-          b.layout.minHeightPx = v;
+          b.layout = b.layout || {};
+          b.layout.pin = { enabled, side };
         });
       });
-    controls.widthPx &&
-      controls.widthPx.addEventListener("input", () => {
-        const v = +controls.widthPx.value || 0;
+    }
+
+    if (controls.pinSide) {
+      controls.pinSide.addEventListener("change", () => {
+        const side = controls.pinSide.value;
+        const enabled = controls.pinEnabled?.checked;
         upd((b) => {
-          b.layout.widthPx = v;
+          b.layout = b.layout || {};
+          const pin = b.layout.pin || {};
+          pin.side = side;
+          if (enabled != null) pin.enabled = enabled;
+          b.layout.pin = pin;
         });
       });
-    controls.fullHeight &&
-      controls.fullHeight.addEventListener("change", () => {
-        const v = !!controls.fullHeight.checked;
-        upd((b) => {
-          b.layout.fullHeight = v;
-        });
-      });
-    controls.fixedHeight &&
-      controls.fixedHeight.addEventListener("input", () => {
-        const v = +controls.fixedHeight.value || "";
-        upd((b) => {
-          b.layout.fixedHeight = v;
-        });
-      });
-    // Заміна/оновлення обробника кнопки "заповнити дітей"
-    controls.fillBtn &&
-      controls.fillBtn.addEventListener("click", () => {
-        upd((b) => {
-          if (Array.isArray(b.children)) {
-            b.children.forEach((ch) => {
-              ch.layout = ch.layout || {};
-              // встановлюємо basis як "fill"
-              ch.layout.basis = { mode: "fill", value: 0, unit: "px" };
-              // забезпечуємо розтягування
-              ch.layout.grow = 1;
-              ch.layout.shrink = 1;
-              // прибираємо фіксовану ширину, якщо вона була
-              if ("widthPx" in ch.layout) delete ch.layout.widthPx;
-            });
-          }
-        });
-      });
-    // dockWhere / dockWidth залишаю для майбутніх шаблонів
+    }
   }
 
   window.STInspectorSize = { init };
