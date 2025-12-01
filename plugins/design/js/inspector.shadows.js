@@ -6,6 +6,9 @@
     if (!api) return;
 
     const c = {
+      enable: $("#shadowsEnable", root),
+      body: $("#shadowsBody", root),
+
       shX: $("#shX", root),
       shY: $("#shY", root),
       shBlur: $("#shBlur", root),
@@ -21,158 +24,184 @@
       inAlpha: $("#inAlpha", root),
     };
 
-    const num = (v, def = 0) => {
-      const n = Number(v);
-      return Number.isFinite(n) ? n : def;
-    };
+    const upd = (fn) => api.updateSelected(fn);
 
-    // ---- оновлення контролів при зміні вибраного блоку
+    function toggleBody(on) {
+      if (!c.body) return;
+      c.body.style.opacity = on ? "1" : "0.4";
+      c.body.style.pointerEvents = on ? "auto" : "none";
+    }
+
+    // ===== синхронізація при виборі блоку =====
     api.subscribeSelection((b) => {
       if (!b) return;
+      const s = b.style || {};
+      const sh = s.shadow || {};
+      const ins = sh.inset || {};
 
-      const s = (b.style && b.style.shadow) || {};
-      const i = s.inset || {};
+      const enabled = !!s.shadowsOn;
+      if (c.enable) c.enable.checked = enabled;
+      toggleBody(enabled);
 
-      // outer
-      c.shX && (c.shX.value = s.x ?? 0);
-      c.shY && (c.shY.value = s.y ?? 0);
-      c.shBlur && (c.shBlur.value = s.blur ?? 0);
-      c.shSpread && (c.shSpread.value = s.spread ?? 0);
-      c.shColor && (c.shColor.value = s.color || "#000000");
-      c.shAlpha && (c.shAlpha.value = s.alpha ?? 0.25);
+      if (c.shX) c.shX.value = sh.x ?? 0;
+      if (c.shY) c.shY.value = sh.y ?? 0;
+      if (c.shBlur) c.shBlur.value = sh.blur ?? 0;
+      if (c.shSpread) c.shSpread.value = sh.spread ?? 0;
+      if (c.shColor) c.shColor.value = sh.color || "#000000";
+      if (c.shAlpha) c.shAlpha.value = sh.alpha ?? 0;
 
-      // inner
-      c.inX && (c.inX.value = i.x ?? 0);
-      c.inY && (c.inY.value = i.y ?? 0);
-      c.inBlur && (c.inBlur.value = i.blur ?? 0);
-      c.inSpread && (c.inSpread.value = i.spread ?? 0);
-      c.inColor && (c.inColor.value = i.color || "#000000");
-      c.inAlpha && (c.inAlpha.value = i.alpha ?? 0);
+      if (c.inX) c.inX.value = ins.x ?? 0;
+      if (c.inY) c.inY.value = ins.y ?? 0;
+      if (c.inBlur) c.inBlur.value = ins.blur ?? 0;
+      if (c.inSpread) c.inSpread.value = ins.spread ?? 0;
+      if (c.inColor) c.inColor.value = ins.color || "#000000";
+      if (c.inAlpha) c.inAlpha.value = ins.alpha ?? 0;
     });
 
-    const upd = (fn) =>
-      api.updateSelected((b) => {
-        // гарантуємо, що структура існує
-        b.style = b.style || {};
-        b.style.shadow = b.style.shadow || {
-          x: 0,
-          y: 8,
-          blur: 24,
-          spread: 0,
-          color: "#000000",
-          alpha: 0.25,
-          inset: { x: 0, y: 0, blur: 0, spread: 0, color: "#000000", alpha: 0 },
-        };
-        b.style.shadow.inset = b.style.shadow.inset || {
-          x: 0,
-          y: 0,
-          blur: 0,
-          spread: 0,
-          color: "#000000",
-          alpha: 0,
-        };
-        fn(b.style.shadow, b.style.shadow.inset);
+    // ===== логіка керування =====
+
+    // Увімк/вимкнути тіні
+    c.enable &&
+      c.enable.addEventListener("change", () => {
+        const on = c.enable.checked;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadowsOn = on;
+        });
+        toggleBody(on);
       });
 
-    // ---- outer events
+    // Зовнішня тінь: позиція
     c.shX &&
       c.shX.addEventListener("input", () => {
-        const v = num(c.shX.value);
-        upd((s) => {
-          s.x = v;
+        const v = +c.shX.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.x = v;
         });
       });
 
     c.shY &&
       c.shY.addEventListener("input", () => {
-        const v = num(c.shY.value);
-        upd((s) => {
-          s.y = v;
+        const v = +c.shY.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.y = v;
         });
       });
 
+    // Зовнішня тінь: blur / spread
     c.shBlur &&
       c.shBlur.addEventListener("input", () => {
-        const v = num(c.shBlur.value);
-        upd((s) => {
-          s.blur = v;
+        const v = +c.shBlur.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.blur = v;
         });
       });
 
     c.shSpread &&
       c.shSpread.addEventListener("input", () => {
-        const v = num(c.shSpread.value);
-        upd((s) => {
-          s.spread = v;
+        const v = +c.shSpread.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.spread = v;
         });
       });
 
+    // Зовнішня тінь: колір / альфа
     c.shColor &&
       c.shColor.addEventListener("input", () => {
-        const v = c.shColor.value || "#000000";
-        upd((s) => {
-          s.color = v;
+        const v = c.shColor.value;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.color = v;
         });
       });
 
     c.shAlpha &&
       c.shAlpha.addEventListener("input", () => {
-        const v = Number(c.shAlpha.value);
-        upd((s) => {
-          s.alpha = Number.isFinite(v) ? v : 0;
+        const v = +c.shAlpha.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.alpha = v;
         });
       });
 
-    // ---- inner (inset) events
+    // Внутрішня тінь: позиція
     c.inX &&
       c.inX.addEventListener("input", () => {
-        const v = num(c.inX.value);
-        upd((_, i) => {
-          i.x = v;
+        const v = +c.inX.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.x = v;
         });
       });
 
     c.inY &&
       c.inY.addEventListener("input", () => {
-        const v = num(c.inY.value);
-        upd((_, i) => {
-          i.y = v;
+        const v = +c.inY.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.y = v;
         });
       });
 
+    // Внутрішня тінь: blur / spread
     c.inBlur &&
       c.inBlur.addEventListener("input", () => {
-        const v = num(c.inBlur.value);
-        upd((_, i) => {
-          i.blur = v;
+        const v = +c.inBlur.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.blur = v;
         });
       });
 
     c.inSpread &&
       c.inSpread.addEventListener("input", () => {
-        const v = num(c.inSpread.value);
-        upd((_, i) => {
-          i.spread = v;
+        const v = +c.inSpread.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.spread = v;
         });
       });
 
+    // Внутрішня тінь: колір / альфа
     c.inColor &&
       c.inColor.addEventListener("input", () => {
-        const v = c.inColor.value || "#000000";
-        upd((_, i) => {
-          i.color = v;
+        const v = c.inColor.value;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.color = v;
         });
       });
 
     c.inAlpha &&
       c.inAlpha.addEventListener("input", () => {
-        const v = Number(c.inAlpha.value);
-        upd((_, i) => {
-          i.alpha = Number.isFinite(v) ? v : 0;
+        const v = +c.inAlpha.value || 0;
+        upd((b) => {
+          b.style = b.style || {};
+          b.style.shadow = b.style.shadow || {};
+          b.style.shadow.inset = b.style.shadow.inset || {};
+          b.style.shadow.inset.alpha = v;
         });
       });
-
-    console.log("[design:shadows] інспектор тіней ініціалізовано");
   }
 
   window.STInspectorShadows = { init };

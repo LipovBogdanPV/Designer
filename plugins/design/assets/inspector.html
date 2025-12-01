@@ -344,8 +344,204 @@
           </div>
         </div>
       </details>
+      <!-- ТІНІ -->
+      <details class="grp">
+        <summary>🌫️ <span></span>Тіні (outer / inset)</summary>
+        <div class="group">
+          <div class="rows">
+            <!-- ГАЛОЧКА УВІМКНЕННЯ -->
+            <div class="row">
+              <label class="chk-row">
+                <input type="checkbox" id="shadowsEnable" />
+                Увімкнути тіні
+              </label>
+            </div>
 
+            <!-- ВСІ НАЛАШТУВАННЯ ТІНЕЙ (вмикаємо/вимикаємо цілком) -->
+            <div id="shadowsBody">
+              <div class="row">
+                <label>Зовн. тінь</label>
+                <div class="two">
+                  <input id="shX" type="number" /><input id="shY" type="number" />
+                </div>
+              </div>
+              <div class="row">
+                <label>Blur / Spread</label>
+                <div class="two">
+                  <input id="shBlur" type="number" /><input id="shSpread" type="number" />
+                </div>
+              </div>
+              <div class="row">
+                <label>Колір / α</label>
+                <div class="two">
+                  <input id="shColor" type="color" />
+                  <input id="shAlpha" type="range" min="0" max="1" step="0.01" />
+                </div>
+              </div>
 
+              <div class="row">
+                <label>Внутр. тінь</label>
+                <div class="two">
+                  <input id="inX" type="number" /><input id="inY" type="number" />
+                </div>
+              </div>
+              <div class="row">
+                <label>Blur / Spread</label>
+                <div class="two">
+                  <input id="inBlur" type="number" /><input id="inSpread" type="number" />
+                </div>
+              </div>
+              <div class="row">
+                <label>Колір / α</label>
+                <div class="two">
+                  <input id="inColor" type="color" />
+                  <input id="inAlpha" type="range" min="0" max="1" step="0.01" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+      <!-- Оверлеї: верх/низ, -->
+      <details class="grp">
+        <summary>🧵<span></span>Оверлеї: верх/низ</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Top: вкл</label><input type="checkbox" id="ovTopEnable" />
+            </div>
+            <div class="row">
+              <label>Top: колір/α</label>
+              <div class="two">
+                <input type="color" id="ovTopColor" /><input type="range" id="ovTopAlpha" min="0" max="1" step="0.01" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Top: висота(px)</label><input type="number" id="ovTopH" />
+            </div>
+            <div class="row">
+              <label>Bottom: вкл</label><input type="checkbox" id="ovBotEnable" />
+            </div>
+            <div class="row">
+              <label>Bottom: колір/α</label>
+              <div class="two">
+                <input type="color" id="ovBotColor" /><input type="range" id="ovBotAlpha" min="0" max="1" step="0.01" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Bottom: висота(px)</label><input type="number" id="ovBotH" />
+            </div>
+          </div>
+        </div>
+      </details>
+      <!-- ПРОКРУТКА, Скролбар, -->
+      <details class="grp">
+        <summary>🛰️<span></span>Прокрутка & Скролбар</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Гор. скрол</label><input type="checkbox" id="scrollX" />
+            </div>
+            <div class="row">
+              <label>Верт. скрол</label><input type="checkbox" id="scrollY" />
+            </div>
+            <div class="row">
+              <label>Pan фон</label>
+              <div class="two">
+                <label class="small"><input type="checkbox" id="panEnable" /> з прокруткою</label>
+                <select id="panDir">
+                  <option value="y">Вгору/Вниз</option>
+                  <option value="x">Вліво/Вправо</option>
+                  <option value="xy">Обидва</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <label>Фон fixed</label><input type="checkbox" id="bgFixed" />
+            </div>
+
+            <div class="divider"></div>
+            <div class="row">
+              <label>Скролбар: сховати</label><input type="checkbox" id="sbHide" />
+            </div>
+            <div class="row">
+              <label>Товщина (px)</label><input id="sbThick" type="number" min="0" max="24" />
+            </div>
+            <div class="row">
+              <label>Track / Thumb</label>
+              <div class="two">
+                <input type="color" id="sbTrack" /><input type="color" id="sbThumb" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Радіус повзунка</label><input id="sbRadius" type="number" min="0" max="24" />
+            </div>
+          </div>
+        </div>
+      </details>
+      <!-- Копіювання -->
+      <details class="grp">
+        <summary>🧷<span></span>Копіювання</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Відступ копії (px)</label><input id="copyOffset" type="number" min="0" value="4" />
+            </div>
+            <div class="row">
+              <label>Дії</label>
+              <div class="templates">
+                <button class="btn" id="copyInside">Копія всередину</button>
+                <button class="btn" id="copyOutside">Копія назовні</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+      <!-- РОБОЧЕ СЕРЕДОВИЩЕ, ШАБЛОНИ -->
+      <details class="grp">
+        <summary>🖥️<span></span>Робоче середовище</summary>
+        <div class="group">
+          <div class="rows">
+            <div class="row">
+              <label>Колір полотна</label>
+              <div class="controls">
+                <input type="color" id="workspaceColor" />
+              </div>
+            </div>
+            <div class="row">
+              <label>Нижнє поле (px)</label><input type="number" id="safeBottom" min="0" step="1" value="72" />
+            </div>
+            <div class="divider"></div>
+            <!-- якщо проект пустий — кнопка створення головного контейнера -->
+            <div class="row" id="wsContainerRow">
+              <label>Головний контейнер</label>
+              <div class="templates">
+                <button type="button" class="btn" id="wsCreateContainer">
+                  Створити контейнер
+                </button>
+              </div>
+            </div>
+            <!-- налаштування самого контейнера (показуються, коли вибрано кореневий блок) -->
+            <div class="row" id="wsMaxWidthRow" style="display:none">
+              <label>Макс. ширина</label>
+              <select id="wsMaxWidth">
+                <option value="">Full width</option>
+                <option value="960">960</option>
+                <option value="1200">1200</option>
+                <option value="1440">1440</option>
+              </select>
+            </div>
+            <div class="row" id="wsPaddingRow" style="display:none">
+              <label>Внутр. відступ (px)</label>
+              <input type="number" id="wsPadding" min="0" value="24" />
+            </div>
+            <div class="row">
+              <label>Перетягування блоків</label><label class="small"><input type="checkbox" id="dndEnable" checked />
+                увімкнено</label>
+            </div>
+          </div>
+        </div>
+      </details>
       <!-- ШАБЛОНИ, Збереження -->
       <details class="grp">
         <summary>🖥️<span></span> Шаблони / Збереження</summary>

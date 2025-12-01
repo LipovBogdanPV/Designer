@@ -129,8 +129,8 @@
             top: { enable: false, color: "#000000", alpha: 0.4, h: 120 },
             bottom: { enable: false, color: "#000000", alpha: 0.4, h: 120 },
           },
-          // 🔥 НОВЕ — загальний перемикач
           cornersOn: false,
+          shadowsOn: false,   // 🔥 новий перемикач
         },
         scroll: {
           x: false,
@@ -532,7 +532,10 @@
     }
 
     // радіуси
-    // ----- КУТИ / БОРДЕР / ТІНІ -----
+    // ----- КУТИ / БОРДЕР -----
+    const bw = s.border.width || 0;
+    const bcol = hexToRgba(s.border.color, s.border.alpha);
+
     if (cornersOn) {
       // радіуси
       el.style.borderTopLeftRadius = r.tl + "px";
@@ -541,9 +544,6 @@
       el.style.borderBottomLeftRadius = r.bl + "px";
 
       // бордер
-      const bw = s.border.width || 0;
-      const bcol = hexToRgba(s.border.color, s.border.alpha);
-
       if (bw > 0) {
         el.style.borderWidth = bw + "px";
         el.style.borderStyle = s.border.style || "solid";
@@ -553,13 +553,24 @@
         el.style.borderStyle = "";
         el.style.borderColor = "";
       }
+    } else {
+      // скидаємо кути та бордер повністю
+      el.style.borderTopLeftRadius = "0px";
+      el.style.borderTopRightRadius = "0px";
+      el.style.borderBottomRightRadius = "0px";
+      el.style.borderBottomLeftRadius = "0px";
 
-      // тіні
-      const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0
-        }px ${s.shadow.spread || 0}px ${hexToRgba(
-          s.shadow.color,
-          s.shadow.alpha
-        )}`;
+      el.style.borderWidth = "";
+      el.style.borderStyle = "";
+      el.style.borderColor = "";
+    }
+
+    // ----- ТІНІ (незалежно від cornersOn) -----
+    const boxShadows = [];
+
+    if (s.shadowsOn) {
+      const outer = `${s.shadow.x || 0}px ${s.shadow.y || 0}px ${s.shadow.blur || 0}px ${s.shadow.spread || 0
+        }px ${hexToRgba(s.shadow.color, s.shadow.alpha)}`;
 
       const inner = `${s.shadow.inset.x || 0}px ${s.shadow.inset.y || 0}px ${s.shadow.inset.blur || 0
         }px ${s.shadow.inset.spread || 0}px ${hexToRgba(
@@ -567,8 +578,7 @@
           s.shadow.inset.alpha
         )} inset`;
 
-      const arr = [];
-
+      // зовнішня тінь
       if (
         (s.shadow.blur || 0) > 0 ||
         (s.shadow.spread || 0) !== 0 ||
@@ -576,9 +586,10 @@
         (s.shadow.y || 0) !== 0 ||
         (s.shadow.alpha || 0) > 0
       ) {
-        arr.push(outer);
+        boxShadows.push(outer);
       }
 
+      // внутрішня тінь
       if (
         (s.shadow.inset.blur || 0) > 0 ||
         (s.shadow.inset.spread || 0) !== 0 ||
@@ -586,32 +597,21 @@
         (s.shadow.inset.y || 0) !== 0 ||
         (s.shadow.inset.alpha || 0) > 0
       ) {
-        arr.push(inner);
+        boxShadows.push(inner);
       }
-
-      const soft = s.border.soft || 0;
-      if (soft > 0 && s.border.width > 0) {
-        const blur = Math.max(0, Math.floor(soft / 4));
-        arr.push(`0 0 ${soft}px ${blur}px ${bcol}`);
-      }
-
-      el.style.boxShadow = arr.join(", ");
-    } else {
-      // 🔄 все вимикаємо
-      el.style.borderTopLeftRadius = "";
-      el.style.borderTopRightRadius = "";
-      el.style.borderBottomRightRadius = "";
-      el.style.borderBottomLeftRadius = "";
-
-      el.style.borderWidth = "";
-      el.style.borderStyle = "";
-      el.style.borderColor = "";
-
-      el.style.boxShadow = "";
     }
 
+    // м’який контур від бордера (прив’язаний до кута/бордера, але не до shadowsOn)
+    const soft = s.border.soft || 0;
+    if (cornersOn && bw > 0 && soft > 0) {
+      boxShadows.push(
+        `0 0 ${soft}px ${Math.max(0, Math.floor(soft / 4))}px ${bcol}`
+      );
+    }
 
-    // прокрутка
+    el.style.boxShadow = boxShadows.join(", ");
+
+    // ----- ПРОКРУТКА / SCROLLBAR -----
     const sc = b.scroll || {};
 
     el.style.overflowX = sc.x ? "auto" : "hidden";
