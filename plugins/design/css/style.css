@@ -139,8 +139,8 @@
   min-height: 80px;
   /*border-radius: 16px;
   border: 1px dashed rgba(96, 165, 250, 0.25);*/
-  box-shadow: rgb(0, 0, 0) 0px 0px 20px 0px;
-  transition: box-shadow 1s, border-color 1s;
+  box-shadow: rgb(0, 0, 0) 0px 0px 5px 0px;
+  /*transition: box-shadow 0.1s, border-color 0.1s;*/
   overflow: hidden;
 }
 
@@ -153,13 +153,13 @@
 }
 
 [data-plugin="design"] .st-block:hover {
-  border: 3px dashed rgba(96, 165, 250, 0.25);
+  border: 3px solid rgba(96, 165, 250, 0.25);
   /*border-color: #60a5fa;*/
 }
 
 [data-plugin="design"] .st-block.selected {
-  outline: 2px solid var(--accent);
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) inset;
+  outline: 5px solid var(--accent);
+  /*box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.7) inset;*/
 }
 
 [data-plugin="design"] .st-block .bg-layer {
@@ -247,7 +247,7 @@
   z-index: 7;
 }
 
-[data-plugin="design"] .st-block:hover .block-toolbar {
+[data-plugin="design"] .st-block:hover>.block-toolbar {
   display: flex;
 }
 
@@ -330,9 +330,30 @@
   transition: opacity 0.15s;
 }
 
-[data-plugin="design"] .st-block:hover .resize-handle {
+[data-plugin="design"] .st-block:hover>.resize-handle {
   opacity: 1;
 }
+
+/* Якщо всередині блоку є інший .st-block:hover,
+   значить курсор фактично на дочірньому блоці.
+   Для такого батька – прибираємо hover-ефекти. */
+
+/* бордер батьківського блоку */
+[data-plugin="design"] .st-block:has(.st-block:hover) {
+  border: none;
+  /* або поверни тут свій дефолтний бордер, якщо він був */
+}
+
+/* тулбар предка не показуємо */
+[data-plugin="design"] .st-block:has(.st-block:hover)>.block-toolbar {
+  display: none;
+}
+
+/* ресайз-хендли предка теж ховаємо */
+[data-plugin="design"] .st-block:has(.st-block:hover)>.resize-handle {
+  opacity: 0;
+}
+
 
 /* ПРАВА сторона – ручка по всій висоті */
 .st-block .resize-right {

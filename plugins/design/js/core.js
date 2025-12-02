@@ -523,12 +523,16 @@
       bgLayer.style.display = "none";
 
       const bg = buildBackground(s.bg); // "" або реальний фон
-      el.style.background = bg;
+      if (bg) {
+        el.style.background = bg;
+      } else {
+        // тип "none" — повністю прибираємо фон
+        el.style.background = "";
+      }
 
-      // ці властивості теж очищаємо, якщо ними не користуємось
-      el.style.backgroundSize = "";
-      el.style.backgroundPosition = "";
-      el.style.backgroundRepeat = "";
+
+      // Повне очищення зайвих background-властивостей
+
     }
 
     // радіуси
