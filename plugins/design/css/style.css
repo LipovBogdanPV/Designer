@@ -8,6 +8,8 @@
   --text: #e5e7eb;
   --accent: #60a5fa;
   --chip: #111827;
+  --ws-block-shadow: rgb(0, 0, 0) 0px 0px 5px 0px;
+  /* 👈 нова змінна */
   --header-h: 56px;
   --insp-w: 300px;
   --design-toolbar-h: 56px;
@@ -139,7 +141,7 @@
   min-height: 80px;
   /*border-radius: 16px;
   border: 1px dashed rgba(96, 165, 250, 0.25);*/
-  box-shadow: rgb(0, 0, 0) 0px 0px 5px 0px;
+  box-shadow: var(--ws-block-shadow, rgb(0, 0, 0) 0px 0px 5px 0px);
   /*transition: box-shadow 0.1s, border-color 0.1s;*/
   overflow: hidden;
 }
@@ -548,4 +550,47 @@
 .icon-btn.active {
   background: var(--primary);
   border-color: var(--primary);
+}
+
+/**/
+[data-plugin="design"] .st-block-content {
+  position: relative;
+  z-index: 3;
+  /* поверх bg-layer та overlay */
+}
+
+/* текст */
+[data-plugin="design"] .st-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #e5e7eb;
+}
+
+/* заголовки */
+[data-plugin="design"] .st-heading-1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+[data-plugin="design"] .st-heading-2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+[data-plugin="design"] .st-heading-3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* картинка */
+[data-plugin="design"] .st-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+.no-block-shadow [data-plugin="design"] .st-block {
+  box-shadow: none !important;
 }

@@ -18,6 +18,7 @@
       maxWidth: $("#wsMaxWidth", root),
       paddingRow: $("#wsPaddingRow", root),
       padding: $("#wsPadding", root),
+      blockShadow: $("#wsBlockShadow", root),
     };
 
     // ----- helpers
@@ -81,6 +82,16 @@
         ) || 72;
       controls.safeBottom.value = cssSB;
     }
+    // початковий стан тіні блоків
+    if (controls.blockShadow) {
+      const cssShadow = getComputedStyle(rootEl)
+        .getPropertyValue("--ws-block-shadow")
+        .trim();
+
+      // якщо "none" → чекбокс вимкнений, інакше увімкнений
+      controls.blockShadow.checked = cssShadow !== "none";
+    }
+
 
     // ----- підписки core → оновлення UI
 
@@ -116,6 +127,18 @@
         // глобальний флаг — core.js в attachDragHandle перевіряє його
         window.ST_DESIGN_DND_ENABLED = enabled;
       });
+    // вмикання/вимикання тіні блоків
+    controls.blockShadow &&
+      controls.blockShadow.addEventListener("change", () => {
+        const enabled = !!controls.blockShadow.checked;
+
+        // міняємо CSS-змінну на <html>
+        rootEl.style.setProperty(
+          "--ws-block-shadow",
+          enabled ? "rgb(0, 0, 0) 0px 0px 5px 0px" : "none"
+        );
+      });
+
 
     // створити головний контейнер (коли проект пустий)
     controls.createBtn &&

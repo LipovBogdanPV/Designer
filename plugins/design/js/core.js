@@ -20,7 +20,7 @@
     return `rgba(${r},${g},${b},${alpha})`;
   };
 
-  const STORAGE_KEY = "st:design:blocks:v1";
+  const STORAGE_KEY = "st:design:blocks:v2";
 
   function applyHeight(node, px) {
     node.style.height = px + "px";
@@ -30,6 +30,49 @@
     node.style.alignSelf = "flex-start";
   }
   let resizeHintTimer = null;
+
+  function startInlineTextEdit(node) {
+    node.contentEditable = "true";
+    node.focus();
+
+    // виділяємо текст
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    function finish() {
+      node.contentEditable = "false";
+      node.removeEventListener("blur", onBlur);
+      node.removeEventListener("keydown", onKey);
+
+      const value = node.textContent || "";
+      updateSelected((b) => {
+        b.text = value;
+      });
+    }
+
+    function onBlur() {
+      finish();
+    }
+
+    function onKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        finish();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        node.contentEditable = "false";
+        node.removeEventListener("blur", onBlur);
+        node.removeEventListener("keydown", onKey);
+      }
+    }
+
+    node.addEventListener("blur", onBlur);
+    node.addEventListener("keydown", onKey);
+  }
+
 
   function showResizeHint() {
     if (!host) return; // host = корінь плагіна, у тебе вже є
@@ -54,6 +97,17 @@
     return Object.assign(
       {
         id: uid(),
+
+        // 👇 НОВЕ: тип блоку
+        // box  – звичайний контейнер
+        // text – параграф
+        // heading – заголовок (h1–h3)
+        // image – картинка
+        kind: "box",
+        text: "",
+        headingLevel: 2, // для kind = "heading"
+        img: { src: "", alt: "" }, // для kind = "image"
+
         display: "flex", // 'flex' | 'grid'
         dir: "column", // flex only
         grid: { cols: 2, gap: 16 }, // grid only
@@ -131,6 +185,7 @@
           },
           cornersOn: false,
           shadowsOn: false,   // 🔥 новий перемикач
+          blockShadow: true, // ✅ НОВЕ поле
         },
         scroll: {
           x: false,
@@ -810,6 +865,66 @@
     // привʼязуємо ресайз
     attachResizeHandlers(el, b.id);
 
+    // === КОНТЕНТ БЛОКУ (TEXT / HEADING / IMG) ===
+    let contentEl = null;
+
+    if (b.kind === "text") {
+      contentEl = document.createElement("p");
+      contentEl.className = "st-text";
+      contentEl.textContent = b.text || "Новий текст…";
+    } else if (b.kind === "heading") {
+      const lvl = clamp(b.headingLevel || 2, 1, 3);
+      const tag = "h" + lvl;
+      contentEl = document.createElement(tag);
+      contentEl.className = "st-heading st-heading-" + lvl;
+      contentEl.textContent = b.text || "Заголовок";
+    } else if (b.kind === "image") {
+      contentEl = document.createElement("img");
+      contentEl.className = "st-image";
+      contentEl.src = (b.img && b.img.src) || "https://placehold.co/800x300?text=Hello+World";
+      contentEl.alt = (b.img && b.img.alt) || "";
+    }
+
+    if (contentEl) {
+      contentEl.classList.add("st-block-content");
+      el.appendChild(contentEl);
+
+      // вибір блоку + інлайн-редагування тексту
+      if (b.kind === "text" || b.kind === "heading") {
+        contentEl.addEventListener("dblclick", (e) => {
+          e.stopPropagation();
+
+          if (selectedId !== b.id) {
+            selectedId = b.id;
+            renderBreadcrumbs();
+            emitSelection();
+            render();
+            return; // при наступному даблкліку вже будемо редагувати у новому DOM
+          }
+
+          startInlineTextEdit(contentEl);
+        });
+      }
+
+      if (b.kind === "image") {
+        contentEl.addEventListener("dblclick", (e) => {
+          e.stopPropagation();
+          if (selectedId !== b.id) {
+            selectedId = b.id;
+            renderBreadcrumbs();
+            emitSelection();
+          }
+          const url = prompt("Введіть URL зображення", b.img?.src || "");
+          if (url != null) {
+            updateSelected((blk) => {
+              blk.img = blk.img || {};
+              blk.img.src = url;
+            });
+          }
+        });
+      }
+    }
+
     b.children.forEach((c) => el.appendChild(renderBlock(c)));
 
     if (b.id === selectedId) el.classList.add("selected");
@@ -931,6 +1046,7 @@
     emitSelection();
     emitChange();
   }
+  // 
   function duplicateSelected() {
     const sel = getSelected();
     if (!sel) return;
@@ -961,6 +1077,51 @@
     emitSelection();
     emitChange();
   }
+  // 
+  function addContentToSelected(kind) {
+    const sel = getSelected();
+    if (!sel) return;
+
+    let partial = {
+      kind,
+      layout: { ...createBlock().layout },
+      style: { ...createBlock().style },
+      padding: { t: 8, r: 8, b: 8, l: 8 },
+      children: [],
+    };
+
+    if (kind === "text") {
+      partial.text = "Новий текст…";
+    } else if (kind === "heading") {
+      partial.text = "Новий заголовок";
+      partial.headingLevel = 2;
+    } else if (kind === "image") {
+      partial.img = {
+        src: "https://placehold.co/800x300?text=Hello+World",
+        alt: "Зображення",
+      };
+      // для картинки часто фон не потрібен
+      partial.style.bg = { type: "none" };
+    } else {
+      partial.kind = "box";
+    }
+
+    const child = createBlock(partial);
+
+    // якщо батько — ряд (COL), можна зробити fill
+    if (sel.display === "flex" && sel.dir === "row") {
+      child.layout.basis.mode = "fill";
+      child.layout.grow = 1;
+      child.layout.shrink = 1;
+    }
+
+    sel.children.push(child);
+    selectedId = child.id;
+    render();
+    emitSelection();
+    emitChange();
+  }
+  //
   function copyOutside(offsetPx = 0) {
     const sel = getSelected();
     if (!sel) return;
@@ -989,7 +1150,7 @@
     emitSelection();
     emitChange();
   }
-
+  //
   function deleteSelected() {
     if (!selectedId) return;
     const pos = findParentAndIndex(selectedId);
@@ -1000,7 +1161,7 @@
     emitSelection();
     emitChange();
   }
-
+  //
   function updateSelected(updater) {
     const sel = getSelected();
     if (!sel) return;
@@ -1142,6 +1303,10 @@
     updateSelected,
     addRoot: addRootBlock,
     addChild: addChildToSelected,
+    addContentToSelected,              // 👈 НОВЕ
+    addText() { addContentToSelected("text"); },
+    addHeading() { addContentToSelected("heading"); },
+    addImage() { addContentToSelected("image"); },
     duplicate: duplicateSelected,
     deleteSelected,
     copyInside,

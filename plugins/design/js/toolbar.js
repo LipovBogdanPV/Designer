@@ -1,4 +1,3 @@
-// plugins/design/js/toolbar.js
 //canvas
 // plugins/design/js/toolbar.js
 (function () {
@@ -13,6 +12,10 @@
       const btnDel = toolbar.querySelector("#del");
       const btnHelp = toolbar.querySelector("#design-help");
       const selLabel = toolbar.querySelector("#selLabel");
+      const btnText = host.querySelector("#addText");
+      const btnH2 = host.querySelector("#addH2");
+      const btnImg = host.querySelector("#addImg");
+
 
       // ===== Основні кнопки тулбара =====
       btnAddRoot &&
@@ -22,6 +25,9 @@
       btnDup && btnDup.addEventListener("click", () => coreApi.duplicate());
       btnDel &&
         btnDel.addEventListener("click", () => coreApi.deleteSelected());
+      btnText && btnText.addEventListener("click", () => coreApi.addText());
+      btnH2?.addEventListener("click", () => coreApi.addHeading());
+      btnImg?.addEventListener("click", () => coreApi.addImage());
 
       // Підписка на зміну виділення
       coreApi.subscribeSelection &&

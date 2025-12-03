@@ -1,25 +1,24 @@
 <div class="st-app" data-plugin="design"><!-- колишня st-app, але більш конкретно -->
   <!-- Верхня панель конструктора -->
-   <div class="st-editor-top">
+  <div class="st-editor-top">
     <div class="toolbar">
       <button class="btn primary" id="add-root">＋ Нова секція</button>
       <button class="btn" id="add-child">Вставити блок усередину</button>
       <button class="btn" id="dup">Дублювати</button>
       <button class="btn" id="del">Видалити</button>
       <span class="chip" id="selLabel">Немає вибору</span>
+      <button class="btn" id="addText">Текст</button>
+      <button class="btn" id="addH2">H2</button>
+      <button class="btn" id="addImg">Картинка</button>
+
       <!-- праворуч – кнопка довідки -->
-      <button
-        class="btn icon"
-        id="design-help"
-        title="Довідка / гарячі клавіші"
-        style="margin-left: auto"
-      >
+      <button class="btn icon" id="design-help" title="Довідка / гарячі клавіші" style="margin-left: auto">
         ?
       </button>
     </div>
-   </div>
-   <!-- Тіло редактора -->
-   <div class="st-editor-body">
+  </div>
+  <!-- Тіло редактора -->
+  <div class="st-editor-body">
     <!-- Лівий (у тебе зараз це просто “полотно”) -->
     <div class="canvas-wrap" data-plugin="design_canvas">
       <div class="canvas" id="canvas">
@@ -29,8 +28,8 @@
     <!-- Правий інспектор -->
     <aside class="st-editor-inspector">
       <!-- те, що зараз в inspector.html -->
-       <div id="left"></div> <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА ШОБ НЕ ДАВАЛО ПОМИЛКИ-->
-       <div id="right"></div>   <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА -->
+      <div id="left"></div> <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА ШОБ НЕ ДАВАЛО ПОМИЛКИ-->
+      <div id="right"></div> <!-- ОБОВ’ЯЗКОВИЙ ДЛЯ РОБОТИ ІНСПЕКТОРА -->
     </aside>
-   </div>
+  </div>
 </div>
