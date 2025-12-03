@@ -40,7 +40,7 @@
       // Hotkey: Delete / Backspace
       const keydownHandler = (e) => {
         if (
-          (e.key === "Delete" || e.key === "Backspace") &&
+          (e.key === "Delete") &&
           !["INPUT", "TEXTAREA", "SELECT"].includes(
             document.activeElement?.tagName
           )
