@@ -8,7 +8,7 @@
   --text: #e5e7eb;
   --accent: #60a5fa;
   --chip: #111827;
-  --ws-block-shadow: rgb(0, 0, 0) 0px 0px 5px 0px;
+  --canvas-w: #0a0f1a;
   /* 👈 нова змінна */
   --header-h: 56px;
   --insp-w: 300px;
@@ -68,6 +68,8 @@
   min-width: 0;
   border-radius: 16px;
   overflow: auto;
+  background: var(--canvas-w);
+  /*padding-bottom: var(--safe-bottom);*/
   /* скрол для полотна */
 }
 
@@ -160,7 +162,7 @@
 }
 
 [data-plugin="design"] .st-block.selected {
-  outline: 5px solid var(--accent);
+  outline: 2px solid var(--accent);
   /*box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.7) inset;*/
 }
 

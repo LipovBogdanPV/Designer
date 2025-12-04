@@ -70,7 +70,7 @@
 
     if (controls.wsColor) {
       const cssCol =
-        getComputedStyle(rootEl).getPropertyValue("--workspace").trim() ||
+        getComputedStyle(rootEl).getPropertyValue("--canvas-w").trim() ||
         "#020617";
       controls.wsColor.value = cssCol.startsWith("#") ? cssCol : "#020617";
     }
@@ -110,7 +110,7 @@
     controls.wsColor &&
       controls.wsColor.addEventListener("input", () => {
         const v = controls.wsColor.value || "#020617";
-        rootEl.style.setProperty("--workspace", v);
+        rootEl.style.setProperty("--canvas-w", v);
       });
 
     // нижнє поле
