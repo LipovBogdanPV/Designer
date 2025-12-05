@@ -123,11 +123,11 @@
 
       btnPreviewPage.addEventListener("click", () => {
         // 🔗 тут формуємо URL превʼю
-        // варіант 1: SPA з hash-роутом
-        //const url = `${location.origin}${location.pathname}#/test`;
-
-        // варіант 2: окремий шлях /design (як ти й хочеш)
-        const url = `${location.origin}/plugins/design/assets/test.html`;
+        // варіант 1: окремий шлях /design (як ти й хочеш) локально
+        //const url = `${location.origin}/plugins/design/assets/test.html`;
+        // ✅ робимо відносний шлях від index.html
+        // Варіант 2: Для хостингу
+        const url = "plugins/design/assets/test.html";
 
         window.open(url, "_blank");
       });
