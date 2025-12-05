@@ -52,39 +52,86 @@
       document.addEventListener("keydown", keydownHandler);
 
       // ===== FULLSCREEN PREVIEW BUTTON =====
-      const fsBtn = document.createElement("button");
-      fsBtn.type = "button";
-      fsBtn.className = "btn icon";
-      fsBtn.title = "Прев'ю на весь екран";
-      fsBtn.innerHTML = `
+      // ===== POPUP PREVIEW (повноекранний перегляд) =====
+      const previewBtn = document.createElement("button");
+      previewBtn.type = "button";
+      previewBtn.className = "btn icon";
+      previewBtn.title = "Попередній перегляд сторінки";
+      previewBtn.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
           <path fill="currentColor"
-            d="M3 3h4v1.5H4.5V7H3V3zm6 0h4v4h-1.5V4.5H9V3zm-5.5 6H3v4h4v-1.5H3.5V9zm8 2.5H9V13h4V9h-1.5v2.5z"/>
+            d="M2 3.5A1.5 1.5 0 0 1 3.5 2h9A1.5 1.5 0 0 1 14 3.5v9a.5.5 0 0 1-1 0v-9a.5.5 0 0 0-.5-.5h-9A.5.5 0 0 0 3 3.5v9a.5.5 0 0 1-1 0v-9z"/>
+          <path fill="currentColor"
+            d="M4.5 5A1.5 1.5 0 0 1 6 3.5h6A1.5 1.5 0 0 1 13.5 5v6A1.5 1.5 0 0 1 12 12.5H6A1.5 1.5 0 0 1 4.5 11V5z"/>
         </svg>
       `;
-      toolbar.appendChild(fsBtn);
+      toolbar.appendChild(previewBtn);
 
-      const canvas = host.querySelector("#canvas");
-      let canvasFullscreen = false;
+      let previewMode = false;
+      let previewExitBtn = null;
 
-      const applyFullscreen = (state) => {
-        canvasFullscreen = state;
-        if (canvas) {
-          canvas.classList.toggle("st-fullscreen", canvasFullscreen);
+      const applyPreviewMode = (state) => {
+        previewMode = state;
+
+        // вішаємо клас на <html>, щоб через CSS сховати редактор
+        document.documentElement.classList.toggle(
+          "st-design-preview",
+          previewMode
+        );
+
+        previewBtn.classList.toggle("active", previewMode);
+
+        // створюємо / показуємо кнопку "Назад до редактора"
+        if (previewMode) {
+          if (!previewExitBtn) {
+            previewExitBtn = document.createElement("button");
+            previewExitBtn.type = "button";
+            previewExitBtn.className = "preview-exit-btn";
+            previewExitBtn.innerHTML = `
+              <span>← Назад до редактора</span>
+            `;
+            document.body.appendChild(previewExitBtn);
+
+            previewExitBtn.addEventListener("click", () => {
+              applyPreviewMode(false);
+            });
+          }
+          previewExitBtn.style.display = "flex";
+        } else if (previewExitBtn) {
+          previewExitBtn.style.display = "none";
         }
-        fsBtn.classList.toggle("active", canvasFullscreen);
       };
 
-      fsBtn.addEventListener("click", () => {
-        applyFullscreen(!canvasFullscreen);
+      previewBtn.addEventListener("click", () => {
+        applyPreviewMode(!previewMode);
       });
-      // ESC для выхода з fullscreen
+
+      // ESC вихід з превʼю
       const escHandler = (e) => {
-        if (e.key === "Escape" && canvasFullscreen) {
-          applyFullscreen(false);
+        if (e.key === "Escape" && previewMode) {
+          applyPreviewMode(false);
         }
       };
       document.addEventListener("keydown", escHandler);
+      // 
+      const btnPreviewPage = document.createElement("button");
+      btnPreviewPage.type = "button";
+      btnPreviewPage.className = "btn";
+      btnPreviewPage.title = "Попередній перегляд сторінки";
+      btnPreviewPage.textContent = "Превʼю";
+      toolbar.appendChild(btnPreviewPage);
+
+      btnPreviewPage.addEventListener("click", () => {
+        // 🔗 тут формуємо URL превʼю
+        // варіант 1: SPA з hash-роутом
+        //const url = `${location.origin}${location.pathname}#/test`;
+
+        // варіант 2: окремий шлях /design (як ти й хочеш)
+        const url = `${location.origin}/plugins/design/assets/test.html`;
+
+        window.open(url, "_blank");
+      });
+
 
       // ===== HELP MODAL =====
       if (btnHelp) {

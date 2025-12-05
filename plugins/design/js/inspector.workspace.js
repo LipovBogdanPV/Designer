@@ -77,7 +77,7 @@
     if (controls.safeBottom) {
       const cssSB =
         parseInt(
-          getComputedStyle(rootEl).getPropertyValue("--safe-bottom"),
+          getComputedStyle(rootEl).getPropertyValue("--sait-bar"),
           10
         ) || 72;
       controls.safeBottom.value = cssSB;
@@ -117,7 +117,7 @@
     controls.safeBottom &&
       controls.safeBottom.addEventListener("input", () => {
         const v = Math.max(0, Number(controls.safeBottom.value) || 0);
-        rootEl.style.setProperty("--safe-bottom", v + "px");
+        rootEl.style.setProperty("--sait-bar", v + "px");
       });
 
     // вмикання/вимикання перетягування блоків

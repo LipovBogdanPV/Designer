@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uk">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Preview – Design</title>
+
+    <!-- Підключаємо ті самі стилі, що й конструктор -->
+    <!-- Глобальні стилі з CSS-зміними (кольори, шрифти, розміри) -->
+    <link rel="stylesheet" href="../../../assets/css/global.css" />
+    <!-- Стилі застосунку (шапка, сайдбар, основний вміст) -->
+    <link rel="stylesheet" href="../../../assets/css/design.css" />
+    <!-- Стилі самого плагіна Design (st-block, bg-layer, інспектор і т.д.) -->
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        /* У превʼю тіло має скролитися як звичайна сторінка */
+        html,
+        body {
+            height: auto;
+            min-height: 100%;
+            overflow-y: auto !important;
+            overflow-x: hidden;
+        }
+
+        /* ховаємо службовий UI конструктора у превʼю */
+        [data-plugin="design"] .block-toolbar,
+        [data-plugin="design"] .resize-handle,
+        [data-plugin="design"] .st-resize-hint {
+            display: none !important;
+        }
+
+        [data-plugin="design"] .st-block.selected {
+            outline: none !important;
+        }
+
+        [data-plugin="design"] .st-block {
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div data-plugin="design">
+        <div class="st-app">
+            <div class="st-editor-body">
+                <div class="canvas-wrap">
+                    <div id="canvas" class="canvas"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const host = document.querySelector('[data-plugin="design"] .st-app');
+            if (!host || !window.STDesignCore) return;
+
+            const api = window.STDesignCore.mount(host);
+        });
+    </script>
+</body>
+
+</html>

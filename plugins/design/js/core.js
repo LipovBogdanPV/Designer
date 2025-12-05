@@ -251,6 +251,7 @@
     canvas,
     rootBlocks = [],
     selectedId = null;
+  let blockSizeObserver = null;
 
   const listeners = {
     selection: [],
@@ -386,11 +387,16 @@
     handleEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0) return; // тільки ЛКМ
       if (window.ST_DESIGN_DND_ENABLED === false) return;
+
+      // не стартуємо drag, якщо тиснемо на хендли ресайзу
+      if (e.target.closest(".resize-handle")) return;
+
       e.preventDefault();
       e.stopPropagation();
       startDrag(blockId, e.clientX, e.clientY);
     });
   }
+
 
   function startDrag(blockId, clientX, clientY) {
     const blockEl = document.querySelector(`.st-block[data-id="${blockId}"]`);
@@ -814,18 +820,13 @@
     })();
     const modeChip =
       b.display === "grid" ? "GRID" : b.dir === "row" ? "↔ ROW" : "↕ COL";
-
     tb.innerHTML = `
-  <button class="drag-handle" type="button" data-id="${b.id}" title="Перемістити блок">
-    ⠿
-  </button>
   <span class="chip">${modeChip}</span>
   <span class="chip">${b.children.length} ⬚</span>
   <span class="chip">${sizeChip}</span>
 `;
     el.appendChild(tb);
-    const dragHandle = tb.querySelector(".drag-handle");
-    attachDragHandle(dragHandle, b.id);
+    attachDragHandle(el, b.id);
 
     // створюємо resize-ручки
     const resizeRight = document.createElement("div");
@@ -940,6 +941,10 @@
         render();
       }
     });
+    // підключаємо адаптивний тулбар до зміни ширини блоку
+    if (blockSizeObserver) {
+      blockSizeObserver.observe(el);
+    }
 
     if (
       b.style.bg.type === "image" &&
@@ -1205,7 +1210,25 @@
         host.appendChild(wrap);
         return wrap;
       })();
+    // спостерігаємо за шириною кожного блоку, щоб тулбар був адаптивним
+    if (window.ResizeObserver && !blockSizeObserver) {
+      blockSizeObserver = new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target;
+          const tb = el.querySelector(".block-toolbar");
+          if (!tb) return;
 
+          const w = entry.contentRect.width;
+
+          // трохи вузький блок
+          tb.classList.toggle("compact", w < 260);
+
+          // зовсім вузький – лишаємо тільки один chip
+          tb.classList.toggle("xs", w < 180);
+        });
+      });
+    }
+    /* */
     const saved = loadFromStorage();
     if (saved && saved.rootBlocks?.length) {
       rootBlocks = saved.rootBlocks;
