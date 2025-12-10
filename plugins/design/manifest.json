@@ -22,6 +22,7 @@
     "plugins/design/js/inspector.workspace.js",
     "plugins/design/js/inspector.overlay.js",
     "plugins/design/js/inspectorWindow.js",
+    "plugins/design/js/inspector.custom.js",
     "plugins/design/js/index.js"
   ]
 }

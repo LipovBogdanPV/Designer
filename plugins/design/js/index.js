@@ -134,6 +134,20 @@ console.log("[design] index.js завантажений");
       return;
     }
 
+    // 🆕 читаємо з hash / localStorage яку сторінку треба відкрити
+    // формат, наприклад: #/design?site=SITE_ID&page=PAGE_ID
+    const params = new URLSearchParams(location.hash.split("?")[1] || "");
+    const siteId = params.get("site");
+    const pageId = params.get("page");
+
+    if (siteId && pageId && window.STDesignCore.setStorageKey) {
+      const key = `st:design:site:${siteId}:page:${pageId}`;
+      window.STDesignCore.setStorageKey(key);
+    } else if (window.STDesignCore.setStorageKey) {
+      // дефолтний ключ, щоб не ламати старі дані
+      window.STDesignCore.setStorageKey("st:design:blocks:v2");
+    }
+
     const coreApi = window.STDesignCore.mount(host);
     console.log("[design] core mounted", coreApi);
 
@@ -165,6 +179,8 @@ console.log("[design] index.js завантажений");
     if (window.STInspectorCopy) STInspectorCopy.init(coreApi, inspRoot);
     if (window.STInspectorWorkspace) STInspectorWorkspace.init(coreApi, inspRoot);
     if (window.STInspectorOverlay) STInspectorOverlay.init(coreApi, inspRoot);
+    if (window.STInspectorCustomCss) STInspectorCustomCss.init(coreApi, inspRoot);
+
 
     // 5) ресайз інспектора
     initInspectorResize(host);

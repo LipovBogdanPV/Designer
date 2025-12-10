@@ -18,7 +18,6 @@ const PluginLoader = (() => {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
-    link.dataset.plugin = id;
     document.head.appendChild(link);
     return link;
   }
@@ -33,11 +32,11 @@ const PluginLoader = (() => {
       document.body.appendChild(s);
     });
   }
-  function ensurePluginsBag(){ window.__plugins = window.__plugins || {}; }
+  function ensurePluginsBag() { window.__plugins = window.__plugins || {}; }
 
   async function clear() {
     if (!current) return;
-    try { current.api?.unmount?.(); } catch(e){ console.warn('plugin unmount error:', e); }
+    try { current.api?.unmount?.(); } catch (e) { console.warn('plugin unmount error:', e); }
     current.cssEls?.forEach(l => l.remove());
     current.jsEls?.forEach(s => s.remove());
     current.hostEl?.remove?.();
@@ -60,7 +59,7 @@ const PluginLoader = (() => {
     host.innerHTML = htmlText;
 
     const cssEls = css.map(href => injectCSS(href, id));
-    const jsEls  = [];
+    const jsEls = [];
     for (const src of js) jsEls.push(await injectJS(src, id));
 
     ensurePluginsBag();
@@ -79,22 +78,22 @@ const PluginRegistry = (() => {
   let manifests = [];
   let routes = {};
 
-  function readUserOrder(){
+  function readUserOrder() {
     try { return JSON.parse(localStorage.getItem(NAV_KEY) || '[]'); } catch { return []; }
   }
-  function writeUserOrder(order){
-    try { localStorage.setItem(NAV_KEY, JSON.stringify(order)); } catch {}
+  function writeUserOrder(order) {
+    try { localStorage.setItem(NAV_KEY, JSON.stringify(order)); } catch { }
   }
 
-  function applyOrder(list){
+  function applyOrder(list) {
     const order = readUserOrder();
-    if (!order.length) return list.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+    if (!order.length) return list.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
 
     // ставимо за корист. порядком, решту — вкінці за дефолтним order
     const map = Object.fromEntries(list.map(m => [m.id, m]));
     const sorted = [];
-    order.forEach(id => { if (map[id]) { sorted.push(map[id]); delete map[id]; }});
-    const rest = Object.values(map).sort((a,b)=>(a.order||0)-(b.order||0));
+    order.forEach(id => { if (map[id]) { sorted.push(map[id]); delete map[id]; } });
+    const rest = Object.values(map).sort((a, b) => (a.order || 0) - (b.order || 0));
     return [...sorted, ...rest];
   }
 
@@ -108,8 +107,8 @@ const PluginRegistry = (() => {
     window.__pluginManifests = manifests;
   }
 
-  function getRoutes(){ return routes; }
-  function getManifests(){ return manifests; }
+  function getRoutes() { return routes; }
+  function getManifests() { return manifests; }
 
   function renderSidebarNav() {
     const mount = document.querySelector('#nav-plugins');
@@ -127,7 +126,7 @@ const PluginRegistry = (() => {
   }
 
   // перезастосувати порядок з localStorage (викликаємо з плагіна налаштувань)
-  function reapplyOrderAndRender(){
+  function reapplyOrderAndRender() {
     manifests = applyOrder(manifests);
     routes = Object.fromEntries(manifests.map(m => [m.route, m]));
     renderSidebarNav();
@@ -154,15 +153,24 @@ const Router = (() => {
   async function go(hash) {
     const routes = PluginRegistry.getRoutes();
     const defaultRoute = PluginRegistry.getManifests()[0]?.route || 'design';
-    const route = (hash || '').replace('#/', '') || defaultRoute;
+
+    // 1) очищаємо "#/" на початку
+    const cleaned = (hash || '').replace(/^#\/?/, '');
+
+    // 2) відділяємо шлях від query (?site=...&page=...)
+    const [path] = cleaned.split('?');     // <- тільки "design"
+    const route = path || defaultRoute;    // якщо порожньо — дефолт
 
     setActive(route);
-    if (routes[route]) {
-      await PluginLoader.load(routes[route]);
+
+    const manifest = routes[route];
+    if (manifest) {
+      await PluginLoader.load(manifest);
+      // hash з query залишився як є, design зможе його прочитати
       window.scrollTo({ top: 0, behavior: 'instant' });
     } else {
       document.getElementById('main').innerHTML =
-        `<div class="container"><h2>Сторінка в розробці</h2><p>${route}</p></div>`;
+        `<div class="container"><h2>Сторінка в розробці</h2><p>${cleaned}</p></div>`;
     }
   }
 
@@ -174,8 +182,9 @@ const Router = (() => {
   return { init, go };
 })();
 
+
 /* ---------- Старт ---------- */
-(async function boot(){
+(async function boot() {
   await includePartials();
 
   // 1) підтягуємо реєстр плагінів і будуємо меню

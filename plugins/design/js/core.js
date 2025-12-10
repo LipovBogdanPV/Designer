@@ -20,7 +20,12 @@
     return `rgba(${r},${g},${b},${alpha})`;
   };
 
-  const STORAGE_KEY = "st:design:blocks:v2";
+  let STORAGE_KEY = "st:design:blocks:v2";
+
+  function setStorageKey(key) {
+    STORAGE_KEY = key || "st:design:blocks:v2";
+  }
+
 
   function applyHeight(node, px) {
     node.style.height = px + "px";
@@ -200,6 +205,9 @@
           sbThumb: "#64748b", // колір повзунка
           sbRadius: 8, // радіус повзунка, px
         },
+        // 🔥 користувацькі inline-стилі для цього блоку
+        // приклад: "color:#fff; padding:24px;"
+        customCss: "",
         children: [],
       },
       partial
@@ -791,6 +799,16 @@
         s.overlay.bottom.alpha
       )} 0%, rgba(0,0,0,0) 100%)`;
     } else bot.style.display = "none";
+    // 🔧 КАСТОМНІ INLINE-СТИЛІ КОРИСТУВАЧА
+    if (b.customCss) {
+      try {
+        // додаємо в кінець cssText, щоб ці властивості перекривали наші
+        el.style.cssText += ";" + b.customCss;
+      } catch (e) {
+        console.warn("[design] некоректний customCss у блоці", b.id, e);
+      }
+    }
+
 
   }
 
@@ -1345,6 +1363,8 @@
     getState() {
       return { rootBlocks, selectedId };
     },
+    // 👇 нове
+    setStorageKey
   };
   // ===== обробники зміни розміру
   function attachResizeHandlers(blockEl, blockId) {

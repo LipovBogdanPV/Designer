@@ -1,0 +1,14 @@
+{
+  "id": "sites",
+  "name": "Сайт",
+  "route": "sites",
+  "icon": "folder-open",
+  "order": 10,
+  "html": "plugins/sites/sites.html",
+  "css": [
+    "plugins/sites/css/style.css"
+  ],
+  "js": [
+    "plugins/sites/js/sites.js"
+  ]
+}

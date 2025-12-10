@@ -13,6 +13,10 @@
       "manifest": "plugins/ui-settings/manifest.json"
     },
     {
+      "id": "sites",
+      "manifest": "plugins/sites/manifest.json"
+    },
+    {
       "id": "tt",
       "manifest": "plugins/tt/manifest.json"
     }

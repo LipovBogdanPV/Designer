@@ -1,0 +1,118 @@
+<div data-plugin="sites" class="sites-app">
+    <div class="sites-header">
+        <h1>Мої сайти</h1>
+        <button id="siteCreate" class="btn primary">+ Створити сайт</button>
+    </div>
+
+    <div id="sitesList" class="sites-list"></div>
+
+    <div id="siteEditor" class="site-editor" hidden>
+        <div class="site-editor-section">
+            <label>Новий сайт</label>
+            <input id="siteName" placeholder="Назва сайту" />
+        </div>
+
+        <div class="site-editor-section">
+            <label for="siteSlug">Slug сайту</label>
+            <input id="siteSlug" type="text" placeholder="my-site" />
+        </div>
+
+        <h2>Сторінки</h2>
+        <table class="pages-table">
+            <thead>
+                <tr>
+                    <th>Назва</th>
+                    <th>Slug</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="pagesList"></tbody>
+        </table>
+        <button id="pageAdd" class="btn small">+ Додати сторінку</button>
+
+        <h2>Netlify</h2>
+        <div class="site-editor-section">
+            <label>URL в Netlify (dashboard)</label>
+            <input id="netlifyDashboard" placeholder="https://app.netlify.com/sites/..." />
+        </div>
+        <div class="site-editor-section">
+            <label>Публічний URL сайту</label>
+            <input id="netlifyPublic" placeholder="https://my-site.netlify.app" />
+        </div>
+
+        <div class="netlify-actions">
+            <button id="btnOpenNetlify" class="btn small">Відкрити в Netlify</button>
+            <button id="btnOpenPublic" class="btn small">Відкрити сайт</button>
+        </div>
+
+        <h2>SEO сайту</h2>
+        <div class="form-grid">
+            <label>
+                Title сайту
+                <input id="siteSeoTitle" placeholder="Мій інтернет-магазин" />
+            </label>
+
+            <label>
+                Опис (description)
+                <textarea id="siteSeoDescription" rows="2" placeholder="Короткий опис сайту..."></textarea>
+            </label>
+
+            <label>
+                Ключові слова (keywords)
+                <input id="siteSeoKeywords" placeholder="shop, одяг, взуття" />
+            </label>
+
+            <label class="checkbox-row">
+                <input type="checkbox" id="siteSeoNoIndex" />
+                <span>Не індексувати сайт (noindex)</span>
+            </label>
+
+            <label>
+                OG Image (URL)
+                <input id="siteSeoOgImage" placeholder="https://..." />
+            </label>
+
+            <label>
+                Додатковий HTML в &lt;head&gt;
+                <textarea id="siteSeoCustomHead" rows="3" placeholder="<meta ...>"></textarea>
+            </label>
+        </div>
+    </div>
+    <div id="pageSeoModal" class="modal" hidden>
+        <div class="modal-body">
+            <h3>SEO сторінки</h3>
+
+            <label>
+                Title
+                <input id="pageSeoTitle" />
+            </label>
+
+            <label>
+                Description
+                <textarea id="pageSeoDescription" rows="2"></textarea>
+            </label>
+
+            <label>
+                Keywords
+                <input id="pageSeoKeywords" />
+            </label>
+
+            <label class="checkbox-row">
+                <input type="checkbox" id="pageSeoNoIndex" />
+                <span>Не індексувати сторінку</span>
+            </label>
+
+            <label>
+                OG Image (URL)
+                <input id="pageSeoOgImage" />
+            </label>
+
+            <div class="modal-actions">
+                <button class="btn small" id="pageSeoSave">Зберегти</button>
+                <button class="btn small secondary" id="pageSeoCancel">Скасувати</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
