@@ -9,6 +9,20 @@
     const $ = (sel, root = document) => root.querySelector(sel);
     const uid = () => Math.random().toString(36).slice(2, 9);
 
+    function writeDesignState(key, rootBlocks) {
+        const payload = {
+            rootBlocks: rootBlocks || [],
+            selectedId: (rootBlocks && rootBlocks[0] && rootBlocks[0].id) ? rootBlocks[0].id : null
+        };
+        localStorage.setItem(key, JSON.stringify(payload));
+    }
+
+    function ensureEmptyDesignState(key) {
+        if (localStorage.getItem(key)) return;
+        writeDesignState(key, []);
+    }
+
+
     // ---------- робота з localStorage ----------
     function loadSites() {
         try {
@@ -194,6 +208,7 @@
 
 
         // Створити сайт
+        /*
         btnCreate?.addEventListener("click", () => {
             const site = {
                 id: "site_" + uid(),
@@ -230,7 +245,44 @@
 
             currentSite = site;
             openSiteEditor(site, root);
+        });*/
+
+        btnCreate?.addEventListener("click", () => {
+            const tplId = ($("#siteTemplate", root)?.value) || "base-01";
+            const baseTpl = DESIGN_TEMPLATES["base-01"];
+            const tpl = DESIGN_TEMPLATES[tplId] || baseTpl;
+
+            const site = {
+                id: "site_" + uid(),
+                name: "Новий сайт",
+                slug: "site-" + uid(),
+                pages: [{ id: "page_home", title: "Головна", slug: "index" }],
+                templateId: tplId,
+                netlify: {},
+            };
+
+            sitesState.push(site);
+            saveSites();
+            renderSitesList(sitesState, root);
+
+            // ✅ ініціалізуємо Design storage: header/footer + home body
+            const siteId = site.id;
+            const headerKey = `st:design:site:${siteId}:layout:header`;
+            const footerKey = `st:design:site:${siteId}:layout:footer`;
+            const homeKey = `st:design:site:${siteId}:page:page_home`;
+
+            const headerBlocks = (tpl.header ?? baseTpl.header) || [];
+            const footerBlocks = (tpl.footer ?? baseTpl.footer) || [];
+            const homeBlocks = (tpl.home ?? baseTpl.home) || [];
+
+            writeDesignState(headerKey, headerBlocks);
+            writeDesignState(footerKey, footerBlocks);
+            writeDesignState(homeKey, homeBlocks);
+
+            currentSite = site;
+            openSiteEditor(site, root);
         });
+
 
         // Клік "Налаштувати" в списку
         $("#sitesList", root)?.addEventListener("click", (e) => {
@@ -267,6 +319,8 @@
             };
             currentSite.pages.push(p);
             saveSites();
+            const key = `st:design:site:${currentSite.id}:page:${p.id}`;
+            ensureEmptyDesignState(key);
             openSiteEditor(currentSite, root);
         });
 
@@ -287,7 +341,7 @@
             if (btnEdit) {
                 const pid = btnEdit.dataset.page;
                 // перехід у плагін Design
-                const hash = `#/design?site=${currentSite.id}&page=${pid}`;
+                location.hash = `#/design?site=${currentSite.id}&page=${pid}&part=body`;
                 location.hash = hash;
             }
         });
@@ -380,6 +434,18 @@
             if (!currentSite?.netlify?.publicUrl) return;
             window.open(currentSite.netlify.publicUrl, "_blank");
         });
+        const btnEditHeader = $("#editHeader", root);
+        const btnEditFooter = $("#editFooter", root);
+        btnEditHeader?.addEventListener("click", () => {
+            if (!currentSite) return;
+            location.hash = `#/design?site=${currentSite.id}&part=header`;
+        });
+
+        btnEditFooter?.addEventListener("click", () => {
+            if (!currentSite) return;
+            location.hash = `#/design?site=${currentSite.id}&part=footer`;
+        });
+
 
         console.log("[sites] плагін Sites ініціалізовано");
 
@@ -426,6 +492,125 @@
         });
 
     }
+
+    function createDesignBlock(partial = {}) {
+        const base = {
+            id: Math.random().toString(36).slice(2, 9),
+            kind: "box",
+            text: "",
+            headingLevel: 2,
+            img: { src: "", alt: "" },
+
+            display: "flex",
+            dir: "column",
+            grid: { cols: 2, gap: 16 },
+            justify: "flex-start",
+            align: "stretch",
+            gap: 16,
+            padding: { t: 24, r: 24, b: 24, l: 24 },
+            outerMargin: { t: 5, r: 5, b: 5, l: 5 },
+            maxWidth: "",
+
+            layout: {
+                basis: { mode: "auto", value: 0, unit: "px" },
+                grow: 0,
+                shrink: 1,
+                alignSelf: "auto",
+                widthPx: "",
+                minHeightPx: 0,
+                fullHeight: false,
+                fixedHeight: "",
+                pin: { enabled: false, side: "top" }
+            },
+
+            style: {
+                bg: { type: "none", color: "#1f2937", alpha: 1, gA: "#0ea5e9", gAalpha: 1, gB: "#1d4ed8", gBalpha: 1, angle: 135, url: "", size: "cover", pos: "center", overlayColor: "#0f172a", overlayAlpha: 0.35, gray: 0 },
+                radius: { mode: "all", all: 0, tl: 0, tr: 0, br: 0, bl: 0, d1a: 0, d1b: 0, d2a: 0, d2b: 0 },
+                border: { width: 0, style: "solid", color: "#334155", alpha: 1, soft: 0 },
+                shadow: { x: 0, y: 0, blur: 0, spread: 0, color: "#000000", alpha: 0, inset: { x: 0, y: 0, blur: 0, spread: 0, color: "#000000", alpha: 0 } },
+                overlay: { top: { enable: false, color: "#000000", alpha: 0.4, h: 120 }, bottom: { enable: false, color: "#000000", alpha: 0.4, h: 120 } },
+                cornersOn: false,
+                shadowsOn: false,
+                blockShadow: true
+            },
+
+            scroll: {
+                x: false, y: false, panEnable: false, panDir: "y", bgFixed: false,
+                sbHide: false, sbThick: 8, sbTrack: "#020617", sbThumb: "#64748b", sbRadius: 8
+            },
+
+            children: []
+        };
+
+        // shallow merge
+        const out = Object.assign({}, base, partial);
+        if (partial.children) out.children = partial.children;
+        return out;
+    }
+    const DESIGN_TEMPLATES = {
+        "base-01": {
+            header: [
+                createDesignBlock({
+                    display: "flex",
+                    dir: "row",
+                    justify: "space-between",
+                    align: "center",
+                    gap: 16,
+                    padding: { t: 18, r: 24, b: 18, l: 24 },
+                    style: { ...createDesignBlock().style, bg: { type: "color", color: "#0f172a", alpha: 1 } },
+                    children: [
+                        createDesignBlock({ kind: "heading", headingLevel: 2, text: "My Site", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                        createDesignBlock({
+                            display: "flex", dir: "row", gap: 14,
+                            padding: { t: 0, r: 0, b: 0, l: 0 },
+                            style: { ...createDesignBlock().style, bg: { type: "none" } },
+                            children: [
+                                createDesignBlock({ kind: "text", text: "Головна", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                                createDesignBlock({ kind: "text", text: "Про нас", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                                createDesignBlock({ kind: "text", text: "Контакти", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                            ]
+                        })
+                    ]
+                })
+            ],
+            footer: [
+                createDesignBlock({
+                    padding: { t: 18, r: 24, b: 18, l: 24 },
+                    style: { ...createDesignBlock().style, bg: { type: "color", color: "#0b1220", alpha: 1 } },
+                    children: [
+                        createDesignBlock({ kind: "text", text: "© 2025 My Site. All rights reserved.", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] })
+                    ]
+                })
+            ],
+            home: [
+                createDesignBlock({
+                    padding: { t: 64, r: 24, b: 64, l: 24 },
+                    style: { ...createDesignBlock().style, bg: { type: "gradient", gA: "#0f172a", gAalpha: 1, gB: "#1d4ed8", gBalpha: 0.65, angle: 135 } },
+                    children: [
+                        createDesignBlock({ kind: "heading", headingLevel: 1, text: "Заголовок Hero", padding: { t: 0, r: 0, b: 10, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                        createDesignBlock({ kind: "text", text: "Короткий опис і CTA. Тут буде основний контент сторінки.", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] })
+                    ]
+                })
+            ]
+        },
+
+        "shop-01": {
+            header: null, // використаємо base-01
+            footer: null,
+            home: [
+                createDesignBlock({
+                    padding: { t: 48, r: 24, b: 48, l: 24 },
+                    style: { ...createDesignBlock().style, bg: { type: "color", color: "#111827", alpha: 1 } },
+                    children: [
+                        createDesignBlock({ kind: "heading", headingLevel: 1, text: "Каталог товарів", padding: { t: 0, r: 0, b: 12, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                        createDesignBlock({ kind: "text", text: "Секція під список товарів / категорій.", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] })
+                    ]
+                })
+            ]
+        }
+    };
+
+
 
     // ---------- інтеграція з PluginLoader ----------
     window.__plugins = window.__plugins || {};

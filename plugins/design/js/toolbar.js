@@ -121,16 +121,28 @@
       btnPreviewPage.textContent = "Превʼю";
       toolbar.appendChild(btnPreviewPage);
 
-      btnPreviewPage.addEventListener("click", () => {
-        // 🔗 тут формуємо URL превʼю
-        // варіант 1: окремий шлях /design (як ти й хочеш) локально
-        //const url = `${location.origin}/plugins/design/assets/test.html`;
-        // ✅ робимо відносний шлях від index.html
-        // Варіант 2: Для хостингу
-        const url = "plugins/design/assets/test.html";
+      btnPreviewPage.addEventListener("click", async () => {
+        const qs = location.hash.split("?")[1] || ""; // site/page/part з конструктора
+        const hashTail = qs ? `#/?${qs}` : "";
 
-        window.open(url, "_blank");
+        const abs = `${location.origin}/plugins/design/assets/test.html${hashTail}`;
+        const rel = `plugins/design/assets/test.html${hashTail}`;
+
+        try {
+          // пробуємо absolute
+          const r1 = await fetch(abs.split("#")[0], { method: "GET", cache: "no-store" });
+          if (r1.ok) return window.open(abs, "_blank");
+        } catch { }
+
+        try {
+          // fallback relative
+          const r2 = await fetch(rel.split("#")[0], { method: "GET", cache: "no-store" });
+          if (r2.ok) return window.open(rel, "_blank");
+        } catch { }
+
+        alert("Не вдалося завантажити test.html або некоректний шлях до test.html");
       });
+
 
 
       // ===== HELP MODAL =====

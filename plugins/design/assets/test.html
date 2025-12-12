@@ -54,13 +54,71 @@
 
     <script src="../js/core.js"></script>
     <script>
+        function loadState(key) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return { rootBlocks: [] };
+                const parsed = JSON.parse(raw);
+                return parsed && Array.isArray(parsed.rootBlocks) ? parsed : { rootBlocks: [] };
+            } catch {
+                return { rootBlocks: [] };
+            }
+        }
+
+        function cloneWithPrefix(blocks, prefix) {
+            const map = new Map();
+
+            function cloneBlock(b) {
+                const nb = JSON.parse(JSON.stringify(b));
+                const oldId = nb.id;
+                nb.id = prefix + oldId;
+                map.set(oldId, nb.id);
+
+                nb.children = (nb.children || []).map(cloneBlock);
+                return nb;
+            }
+
+            return (blocks || []).map(cloneBlock);
+        }
+
         window.addEventListener("DOMContentLoaded", () => {
             const host = document.querySelector('[data-plugin="design"] .st-app');
             if (!host || !window.STDesignCore) return;
 
-            const api = window.STDesignCore.mount(host);
+            const params = new URLSearchParams((location.hash.split("?")[1] || ""));
+            const siteId = params.get("site");
+            const pageId = params.get("page") || "page_home";
+
+            // якщо не передали siteId — просто відкриємо дефолтний state
+            if (!siteId || !window.STDesignCore.setStorageKey) {
+                window.STDesignCore.setStorageKey("st:design:blocks:v2");
+                window.STDesignCore.mount(host);
+                return;
+            }
+
+            const headerKey = `st:design:site:${siteId}:layout:header`;
+            const footerKey = `st:design:site:${siteId}:layout:footer`;
+            const bodyKey = `st:design:site:${siteId}:page:${pageId}`;
+
+            const header = loadState(headerKey).rootBlocks;
+            const body = loadState(bodyKey).rootBlocks;
+            const footer = loadState(footerKey).rootBlocks;
+
+            // щоб не було колізій id — префіксуємо
+            const merged = [
+                ...cloneWithPrefix(header, "h_"),
+                ...cloneWithPrefix(body, "b_"),
+                ...cloneWithPrefix(footer, "f_")
+            ];
+
+            const previewKey = `st:design:preview:${siteId}:${pageId}`;
+            localStorage.setItem(previewKey, JSON.stringify({ rootBlocks: merged, selectedId: null }));
+
+            window.STDesignCore.setStorageKey(previewKey);
+            window.STDesignCore.mount(host);
         });
     </script>
+
 </body>
 
 </html>

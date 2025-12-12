@@ -4,7 +4,7 @@
   "route": "sites",
   "icon": "folder-open",
   "order": 10,
-  "html": "plugins/sites/sites.html",
+  "html": "plugins/sites/index.html",
   "css": [
     "plugins/sites/css/style.css"
   ],

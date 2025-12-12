@@ -138,15 +138,21 @@ console.log("[design] index.js завантажений");
     // формат, наприклад: #/design?site=SITE_ID&page=PAGE_ID
     const params = new URLSearchParams(location.hash.split("?")[1] || "");
     const siteId = params.get("site");
-    const pageId = params.get("page");
+    const part = params.get("part") || "body";
+    const pageId = params.get("page") || "page_home";
 
-    if (siteId && pageId && window.STDesignCore.setStorageKey) {
-      const key = `st:design:site:${siteId}:page:${pageId}`;
-      window.STDesignCore.setStorageKey(key);
-    } else if (window.STDesignCore.setStorageKey) {
-      // дефолтний ключ, щоб не ламати старі дані
-      window.STDesignCore.setStorageKey("st:design:blocks:v2");
+    if (window.STDesignCore.setStorageKey) {
+      if (siteId && part === "header") {
+        window.STDesignCore.setStorageKey(`st:design:site:${siteId}:layout:header`);
+      } else if (siteId && part === "footer") {
+        window.STDesignCore.setStorageKey(`st:design:site:${siteId}:layout:footer`);
+      } else if (siteId && pageId) {
+        window.STDesignCore.setStorageKey(`st:design:site:${siteId}:page:${pageId}`);
+      } else {
+        window.STDesignCore.setStorageKey("st:design:blocks:v2");
+      }
     }
+
 
     const coreApi = window.STDesignCore.mount(host);
     console.log("[design] core mounted", coreApi);

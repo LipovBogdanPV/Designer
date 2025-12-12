@@ -1,8 +1,17 @@
 <div data-plugin="sites" class="sites-app">
     <div class="sites-header">
         <h1>Мої сайти</h1>
-        <button id="siteCreate" class="btn primary">+ Створити сайт</button>
+
+        <div class="sites-header-actions">
+            <select id="siteTemplate" class="input small">
+                <option value="base-01">Базовий (Header + Footer)</option>
+                <option value="shop-01">Shop (Header + Footer + Hero)</option>
+            </select>
+
+            <button id="siteCreate" class="btn primary">+ Створити сайт</button>
+        </div>
     </div>
+
 
     <div id="sitesList" class="sites-list"></div>
 
@@ -18,6 +27,11 @@
         </div>
 
         <h2>Сторінки</h2>
+        <div class="layout-actions">
+            <button id="editHeader" class="btn small">Редагувати Header</button>
+            <button id="editFooter" class="btn small">Редагувати Footer</button>
+        </div>
+
         <table class="pages-table">
             <thead>
                 <tr>
