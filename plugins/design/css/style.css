@@ -693,3 +693,31 @@ html.st-design-preview [data-plugin="design"] .st-block.selected {
 .preview-exit-btn:hover {
   background: rgba(30, 64, 175, 0.95);
 }
+
+.st-nav {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.st-nav__link {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.st-nav__link:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.st-nav__link[aria-current="page"] {
+  background: rgba(109, 94, 252, 0.18);
+  border: 1px solid rgba(109, 94, 252, 0.35);
+}
+
+.st-nav__empty {
+  opacity: 0.7;
+  font-size: 13px;
+}

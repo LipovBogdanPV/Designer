@@ -25,6 +25,47 @@
   function setStorageKey(key) {
     STORAGE_KEY = key || "st:design:blocks:v2";
   }
+  // ===== nav helpers (для kind="nav")
+  const SITES_KEY = "st:sites:v1";
+
+  function escapeHtml(s = "") {
+    return String(s).replace(/[&<>"']/g, (m) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    }[m]));
+  }
+
+  function getRouteParams() {
+    const hash = window.location.hash || "";
+    const query = hash.split("?")[1] || "";
+    const params = new URLSearchParams(query);
+    return {
+      siteId: params.get("site"),
+      pageId: params.get("page"),
+      part: params.get("part") || "body",
+    };
+  }
+
+  function loadSiteById(siteId) {
+    if (!siteId) return null;
+    try {
+      const sites = JSON.parse(localStorage.getItem(SITES_KEY) || "[]");
+      return sites.find(s => s.id === siteId) || null;
+    } catch {
+      return null;
+    }
+  }
+
+  function buildPageHref(site, page) {
+    // ⚠️ Підлаштуй під свій preview-роутинг.
+    // Мінімальний варіант: / або /slug
+    const slug = (!page?.slug || page.slug === "index") ? "index" : page.slug;
+    return `preview.html?site=${site.id}&page=${slug}`;
+  }
+
 
 
   function applyHeight(node, px) {
@@ -809,7 +850,6 @@
       }
     }
 
-
   }
 
   function renderBlock(b) {
@@ -902,7 +942,36 @@
       contentEl.className = "st-image";
       contentEl.src = (b.img && b.img.src) || "https://placehold.co/800x300?text=Hello+World";
       contentEl.alt = (b.img && b.img.alt) || "";
+    } else if (b.kind === "nav") {
+      // Навігація бере сторінки з Sites-плагіна (st:sites:v1)
+      const { siteId, pageId } = getRouteParams();
+      const site = loadSiteById(siteId);
+
+      contentEl = document.createElement("nav");
+      contentEl.className = "st-nav";
+
+      const pages = (site?.pages || []).filter(p => p.inNav !== false);
+
+      pages.forEach((p) => {
+        const a = document.createElement("a");
+        a.className = "st-nav__link";
+        a.href = buildPageHref(site, p);
+        a.textContent = p.title || p.slug || "page";
+        if (p.id === pageId) a.setAttribute("aria-current", "page");
+        contentEl.appendChild(a);
+      });
+
+      // якщо сторінок нема — покажемо плейсхолдер
+      if (!pages.length) {
+        const span = document.createElement("span");
+        span.className = "st-nav__empty";
+        span.textContent = "Немає сторінок у меню";
+        contentEl.appendChild(span);
+      }
     }
+
+
+
 
     if (contentEl) {
       contentEl.classList.add("st-block-content");
@@ -994,6 +1063,28 @@
     }
     return el;
   }
+
+  function renderNavBlock(block, site, currentPageSlug) {
+    const pages = (site?.pages || [])
+      .filter(p => (p.inNav !== false))          // ✅ тільки ті, що в меню
+      .map(p => ({
+        title: p.title || p.slug,
+        slug: p.slug || "index",
+      }));
+
+    // base path для “сайту” (можеш змінити під свою структуру)
+    // якщо у тебе рендер йде в /site/<siteSlug>/... — підстав тут
+    const base = "";
+
+    const linksHtml = pages.map(p => {
+      const href = p.slug === "index" ? `${base}/` : `${base}/${p.slug}`;
+      const active = (currentPageSlug === p.slug) ? ` aria-current="page"` : "";
+      return `<a href="${href}"${active}>${escapeHtml(p.title)}</a>`;
+    }).join("");
+
+    return `<nav class="st-nav">${linksHtml}</nav>`;
+  }
+
   // головний рендер
 
   function render() {

@@ -135,19 +135,24 @@
         tbody.innerHTML = "";
         (site.pages || []).forEach((p) => {
             const tr = document.createElement("tr");
+            const inNav = p.inNav !== false; // дефолт: true
+
             tr.innerHTML = `
-        <td><input data-page="${p.id}" data-field="title" value="${p.title}" /></td>
-        <td><input data-page="${p.id}" data-field="slug" value="${p.slug}" /></td>
-        <td>
-          <button class="btn small" data-page="${p.id}" data-action="editPage">
-            Редагувати
-          </button>
-          <button class="btn small" data-page="${p.id}" data-action="editPageSeo">SEO</button>
-          <button class="btn small danger" data-page="${p.id}" data-action="delPage">
-            ✕
-          </button>
-        </td>
-      `;
+                <td><input data-page="${p.id}" data-field="title" value="${p.title}" /></td>
+                <td><input data-page="${p.id}" data-field="slug" value="${p.slug}" /></td>
+
+                <td>
+                    <label class="nav-toggle">
+                    <input type="checkbox" data-page="${p.id}" data-field="inNav" ${inNav ? "checked" : ""}/>
+                    <span>Меню</span>
+                    </label>
+                </td>
+
+                <td>
+                    <button class="btn small" data-page="${p.id}" data-action="editPage">Редагувати</button>
+                    <button class="btn small danger" data-page="${p.id}" data-action="delPage">✕</button>
+                </td>
+                `;
             tbody.appendChild(tr);
         });
 
@@ -315,7 +320,7 @@
             const p = {
                 id: "page_" + uid(),
                 title: "Нова сторінка",
-                slug: "page-" + uid(),
+                slug: "page-" + uid(), inNav: true,
             };
             currentSite.pages.push(p);
             saveSites();
@@ -342,7 +347,7 @@
                 const pid = btnEdit.dataset.page;
                 // перехід у плагін Design
                 location.hash = `#/design?site=${currentSite.id}&page=${pid}&part=body`;
-                location.hash = hash;
+                //location.hash = hash;
             }
         });
         //Клік по кнопці SEO в таблиці сторінок:
@@ -357,6 +362,19 @@
                 const pid = btnEditSeo.dataset.page;
                 const page = currentSite.pages.find(p => p.id === pid);
                 if (page) openPageSeo(page);
+                return;
+            }
+            if (btnDel) {
+                const pid = btnDel.dataset.page;
+                currentSite.pages = currentSite.pages.filter((p) => p.id !== pid);
+                saveSites();
+                openSiteEditor(currentSite, root);
+                return;
+            }
+
+            if (btnEdit) {
+                const pid = btnEdit.dataset.page;
+                location.hash = `#/design?site=${currentSite.id}&page=${pid}&part=body`;
                 return;
             }
 
@@ -405,7 +423,11 @@
             const field = inp.dataset.field;
             const p = currentSite.pages.find((x) => x.id === pid);
             if (!p || !field) return;
-            p[field] = inp.value;
+            if (inp.type === "checkbox") {
+                p[field] = inp.checked;   // ✅ inNav
+            } else {
+                p[field] = inp.value;     // ✅ title/slug
+            }
             saveSites();
             renderSitesList(sitesState, root);
         });
@@ -565,9 +587,8 @@
                             padding: { t: 0, r: 0, b: 0, l: 0 },
                             style: { ...createDesignBlock().style, bg: { type: "none" } },
                             children: [
-                                createDesignBlock({ kind: "text", text: "Головна", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
-                                createDesignBlock({ kind: "text", text: "Про нас", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
-                                createDesignBlock({ kind: "text", text: "Контакти", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] }),
+                                createDesignBlock({ kind: "nav", padding: { t: 0, r: 0, b: 0, l: 0 }, style: { ...createDesignBlock().style, bg: { type: "none" } }, children: [] })
+
                             ]
                         })
                     ]

@@ -1,386 +1,431 @@
-[data-plugin="sites"] :root {
-    --sites-gap: 12px;
-    --sites-radius: 10px;
-    --sites-border: rgba(255, 255, 255, 0.06);
-    --sites-bg-panel: rgba(11, 16, 26, 0.9);
-}
+ :root {
+     --sites-gap: 12px;
+     --sites-radius: 10px;
+     --sites-border: rgba(255, 255, 255, 0.06);
+     --sites-bg-panel: rgba(11, 16, 26, 0.9);
+ }
 
-[data-plugin="sites"].plugin-sites {
-    overflow: auto;
-}
+ :root[data-theme="light"] {
+     --sites-border: rgba(0, 0, 0, 0.1);
+     --sites-bg-panel: #ffffff;
+ }
 
-/* Все стилізуємо тільки всередині плагіна "Сайт" */
-[data-plugin="sites"] .sites-app {
-    padding: 24px 32px;
-    max-width: 980px;
-    margin: 0 auto;
-    color: var(--text);
-    font-size: 14px;
-}
+ [data-plugin="sites"].plugin-sites {
+     overflow: auto;
+ }
 
-/* Заголовок + кнопка */
-[data-plugin="sites"] .sites-header {
-    margin-bottom: 24px;
-}
+ /* Все стилізуємо тільки всередині плагіна "Сайт" */
+ [data-plugin="sites"] .sites-app {
+     padding: 24px 32px;
+     max-width: 980px;
+     margin: 0 auto;
+     color: var(--text);
+     font-size: 14px;
+ }
 
-[data-plugin="sites"] .sites-header h1 {
-    font-size: 24px;
-    font-weight: 600;
-    display: inline-block;
-    margin-right: 16px;
-}
+ /* Заголовок + кнопка */
+ [data-plugin="sites"] .sites-header {
+     margin-bottom: 24px;
+ }
 
-/* Кнопка "Створити сайт" */
-[data-plugin="sites"] #siteCreate {
-    /* якщо у тебе своя .btn – ці стилі можна спокійно забрати */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    background: #2563eb;
-    color: #e5e7eb;
-    font-size: 13px;
-    cursor: pointer;
-}
+ [data-plugin="sites"] .sites-header h1 {
+     font-size: 24px;
+     font-weight: 600;
+     display: inline-block;
+     margin-right: 16px;
+ }
 
-/* Список сайтів — просто відступи між картками, без flex */
-[data-plugin="sites"] #sitesList {
-    margin-bottom: 24px;
-}
+ /* Кнопка "Створити сайт" */
+ [data-plugin="sites"] #siteCreate {
+     /* якщо у тебе своя .btn – ці стилі можна спокійно забрати */
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
+     padding: 8px 14px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.4);
+     background: #2563eb;
+     color: #e5e7eb;
+     font-size: 13px;
+     cursor: pointer;
+ }
 
-/* Картка сайту: фон, рамка, радіус, але БЕЗ display:flex */
-[data-plugin="sites"] .site-card {
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    border-radius: 10px;
-    background: rgba(15, 23, 42, 0.9);
-    /* темний блок */
-    border: 1px solid rgba(148, 163, 184, 0.25);
-}
+ [data-theme="light"] #siteCreate {
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     background: #3b82f6;
+     color: #f9fafb;
+ }
 
-/* Текст у картці */
-[data-plugin="sites"] .site-card .title {
-    font-weight: 500;
-}
+ /* Список сайтів — просто відступи між картками, без flex */
+ [data-plugin="sites"] #sitesList {
+     margin-bottom: 24px;
+ }
 
-[data-plugin="sites"] .site-card .meta {
-    font-size: 12px;
-    color: #9ca3af;
-}
+ /* Картка сайту: фон, рамка, радіус, але БЕЗ display:flex */
+ [data-plugin="sites"] .site-card {
+     padding: 10px 14px;
+     margin-bottom: 8px;
+     border-radius: 10px;
+     background: rgba(15, 23, 42, 0.9);
+     /* темний блок */
+     border: 1px solid rgba(148, 163, 184, 0.25);
+ }
 
-/* Кнопка "Налаштувати" — трохи компактніша */
-[data-plugin="sites"] .site-card .btn,
-[data-plugin="sites"] .site-card button {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 999px;
-}
+ /* Текст у картці */
+ [data-plugin="sites"] .site-card .title {
+     font-weight: 500;
+ }
 
-/* Редактор сайту — панель під списком */
-[data-plugin="sites"] #siteEditor.site-editor {
-    margin-top: 16px;
-    padding: 16px 14px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
-}
+ [data-plugin="sites"] .site-card .meta {
+     font-size: 12px;
+     color: #9ca3af;
+ }
 
-/* Заголовки блоків усередині редактора */
-[data-plugin="sites"] #siteEditor h2 {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 14px 0 6px;
-}
+ /* Кнопка "Налаштувати" — трохи компактніша */
+ [data-plugin="sites"] .site-card .btn,
+ [data-plugin="sites"] .site-card button {
+     font-size: 12px;
+     padding: 4px 10px;
+     border-radius: 999px;
+ }
 
-/* Блоки з підписом + інпутом */
-[data-plugin="sites"] .site-editor-section {
-    margin-top: 10px;
-}
+ /* Редактор сайту — панель під списком */
+ [data-plugin="sites"] #siteEditor.site-editor {
+     margin-top: 16px;
+     padding: 16px 14px;
+     border-radius: 12px;
+     background: rgba(15, 23, 42, 0.95);
+     border: 1px solid rgba(148, 163, 184, 0.3);
+     box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+ }
 
-[data-plugin="sites"] .site-editor-section label {
-    display: block;
-    font-size: 12px;
-    color: #9ca3af;
-    margin-bottom: 3px;
-}
+ [data-theme="light"] [data-plugin="sites"] #siteEditor.site-editor {
+     background: #ffffff;
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.1);
+ }
 
-/* Інпути – просто трохи акуратніші */
-[data-plugin="sites"] #siteEditor input[type="text"],
-[data-plugin="sites"] #siteEditor input:not([type]) {
-    width: 100%;
-    padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: rgba(15, 23, 42, 0.95);
-    color: var(--text);
-    font-size: 13px;
-}
+ /* Заголовки блоків усередині редактора */
+ [data-plugin="sites"] #siteEditor h2 {
+     font-size: 16px;
+     font-weight: 500;
+     margin: 14px 0 6px;
+ }
 
-[data-plugin="sites"] #siteEditor input:focus {
-    outline: none;
-    border-color: #60a5fa;
-}
+ /* Блоки з підписом + інпутом */
+ [data-plugin="sites"] .site-editor-section {
+     margin-top: 10px;
+ }
 
-/* Табличка сторінок */
-[data-plugin="sites"] .pages-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 4px;
-}
+ [data-plugin="sites"] .site-editor-section label {
+     display: block;
+     font-size: 12px;
+     color: #9ca3af;
+     margin-bottom: 3px;
+ }
 
-[data-plugin="sites"] .pages-table th,
-[data-plugin="sites"] .pages-table td {
-    padding: 6px 4px;
-    text-align: left;
-    font-size: 13px;
-}
+ /* Інпути – просто трохи акуратніші */
+ [data-plugin="sites"] #siteEditor input[type="text"],
+ [data-plugin="sites"] #siteEditor input:not([type]) {
+     width: 100%;
+     padding: 6px 8px;
+     border-radius: 6px;
+     border: 1px solid rgba(148, 163, 184, 0.35);
+     background: rgba(15, 23, 42, 0.95);
+     color: var(--text);
+     font-size: 13px;
+ }
 
-[data-plugin="sites"] .pages-table th {
-    color: #9ca3af;
-    font-weight: 500;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
-}
+ [data-theme="light"] [data-plugin="sites"] #siteEditor input[type="text"],
+ [data-theme="light"] [data-plugin="sites"] #siteEditor input:not([type]) {
+     background: #f9fafb;
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     color: #111827;
+ }
 
-/* Кнопка "Додати сторінку" */
-[data-plugin="sites"] #pageAdd {
-    margin-top: 6px;
-}
+ [data-plugin="sites"] #siteEditor input:focus {
+     outline: none;
+     border-color: #60a5fa;
+ }
 
-/* Кнопки Netlify */
-[data-plugin="sites"] .netlify-actions {
-    margin-top: 8px;
-}
+ /* Табличка сторінок */
+ [data-plugin="sites"] .pages-table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 4px;
+ }
 
-[data-plugin="sites"] .netlify-actions .btn,
-[data-plugin="sites"] .netlify-actions button {
-    margin-right: 6px;
-    margin-bottom: 4px;
-}
+ [data-plugin="sites"] .pages-table th,
+ [data-plugin="sites"] .pages-table td {
+     padding: 6px 4px;
+     text-align: left;
+     font-size: 13px;
+ }
 
-/* Адаптив */
-@media (max-width: 900px) {
-    [data-plugin="sites"] .sites-app {
-        padding-inline: 16px;
-    }
-}
+ [data-plugin="sites"] .pages-table th {
+     color: #9ca3af;
+     font-weight: 500;
+     border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+ }
 
-/* кнопка видалення*/
-.site-card .actions {
-    display: flex;
-    gap: 8px;
-}
+ /* Кнопка "Додати сторінку" */
+ [data-plugin="sites"] #pageAdd {
+     margin-top: 6px;
+ }
 
-.btn.danger {
-    background: #c0392b;
-    color: white;
-}
+ /* Кнопки Netlify */
+ [data-plugin="sites"] .netlify-actions {
+     margin-top: 8px;
+ }
 
-.btn.danger:hover {
-    background: #e74c3c;
-}
+ [data-plugin="sites"] .netlify-actions .btn,
+ [data-plugin="sites"] .netlify-actions button {
+     margin-right: 6px;
+     margin-bottom: 4px;
+ }
 
-/* Секція редактора сайту */
-[data-plugin="sites"] .site-editor-section {
-    margin-top: 24px;
-}
+ /* Адаптив */
+ @media (max-width: 900px) {
+     [data-plugin="sites"] .sites-app {
+         padding-inline: 16px;
+     }
+ }
 
-/* Заголовки блоків всередині редактора */
-[data-plugin="sites"] .site-editor-section h2 {
-    margin: 18px 0 10px;
-    font-size: 16px;
-    font-weight: 600;
-}
+ /* кнопка видалення*/
+ .site-card .actions {
+     display: flex;
+     gap: 8px;
+ }
 
-/* ================== FORM-GRID (SEO форми, Netlify і т.д.) ================== */
+ .btn.danger {
+     background: #c0392b;
+     color: white;
+ }
 
-[data-plugin="sites"] .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--sites-gap);
-    margin-bottom: 20px;
-}
+ .btn.danger:hover {
+     background: #e74c3c;
+ }
 
-@media (max-width: 1024px) {
-    [data-plugin="sites"] .form-grid {
-        grid-template-columns: 1fr;
-    }
-}
+ /* Секція редактора сайту */
+ [data-plugin="sites"] .site-editor-section {
+     margin-top: 24px;
+ }
 
-[data-plugin="sites"] .form-grid label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 13px;
-}
+ /* Заголовки блоків всередині редактора */
+ [data-plugin="sites"] .site-editor-section h2 {
+     margin: 18px 0 10px;
+     font-size: 16px;
+     font-weight: 600;
+ }
 
-[data-plugin="sites"] .form-grid label span {
-    font-weight: 500;
-}
+ /* ================== FORM-GRID (SEO форми, Netlify і т.д.) ================== */
 
-/* input / textarea під темну тему, щоб були такі ж як у тебе всюди */
+ [data-plugin="sites"] .form-grid {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+     gap: var(--sites-gap);
+     margin-bottom: 20px;
+ }
 
-[data-plugin="sites"] input[type="text"],
-[data-plugin="sites"] input[type="url"],
-[data-plugin="sites"] textarea {
-    width: 100%;
-    padding: 7px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--sites-border);
-    background: rgba(9, 13, 22, 0.95);
-    color: var(--text, #e9edf7);
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease,
-        background 0.15s ease;
-}
+ @media (max-width: 1024px) {
+     [data-plugin="sites"] .form-grid {
+         grid-template-columns: 1fr;
+     }
+ }
 
-[data-plugin="sites"] textarea {
-    resize: vertical;
-    min-height: 60px;
-}
+ [data-plugin="sites"] .form-grid label {
+     display: flex;
+     flex-direction: column;
+     gap: 6px;
+     font-size: 13px;
+     padding: 1px;
+ }
 
-[data-plugin="sites"] input[type="text"]:focus,
-[data-plugin="sites"] input[type="url"]:focus,
-[data-plugin="sites"] textarea:focus {
-    border-color: var(--primary, #4f46e5);
-    box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.65);
-    background: rgba(11, 18, 32, 0.98);
-}
+ [data-plugin="sites"] .form-grid label span {
+     font-weight: 500;
+ }
 
-/* чекбокс-рядок */
+ /* input / textarea під темну тему, щоб були такі ж як у тебе всюди */
 
-[data-plugin="sites"] .checkbox-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-}
+ [data-plugin="sites"] input[type="text"],
+ [data-plugin="sites"] input[type="url"],
+ [data-plugin="sites"] textarea {
+     width: 100%;
+     padding: 7px 10px;
+     border-radius: 8px;
+     border: 1px solid var(--sites-border);
+     background: rgba(9, 13, 22, 0.95);
+     color: var(--text, #e9edf7);
+     font-size: 13px;
+     outline: none;
+     transition: border-color 0.15s ease, box-shadow 0.15s ease,
+         background 0.15s ease;
+ }
 
-[data-plugin="sites"] .checkbox-row input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
+ [data-theme="light"] [data-plugin="sites"] input[type="text"],
+ [data-theme="light"] [data-plugin="sites"] input[type="url"],
+ [data-theme="light"] [data-plugin="sites"] textarea {
+     background: #f9fafb;
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     color: #111827;
+ }
 
-/* ================== МОДАЛКА SEO СТОРІНКИ ================== */
+ [data-plugin="sites"] textarea {
+     resize: vertical;
+     min-height: 60px;
+ }
 
-[data-plugin="sites"] .modal {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
-    z-index: 999;
-    /* вище за все в конструкторі */
-}
+ [data-plugin="sites"] input[type="text"]:focus,
+ [data-plugin="sites"] input[type="url"]:focus,
+ [data-plugin="sites"] textarea:focus {
+     border-color: var(--primary, #4f46e5);
+     box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.65);
+     background: rgba(11, 18, 32, 0.98);
+ }
 
-[data-plugin="sites"] .modal[hidden] {
-    display: none !important;
-}
+ [data-theme="light"] [data-plugin="sites"] input[type="text"]:focus,
+ [data-theme="light"] [data-plugin="sites"] input[type="url"]:focus,
+ [data-theme="light"] [data-plugin="sites"] textarea:focus {
+     background: #ffffff;
+ }
 
-[data-plugin="sites"] .modal-body {
-    width: 100%;
-    max-width: 520px;
-    background: var(--sites-bg-panel);
-    border-radius: 16px;
-    border: 1px solid var(--sites-border);
-    box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
-    padding: 18px 20px 16px;
-}
+ /* чекбокс-рядок */
 
-[data-plugin="sites"] .modal-body h3 {
-    margin: 0 0 12px;
-    font-size: 16px;
-    font-weight: 600;
-}
+ [data-plugin="sites"] .checkbox-row {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 13px;
+ }
 
-/* Поля всередині модалки */
+ [data-plugin="sites"] .checkbox-row input[type="checkbox"] {
+     width: 16px;
+     height: 16px;
+     cursor: pointer;
+ }
 
-[data-plugin="sites"] .modal-body label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
+ /* ================== МОДАЛКА SEO СТОРІНКИ ================== */
 
-/* футер модалки з кнопками */
+ [data-plugin="sites"] .modal {
+     position: fixed;
+     inset: 0;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 20px;
+     background: rgba(0, 0, 0, 0.55);
+     backdrop-filter: blur(6px);
+     z-index: 999;
+     /* вище за все в конструкторі */
+ }
 
-[data-plugin="sites"] .modal-actions {
-    margin-top: 12px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
+ [data-plugin="sites"] .modal[hidden] {
+     display: none !important;
+ }
 
-/* підкрутити кнопки, які вже є */
+ [data-plugin="sites"] .modal-body {
+     width: 100%;
+     max-width: 520px;
+     background: var(--sites-bg-panel);
+     border-radius: 16px;
+     border: 1px solid var(--sites-border);
+     box-shadow:
+         0 18px 40px rgba(0, 0, 0, 0.6),
+         0 0 0 1px rgba(255, 255, 255, 0.02);
+     padding: 18px 20px 16px;
+ }
 
-[data-plugin="sites"] .btn.small {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    line-height: 1.2;
-}
+ [data-plugin="sites"] .modal-body h3 {
+     margin: 0 0 12px;
+     font-size: 16px;
+     font-weight: 600;
+ }
 
-[data-plugin="sites"] .btn.small.secondary {
-    background: transparent;
-    border: 1px solid var(--sites-border);
-}
+ /* Поля всередині модалки */
 
-/* ================== КАРТКА САЙТУ (невеликий тюнінг) ================== */
+ [data-plugin="sites"] .modal-body label {
+     display: flex;
+     flex-direction: column;
+     gap: 6px;
+     font-size: 13px;
+     margin-bottom: 10px;
+ }
 
-[data-plugin="sites"] .site-card {
-    background: var(--sites-bg-panel);
-    border-radius: 14px;
-    padding: 12px 14px;
-    border: 1px solid var(--sites-border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 10px;
-}
+ /* футер модалки з кнопками */
 
-[data-plugin="sites"] .site-card .title {
-    font-weight: 600;
-    font-size: 14px;
-}
+ [data-plugin="sites"] .modal-actions {
+     margin-top: 12px;
+     display: flex;
+     justify-content: flex-end;
+     gap: 8px;
+ }
 
-[data-plugin="sites"] .site-card .meta {
-    font-size: 12px;
-    opacity: 0.7;
-}
+ /* підкрутити кнопки, які вже є */
 
-[data-plugin="sites"] .site-card .actions {
-    display: flex;
-    gap: 6px;
-}
+ [data-plugin="sites"] .btn.small {
+     padding: 4px 10px;
+     border-radius: 999px;
+     font-size: 12px;
+     line-height: 1.2;
+ }
 
-[data-plugin="sites"] .sites-header-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
+ [data-plugin="sites"] .btn.small.secondary {
+     background: transparent;
+     border: 1px solid var(--sites-border);
+ }
 
-[data-plugin="sites"] .input.small {
-    height: 32px;
-    padding: 6px 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, .08);
-    background: rgba(9, 13, 22, .95);
-    color: #e9edf7;
-}
+ /* ================== КАРТКА САЙТУ (невеликий тюнінг) ================== */
 
-[data-plugin="sites"] .layout-actions {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0 14px;
-}
+ [data-plugin="sites"] .site-card {
+     background: var(--sites-bg-panel);
+     border-radius: 14px;
+     padding: 12px 14px;
+     border: 1px solid var(--sites-border);
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 12px;
+     margin-bottom: 10px;
+ }
+
+ [data-plugin="sites"] .site-card .title {
+     font-weight: 600;
+     font-size: 14px;
+ }
+
+ [data-plugin="sites"] .site-card .meta {
+     font-size: 12px;
+     opacity: 0.7;
+ }
+
+ [data-plugin="sites"] .site-card .actions {
+     display: flex;
+     gap: 6px;
+ }
+
+ [data-plugin="sites"] .sites-header-actions {
+     display: flex;
+     gap: 10px;
+     align-items: center;
+ }
+
+ [data-plugin="sites"] .input.small {
+     height: 32px;
+     padding: 6px 10px;
+     border-radius: 10px;
+     border: 1px solid rgba(255, 255, 255, .08);
+     background: rgba(9, 13, 22, .95);
+     color: #e9edf7;
+ }
+
+ [data-theme="light"] [data-plugin="sites"] .input.small {
+     border: 1px solid rgba(0, 0, 0, .1);
+     background: #fff;
+     color: #111827;
+ }
+
+ [data-plugin="sites"] .layout-actions {
+     display: flex;
+     gap: 8px;
+     margin: 10px 0 14px;
+ }

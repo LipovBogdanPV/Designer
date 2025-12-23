@@ -100,9 +100,13 @@
             const footerKey = `st:design:site:${siteId}:layout:footer`;
             const bodyKey = `st:design:site:${siteId}:page:${pageId}`;
 
+            // завантажуємо всі три частини сайту
             const header = loadState(headerKey).rootBlocks;
             const body = loadState(bodyKey).rootBlocks;
             const footer = loadState(footerKey).rootBlocks;
+            window.__previewSite = siteId;
+            window.__previewPageId = pageId;
+
 
             // щоб не було колізій id — префіксуємо
             const merged = [
@@ -111,6 +115,7 @@
                 ...cloneWithPrefix(footer, "f_")
             ];
 
+            // зберігаємо згенерований state у тимчасовий ключ
             const previewKey = `st:design:preview:${siteId}:${pageId}`;
             localStorage.setItem(previewKey, JSON.stringify({ rootBlocks: merged, selectedId: null }));
 
