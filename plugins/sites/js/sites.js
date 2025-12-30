@@ -552,6 +552,9 @@ a:hover{text-decoration:underline;}
             writeDesignState(footerKey, footerBlocks);
             writeDesignState(homeKey, homeBlocks);
 
+            ensureEmptyDesignState(`st:design:site:${siteId}:page:page_about`);
+            ensureEmptyDesignState(`st:design:site:${siteId}:page:page_contacts`);
+
             currentSite = site;
             openSiteEditor(site, root);
         });
