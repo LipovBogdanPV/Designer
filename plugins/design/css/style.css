@@ -721,3 +721,27 @@ html.st-design-preview [data-plugin="design"] .st-block.selected {
   opacity: 0.7;
   font-size: 13px;
 }
+
+#tplList .tpl-item {
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: rgba(2, 6, 23, .25);
+}
+
+#tplList .tpl-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+#tplList .tpl-meta {
+  font-size: 12px;
+  opacity: .75;
+  margin-bottom: 8px;
+}
+
+#tplList .tpl-actions {
+  display: flex;
+  gap: 8px;
+}
