@@ -553,7 +553,9 @@ a:hover{text-decoration:underline;}
             writeDesignState(homeKey, homeBlocks);
 
             ensureEmptyDesignState(`st:design:site:${siteId}:page:page_about`);
-            ensureEmptyDesignState(`st:design:site:${siteId}:page:page_contacts`);
+            // ensureEmptyDesignState(`st:design:site:${siteId}:page:page_contacts`);
+            ensureEmptyDesignState(`st:design:site:${siteId}:page:page_contact`);
+
 
             currentSite = site;
             openSiteEditor(site, root);

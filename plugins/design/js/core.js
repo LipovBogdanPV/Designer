@@ -1571,9 +1571,9 @@
     }
     /* */
     const saved = loadFromStorage();
-    if (saved && saved.rootBlocks?.length) {
+    if (saved && Array.isArray(saved.rootBlocks)) {
       rootBlocks = saved.rootBlocks;
-      selectedId = saved.selectedId || saved.rootBlocks[0].id;
+      selectedId = saved.selectedId || saved.rootBlocks[0]?.id || null;
     } else {
       // демо
       const demo = createBlock({
